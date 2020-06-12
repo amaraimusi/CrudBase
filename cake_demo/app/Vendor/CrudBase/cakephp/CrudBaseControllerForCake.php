@@ -8,10 +8,10 @@ App::uses('AppController', 'Controller');
  * 
  *
  */
-class CrudBaseController extends AppController {
+class CrudBaseControllerForCake extends AppController {
 
 	///バージョン
-	var $version = "2.8.1";
+	var $version = "3.0.0";
 
 	///デフォルトの並び替え対象フィールド
 	var $defSortFeild='sort_no';

@@ -1,5 +1,5 @@
 <?php
-App::uses('CrudBaseController', 'Controller');
+App::uses('CrudBaseController', 'Vendor/CrudBase');
 App::uses('PagenationForCake', 'Vendor/CrudBase');
 
 /**
@@ -11,7 +11,7 @@ App::uses('PagenationForCake', 'Vendor/CrudBase');
  * @date 2015-9-16 | 2020-4-24
  *
  */
-class NekoController extends CrudBaseController {
+class NekoController extends AppController {
 
 	/// 名称コード
 	public $name = 'Neko';
@@ -28,14 +28,14 @@ class NekoController extends CrudBaseController {
 	/// デフォルトソートタイプ	  0:昇順 1:降順
 	public $defSortType=0;
 	
-	/// 検索条件情報の定義
-	public $kensakuJoken=array();
+// 	/// 検索条件情報の定義■■■□□□■■■□□□
+// 	public $kensakuJoken=array();
 
-	/// 検索条件のバリデーション
-	public $kjs_validate = array();
+// 	/// 検索条件のバリデーション■■■□□□■■■□□□
+// 	public $kjs_validate = array();
 
-	///フィールドデータ
-	public $field_data=array();
+// 	///フィールドデータ
+// 	public $field_data=array();
 
 	/// 編集エンティティ定義
 	public $entity_info=array();
@@ -44,6 +44,8 @@ class NekoController extends CrudBaseController {
 	public $edit_validate = array();
 	
 	public $login_flg = 0; // ログインフラグ 0:ログイン不要, 1:ログイン必須
+	
+	public $crudBaseCon; // CrudBaseController    Crud基本制御クラス
 	
 	// 当画面バージョン (バージョンを変更すると画面に新バージョン通知とクリアボタンが表示されます。）
 	public $this_page_version = '3.2.5';
@@ -66,7 +68,7 @@ class NekoController extends CrudBaseController {
 	
 		parent::beforeFilter();
 	
-		$this->initCrudBase();// フィールド関連の定義をする。
+		$this->crudBaseCon = $this->initCrudBase();// フィールド関連の定義をする。
 	
 	}
 
@@ -80,7 +82,7 @@ class NekoController extends CrudBaseController {
 	public function index() {
 		
 		// CrudBase共通処理（前）
-		$crudBaseData = $this->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
 		
 		// CBBXS-1019
 		
@@ -90,7 +92,7 @@ class NekoController extends CrudBaseController {
 		$data = $this->Neko->findData($crudBaseData);
 
 		// CrudBase共通処理（後）
-		$crudBaseData = $this->indexAfter($crudBaseData);//indexアクションの共通後処理
+		$crudBaseData = $this->crudBaseCon->indexAfter($crudBaseData);//indexアクションの共通後処理
 		
 		// CBBXS-1020
 		$nekoGroupList = $this->Neko->getNekoGroupList();
@@ -190,7 +192,7 @@ class NekoController extends CrudBaseController {
 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
 
 		// CBBXS-1024
-		$ent['img_fn'] = $this->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
+		$ent['img_fn'] = $this->crudBaseCon->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
 		// CBBXE
 
 		// 更新ユーザーなど共通フィールドをセットする。
@@ -451,7 +453,8 @@ class NekoController extends CrudBaseController {
 	 *
 	 * @note
 	 * フィールド関連の定義をする。
-	 *
+	 * 
+	 * @return CrudBaseController 
 	 *
 	 */
 	private function initCrudBase(){
@@ -464,7 +467,7 @@ class NekoController extends CrudBaseController {
 		
 		
 		/// 検索条件情報の定義
-		$this->kensakuJoken=array(
+		$kensakuJoken=array(
 				
 				array('name'=>'kj_main','def'=>null),
 				// CBBXS-1000 
@@ -497,7 +500,7 @@ class NekoController extends CrudBaseController {
 		
 		
 		/// 検索条件のバリデーション
-		$this->kjs_validate=array(
+		$kjs_validate=array(
 				
 				// CBBXS-1001
 				
@@ -602,7 +605,7 @@ class NekoController extends CrudBaseController {
 		
 		
 		///フィールドデータ
-		$this->field_data = array('def'=>array(
+		$field_data = array('def'=>array(
 		
 			// CBBXS-1002
 			'id'=>array(
@@ -685,13 +688,24 @@ class NekoController extends CrudBaseController {
 
 		// 列並び順をセットする
 		$clm_sort_no = 0;
-		foreach ($this->field_data['def'] as &$fEnt){
+		foreach ($field_data['def'] as &$fEnt){
 			$fEnt['clm_sort_no'] = $clm_sort_no;
 			$clm_sort_no ++;
 		}
 		unset($fEnt);
+		
+		$crudBaseCon = new CrudBaseController([
+			'fw_type' => 'cake',
+			'ctrl' => $this,
+			'crudBaseModel' => $this->CrudBase,// ■■■□□□■■■□□□仮
+			'kensakuJoken' => $kensakuJoken, //検索条件情報
+			'kjs_validate' => $kjs_validate, //検索条件バリデーション
+			'field_data' => $field_data, //フィールドデータ
+		]);
+		
+		
+		return $crudBaseCon;
 
-		 
 	}
 
 
