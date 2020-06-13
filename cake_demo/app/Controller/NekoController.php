@@ -334,6 +334,7 @@ class NekoController extends AppController {
 		$bulkReg = new BulkReg($dao, $update_user);
 		$res = $bulkReg->reg('nekos', $param);
 		
+		
 		//JSONに変換
 		$str_json = json_encode($res,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 		
