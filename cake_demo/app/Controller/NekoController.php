@@ -120,13 +120,13 @@ class NekoController extends AppController {
 				'func_csv_export'=>0, // CSVエクスポート機能 0:OFF ,1:ON
 				'func_file_upload'=>1, // ファイルアップロード機能 0:OFF , 1:ON
 		);
-		$crudBaseData = $this->indexBefore('Neko',$option);//indexアクションの共通先処理(CrudBaseController)
+		$crudBaseData = $this->crudBaseCon->indexBefore('Neko',$option);//indexアクションの共通先処理(CrudBaseController)
 		
 		//一覧データを取得
 		$data = $this->Neko->findData($crudBaseData);
 		
 		// CrudBase共通処理（後）
-		$crudBaseData = $this->indexAfter($crudBaseData,['method_url'=>'front_a']);//indexアクションの共通後処理
+		$crudBaseData = $this->crudBaseCon->indexAfter($crudBaseData,['method_url'=>'front_a']);//indexアクションの共通後処理
 		
 		// CBBXS-1020-2
 		$nekoGroupList = $this->Neko->getNekoGroupList();
@@ -145,7 +145,7 @@ class NekoController extends AppController {
 		
 		
 		$this->set($crudBaseData);
-		$this->setCommon();//当画面系の共通セット
+		//$this->setCommon();//当画面系の共通セット■■■□□□■■■□□□
 		$this->set(array(
 				'header' => 'front_a_header',
 				'title_for_layout'=>'ネコ',
