@@ -9,11 +9,26 @@ App::uses('AppController', 'Controller');
  */
 class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy{
 	
-	private $ctrl;
+	private $ctrl; // クライアントコントローラ
+	private $model; // クライアントモデル
 	
+	/**
+	 * クライアントコントローラのセッター
+	 * @param mixed $ctrl クライアントコントローラ
+	 */
 	public function setCtrl($ctrl){
 		$this->ctrl = $ctrl;
 	}
+	
+	
+	/**
+	 * クライアントモデルのセッター
+	 * @param mixed $model クライアントモデル
+	 */
+	public function setModel($model){
+		$this->model = $model;
+	}
+	
 	public function sqlExe($sql){}
 	public function begin(){}
 	public function rollback(){}
@@ -62,7 +77,11 @@ class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy
 	public function getUserInfo(){
 		$userInfo = $this->ctrl->Auth->user();
 		
-		$userInfo['update_user'] = $userInfo['username'];// 更新ユーザー
+		$update_user = '';
+		if(!empty($userInfo['username'])) {
+			$update_user = $userInfo['username'];
+		}
+		$userInfo['update_user'] = $update_user;// 更新ユーザー
 		$userInfo['ip_addr'] = $_SERVER["REMOTE_ADDR"];// IPアドレス
 		$userInfo['user_agent'] = $_SERVER['HTTP_USER_AGENT']; // ユーザーエージェント
 		
@@ -90,5 +109,32 @@ class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy
 			'home_r_path' => $home_r_path,
 			'webroot' => $webroot,
 		];
+	}
+	
+	
+	/**
+	 * データをDB保存
+	 * @param [] $data データ（エンティティの配列）
+	 * @param [] $option
+	 */
+	public function saveAll($data, $option = []){
+		
+		if(!isset($option['atomic'])) $option['atomic'] = false;
+		if(!isset($option['validate'])) $option['validate'] = false;
+		$rs=$this->model->saveAll($data, $option);
+		return $rs;
+	}
+	
+	
+	/**
+	 * エンティティをDB保存
+	 * @param [] $ent エンティティ
+	 * @param [] $option
+	 */
+	public function save($ent, $option){
+		if(!isset($option['atomic'])) $option['atomic'] = false;
+		if(!isset($option['validate'])) $option['validate'] = false;
+		$rs=$this->model->save($data, $option);
+		return $rs;
 	}
 }

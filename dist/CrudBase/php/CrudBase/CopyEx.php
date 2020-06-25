@@ -18,6 +18,9 @@
  */
 class CopyEx{
 
+	public  function __construct(){
+		var_dump('XXX');//■■■□□□■■■□□□)
+	}
 
 	/**
 	 * 拡張コピー　存在しないディテクトリも自動生成

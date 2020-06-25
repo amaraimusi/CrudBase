@@ -17,7 +17,7 @@ class NekoController extends AppController {
 	public $name = 'Neko';
 	
 	/// 使用しているモデル[CakePHPの機能]
-	public $uses = array('Neko','CrudBase');
+	public $uses = array('Neko');
 	
 	/// オリジナルヘルパーの登録[CakePHPの機能]
 	public $helpers = array('CrudBase');
@@ -304,6 +304,17 @@ class NekoController extends AppController {
 		
 		return $json_str;
 	}
+	
+	
+	/**
+	 * AJAX | 一覧のチェックボックス複数選択による一括処理
+	 * @return string
+	 */
+	public function ajax_pwms(){
+		$this->autoRender = false;//ビュー(ctp)を使わない。
+		return $this->crudBaseCon->ajax_pwms();
+	}
+	
 	
 	/**
 	 * 一括登録 | AJAX
@@ -698,7 +709,7 @@ class NekoController extends AppController {
 		$crudBaseCon = new CrudBaseController([
 			'fw_type' => 'cake',
 			'ctrl' => $this,
-			'crudBaseModel' => $this->CrudBase,// ■■■□□□■■■□□□仮
+			'model' => $this->Neko,
 			'kensakuJoken' => $kensakuJoken, //検索条件情報
 			'kjs_validate' => $kjs_validate, //検索条件バリデーション
 			'field_data' => $field_data, //フィールドデータ

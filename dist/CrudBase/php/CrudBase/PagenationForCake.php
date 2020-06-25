@@ -40,7 +40,7 @@ class PagenationForCake{
 	 * - $data['all_page_cnt'] ページ数
 	 */
 	public function createPagenationData(&$pages,$all_data_cnt,$path,$params,$fields,$kjs){
-
+		
 		// 検索条件ＵＲＬクエリを生成する。
 		$kjs_uq = $this->createKjsUrlQuery($kjs);
 		

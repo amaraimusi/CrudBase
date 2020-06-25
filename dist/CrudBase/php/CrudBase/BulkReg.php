@@ -69,7 +69,7 @@ class BulkReg{
 		
 		// データからSQLリストを作成する。
 		$sqls = $this->createInsertSqls($tbl_name, $data);
-		
+
 		$newIds = array(); // 新IDリスト
 		
 		$row_index = 1;
@@ -80,7 +80,6 @@ class BulkReg{
 		try {
 			foreach($sqls as $sql){
 				$r = $this->dao->sqlExe($sql);
-
 				// INSERT直後の新idを取得し、新IDリストに詰める。
 				$newIdRes = $this->dao->sqlExe("SELECT LAST_INSERT_ID()");
 				$new_id = $this->getValueFromAryDepth($newIdRes);

@@ -1,5 +1,6 @@
 <?php
 require_once 'ICrudBaseStrategy.php';
+require_once 'CrudBaseModel.php';
 
 
 /**
@@ -66,6 +67,7 @@ class CrudBaseController {
 	private $posts = []; // POSTデータ
 	private $gets = []; // GETデータ
 	private $strategy = null; // ICrudBaseStrategy.php フレームワーク・ストラテジー
+	private $crudBaseModel; // CrudBaseModelクラス
 	
 	/**
 	 * 初期化
@@ -90,11 +92,15 @@ class CrudBaseController {
 		if($fw_type == 'cake'){
 			require_once 'cakephp/CrudBaseStrategyForCake.php';
 			$this->strategy = new CrudBaseStrategyForCake();
-			$this->strategy->setCtrl($param['ctrl']);
+			if(isset($param['ctrl'])) $this->strategy->setCtrl($param['ctrl']); // クライアントコントローラのセット
+			if(isset($param['model'])) $this->strategy->setModel($param['model']); // クライアントモデルのセット
+				
 		}
 		
-		
-		$this->CrudBase = $param['crudBaseModel'];// ■■■□□□■■■□□□仮
+		// CrudBaseモデルクラスの生成
+		$this->crudBaseModel = new CrudBaseModel([
+			'strategy' => $this->strategy,
+		]); 
 		
 		$this->param = $param;
 		
@@ -438,14 +444,14 @@ class CrudBaseController {
 			$active=$field_data['def'];
 
 			//列並番号でデータを並び替える。データ構造も変換する。
-			$active=$this->CrudBase->sortAndCombine($active);
+			$active = $this->crudBaseModel->sortAndCombine($active);
 			$field_data['active']=$active;
 
 			//セッションにフィールドデータを書き込む
 			$this->strategy->sessionWrite($fd_ses_key,$field_data);
 
 			//フィールドデータから一覧列情報を作成する。
-			$table_fields=$this->CrudBase->makeTableFieldFromFieldData($field_data);
+			$table_fields=$this->crudBaseModel->makeTableFieldFromFieldData($field_data);
 
 			//セッションに一覧列情報をセットする。
 			$this->strategy->sessionWrite($tf_ses_key,$table_fields);
@@ -632,137 +638,17 @@ class CrudBaseController {
 	 * ユーザー情報を取得する
 	 * 
 	 * @return array ユーザー情報
-	 * - ユーザー名
-	 * - IPアドレス
-	 * - ユーザーエージェント
+	 *  - update_user 更新ユーザー
+	 *  - ip_addr IPアドレス
+	 *  - user_agent ユーザーエージェント
+	 *  - role 権限
+	 *  - authority 権限データ
 	 */
 	public function getUserInfo(){
 
-		$userInfo = $this->strategy->getUserInfo(); // ユーザー情報を取得する
-		
-		// ■■■□□□■■■□□□
-// 		$userInfo = $this->Auth->user();
-
-// 		$userInfo['update_user'] = $userInfo['username'];// 更新ユーザー
-// 		$userInfo['ip_addr'] = $_SERVER["REMOTE_ADDR"];// IPアドレス
-// 		$userInfo['user_agent'] = $_SERVER['HTTP_USER_AGENT']; // ユーザーエージェント
-
-// 		// 権限が空であるならオペレータ扱いにする
-// 		if(empty($userInfo['role'])){
-// 			$userInfo['role'] = 'oparator';
-// 		}
-
-		// 権限データを取得してセットする
-		$userInfo['authority'] = $this->getAuthority($userInfo['role']);
+		$userInfo = $this->crudBaseModel->getUserInfo();
 
 		return $userInfo;
-	}
-	
-	/**
-	 * 許可権限リストを作成(扱える下位権限のリスト）
-	 * @return array 許可権限リスト
-	 */
-	protected function makePermRoles(){
-		
-		$userInfo = $this->getUserInfo(); // 現在のログインユーザー情報を取得する
-		$authData = $this->getAuthorityData();// 権限データを取得する
-		
-		// 許可権限リストを権限データをフィルタリングして取得する
-		$permRoles = array(); // 許可権限リスト
-		$role = $userInfo['authority']['name']; // 権限名
-		if($role == 'master'){
-			$permRoles = array_keys($authData);
-		}else{
-			$level = $userInfo['authority']['level']; // 権限レベル
-			foreach($authData as $aEnt){
-				if($aEnt['level'] < $level){
-					$permRoles[] = $aEnt['name'];
-				}
-			}
-		}
-		
-		return $permRoles;
-		
-	}
-
-	/**
-	 * 権限に紐づく権限エンティティを取得する
-	 * @param string $role 権限
-	 * @return array 権限エンティティ
-	 */
-	protected function getAuthority($role){
-
-		// 権限データを取得する
-		$authorityData = $this->getAuthorityData();
-
-		$authority = array();
-		if(!empty($authorityData[$role])){
-			$authority = $authorityData[$role];
-		}
-
-		return $authority;
-	}
-	
-	/**
-	 * 権限リストを取得する
-	 * @return array 権限リスト
-	 */
-	protected function getRoleList(){
-		
-		$role = $this->userInfo['authority']['name']; // 現在の権限を取得
-		$data = $this->getAuthorityData();
-		$roleList = array(); // 権限リスト
-		if($role == 'master'){
-			$roleList = Hash::combine($data, '{s}.name','{s}.wamei');
-		}else{
-			$level = $this->userInfo['authority']['level'];
-			foreach($data as $ent){
-				if($level > $ent['level']){
-					$name = $ent['name'];
-					$wamei = $ent['wamei'];
-					$roleList[$name] = $wamei;
-				}
-			}
-		}
-
-		return $roleList;
-	}
-
-	/**
-	 * 権限データを取得する
-	 * @return array 権限データ
-	 */
-	protected function getAuthorityData(){
-		$data=array(
-			'master'=>array(
-				'name'=>'master',
-				'wamei'=>'マスター',
-				'level'=>41,
-			),
-			'developer'=>array(
-				'name'=>'developer',
-				'wamei'=>'開発者',
-				'level'=>40,
-			),
-			'admin'=>array(
-				'name'=>'admin',
-				'wamei'=>'管理者',
-				'level'=>30,
-			),
-			'client'=>array(
-				'name'=>'client',
-				'wamei'=>'クライアント',
-				'level'=>20,
-			),
-			'oparator'=>array(
-				'name'=>'oparator',
-				'wamei'=>'オペレータ',
-				'level'=>10,
-			),
-
-		);
-
-		return $data;
 	}
 
 	/**
@@ -1765,9 +1651,10 @@ class CrudBaseController {
 	 */
 	public function ajax_pwms(){
 
-		App::uses('Sanitize', 'Utility');
+		// ■■■□□□■■■□□□
+// 		App::uses('Sanitize', 'Utility');
 
-		$this->autoRender = false;//ビュー(ctp)を使わない。
+// 		$this->autoRender = false;//ビュー(ctp)を使わない。
 
 		$json_param=$_POST['key1'];
 
@@ -1778,23 +1665,26 @@ class CrudBaseController {
 
 		// アクション種別を取得する
 		$kind_no = $param['kind_no'];
+		
+		// ユーザー情報を取得する
+		$userInfo = $this->getUserInfo();
 
 		// 更新ユーザーを取得する
-		$update_user = $this->Auth->user('username');
-
-		$this->MainModel=ClassRegistry::init($this->name);
+		$update_user = $userInfo['update_user'];
+		
+		// ■■■□□□■■■□□□
+		//$this->MainModel=ClassRegistry::init($this->name);
 
 		// アクション種別ごとに処理を分岐
 		switch ($kind_no){
 			case 10:
-				$this->MainModel->switchDeleteFlg($ids,0,$update_user); // 有効化
+				$this->crudBaseModel->switchDeleteFlg($ids, 0, $update_user); // 有効化
 				break;
 			case 11:
-				$this->MainModel->switchDeleteFlg($ids,1,$update_user); // 削除化
+				$this->crudBaseModel->switchDeleteFlg($ids, 1 ,$update_user); // 削除化
 				break;
 			default:
 				return "'kind_no' is unknown value";
-
 		}
 
 		return 'success';
