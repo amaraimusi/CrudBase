@@ -10,6 +10,7 @@ class NekoController
 {
 	
 	private $crudBaseCon; // CrudBase制御クラス
+	private $md; // モデル
 
 
 	/**
@@ -18,13 +19,37 @@ class NekoController
 	public function index(){
 		
 		
-		$md = new Neko();
-		$md->getData();
-		//$this->crudBaseCon = $this->initCrudBase();
+		$this->md = new Neko();
+
+		$this->crudBaseCon = $this->initCrudBase();
 		
-		$data = \DB::select('select * from nekos limit 4');
-		dump($data);//■■■□□□■■■□□□)
-		//$data2 = \DB::connection('mysql')->select('select * from yagis where id=2'); // ← DB接続設定を指定する場合
+		
+		// CrudBase共通処理（前）
+		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+		
+// 		// CBBXS-1019
+		
+// 		// CBBXE
+		
+// 		//一覧データを取得
+// 		$data = $this->Neko->findData($crudBaseData);
+		
+// 		// CrudBase共通処理（後）
+// 		$crudBaseData = $this->crudBaseCon->indexAfter($crudBaseData);//indexアクションの共通後処理
+		
+// 		// CBBXS-1020
+// 		$nekoGroupList = $this->Neko->getNekoGroupList();
+// 		$neko_group_json = json_encode($nekoGroupList,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
+// 		$this->set(array('nekoGroupList' => $nekoGroupList,'neko_group_json' => $neko_group_json));
+// 		// CBBXE
+		
+// 		$this->set($crudBaseData);
+// 		$this->set(array(
+// 				'title_for_layout'=>'ネコ',
+// 				'data'=> $data,
+// 		));
+		
+		
 		
 		echo '<br>';
 		echo $_SERVER['DOCUMENT_ROOT'];
@@ -295,9 +320,9 @@ class NekoController
 		require_once $crud_base_path . 'CrudBaseController.php';
 		
 		$crudBaseCon = new \CrudBaseController([
-				'fw_type' => 'cake',
+				'fw_type' => 'laravel7',
 				'ctrl' => $this,
-				'model' => $this->Neko,
+				'model' => $this->md,
 				'kensakuJoken' => $kensakuJoken, //検索条件情報
 				'kjs_validate' => $kjs_validate, //検索条件バリデーション
 				'field_data' => $field_data, //フィールドデータ

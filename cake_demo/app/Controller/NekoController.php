@@ -1,6 +1,7 @@
 <?php
-App::uses('CrudBaseController', 'Vendor/CrudBase');
-App::uses('PagenationForCake', 'Vendor/CrudBase');
+// ■■■□□□■■■□□□
+// App::uses('CrudBaseController', 'Vendor/CrudBase');
+// App::uses('PagenationForCake', 'Vendor/CrudBase');
 
 /**
  * ネコ
@@ -52,6 +53,7 @@ class NekoController extends AppController {
 
 	
 	
+	
 	public function beforeFilter() {
 
 		// 未ログイン中である場合、未認証モードの扱いでページ表示する。
@@ -65,10 +67,15 @@ class NekoController extends AppController {
 // 				$this->Auth->allow(); // 未認証モードとしてページ表示を許可する。
 // 			}
 // 		}
+
+	
+		require_once CRUD_BASE_PATH . 'CrudBaseController.php';
+		require_once CRUD_BASE_PATH . 'PagenationForCake.php';
+
+		$this->crudBaseCon = $this->initCrudBase();// フィールド関連の定義をする。
 	
 		parent::beforeFilter();
-	
-		$this->crudBaseCon = $this->initCrudBase();// フィールド関連の定義をする。
+		
 	
 	}
 

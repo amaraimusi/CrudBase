@@ -14,7 +14,7 @@ require_once 'CrudBaseModel.php';
 class CrudBaseController {
 
 	///バージョン
-	var $version = "2.8.1";
+	var $version = "2.8.2";
 
 	///デフォルトの並び替え対象フィールド
 	var $defSortFeild='Neko.sort_no';
@@ -72,7 +72,7 @@ class CrudBaseController {
 	/**
 	 * 初期化
 	 * @param array $param
-	 *  - fw_type フレームワークタイプ    plain:プレーン(デフォルト), cake:cakephp2.x, wp:wordpress, laravel:Laravel5
+	 *  - fw_type フレームワークタイプ    plain:プレーン(デフォルト), cake:cakephp2.x, wp:wordpress, laravel7:Laravel7
 	 *  - ctrl クライアントコントローラのオブジェクト
 	 *  - kensakuJoken array 検索条件情報
 	 *  - kjs_validate array 検索条件バリデーション

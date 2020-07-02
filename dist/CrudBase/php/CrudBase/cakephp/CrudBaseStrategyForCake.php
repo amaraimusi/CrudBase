@@ -4,7 +4,8 @@ App::uses('AppController', 'Controller');
 
 /**
  * Cake2.x用ストラテジークラス
- * @since 2020-6-10
+ * @version 1.0.1
+ * @since 2020-6-10 | 2020-7-2
  * @license MIT
  */
 class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy{
@@ -76,8 +77,9 @@ class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy
 	 */
 	public function getUserInfo(){
 		$userInfo = $this->ctrl->Auth->user();
-		
-		$userInfo['update_user'] = $userInfo['username'];// 更新ユーザー
+		$update_user = '';
+		if(! empty($userInfo['username'])) $update_user = $userInfo['username'];
+		$userInfo['update_user'] = $update_user;// 更新ユーザー
 		$userInfo['ip_addr'] = $_SERVER["REMOTE_ADDR"];// IPアドレス
 		$userInfo['user_agent'] = $_SERVER['HTTP_USER_AGENT']; // ユーザーエージェント
 		
