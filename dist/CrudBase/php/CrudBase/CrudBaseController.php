@@ -851,33 +851,10 @@ class CrudBaseController {
 	 * @param array $validate バリデーション情報
 	 * @return string 正常な場合、nullを返す。異常値がある場合、エラーメッセージを返す。
 	 */
-	protected function valid($data,$validate){
+	private function valid($data,$validate){
 
-		$errMsg=null;
-		//▽バリデーション（入力チェック）を行い、正常であれば、改めて検索条件情報を取得。
-		$this->MainModel->validate=$validate;
-
-		$this->MainModel->set($data);
-		if (!$this->MainModel->validates($data)){
-
-			////入力値に異常がある場合。（エラーメッセージの出力仕組みはcake phpの仕様に従う）
-			$errors=$this->MainModel->validationErrors;//入力チェックエラー情報を取得
-			if(!empty($errors)){
-
-				foreach ($errors  as  $err){
-
-					foreach($err as $val){
-
-						$errMsg.= $val.' ： ';
-
-					}
-				}
-
-			}
-
-		}
-
-		return $errMsg;
+		return $this->strategy->validForKj($data,$validate);
+		
 	}
 
 	/**

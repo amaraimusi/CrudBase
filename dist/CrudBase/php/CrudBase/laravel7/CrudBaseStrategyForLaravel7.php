@@ -156,4 +156,19 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 		$rs=$this->model->save($data, $option);
 		return $rs;
 	}
+	
+	/**
+	 * 検索条件のバリデーション
+	 *
+	 * 引数のデータを、バリデーション情報を元にエラーチェックを行います。
+	 * その際、エラーがあれば、エラーメッセージを作成して返します。
+	 *
+	 * @param array $data バリデーション対象データ
+	 * @param array $validate バリデーション情報
+	 * @return string 正常な場合、nullを返す。異常値がある場合、エラーメッセージを返す。
+	 */
+	public function validForKj($data,$validate){
+		// ■■■□□□■■■□□□
+		return '';
+	}
 }

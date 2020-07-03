@@ -4,8 +4,8 @@ App::uses('AppController', 'Controller');
 
 /**
  * Cake2.x用ストラテジークラス
- * @version 1.0.1
- * @since 2020-6-10 | 2020-7-2
+ * @version 1.0.2
+ * @since 2020-6-10 | 2020-7-3
  * @license MIT
  */
 class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy{
@@ -135,4 +135,43 @@ class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy
 		$rs=$this->model->save($data, $option);
 		return $rs;
 	}
+	
+	/**
+	 * 検索条件のバリデーション
+	 *
+	 * 引数のデータを、バリデーション情報を元にエラーチェックを行います。
+	 * その際、エラーがあれば、エラーメッセージを作成して返します。
+	 *
+	 * @param array $data バリデーション対象データ
+	 * @param array $validate バリデーション情報
+	 * @return string 正常な場合、nullを返す。異常値がある場合、エラーメッセージを返す。
+	 */
+	public function validForKj($data,$validate){
+		$errMsg=null;
+		//▽バリデーション（入力チェック）を行い、正常であれば、改めて検索条件情報を取得。
+		$this->model->validate=$validate;
+		
+		$this->model->set($data);
+		if (!$this->model->validates($data)){
+			
+			////入力値に異常がある場合。（エラーメッセージの出力仕組みはcake phpの仕様に従う）
+			$errors=$this->model->validationErrors;//入力チェックエラー情報を取得
+			if(!empty($errors)){
+				
+				foreach ($errors  as  $err){
+					
+					foreach($err as $val){
+						
+						$errMsg.= $val.' ： ';
+						
+					}
+				}
+				
+			}
+			
+		}
+		
+		return $errMsg;
+	}
+	
 }

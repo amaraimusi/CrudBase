@@ -25,36 +25,10 @@ class NekoController
 
 		$this->crudBaseCon = $this->initCrudBase();
 		
-		
-		\DB::beginTransaction();
-		$data = \DB::insert("INSERT INTO `nekos`(`neko_val`, `neko_name`) VALUES (1003, '猫の裏切り')");
-		//\DB::commit();
-		\DB::rollback();
-		
-		
-// 		$data = \DB::select("UPDATE `nekos` SET `neko_val`=2000,`neko_name`='シャム猫' WHERE id=4");
-// 		dump($data);//■■■□□□■■■□□□)
-		
-// 		$res = \DB::statement('ALTER TABLE nekos auto_increment = 1;');
-// 		dump($res);//■■■□□□■■■□□□)
-		
-// 		$res = \DB::update("UPDATE `nekos` SET `neko_val`=100,`neko_name`='黒猫' WHERE id=4");
-// 		dump($res);//■■■□□□■■■□□□)
-// 		$res = \DB::update("UPDATE `nekos` SET `neko_val`=?,`neko_name`=? WHERE id=?", [101,'白猫',5]);
-// 		dump($res);//■■■□□□■■■□□□)
-		
-		
-// 		//$data = \DB::select('select * from nekos where id = :id', ['id' => 4]);
-// 		//$data = \DB::select('select * from nekos where id= 4');
-		
-// 		$data = \DB::insert("INSERT INTO `nekos`(`neko_val`, `neko_name`) VALUES (1001, 'ホンハブ')");
-// 		dump($data);//■■■□□□■■■□□□)
-// 		$data = \DB::insert("INSERT INTO `nekos`(`neko_val`, `neko_name`) VALUES (?, ?)", [1002, 'ヒメハブ']);
-// 		dump($data);//■■■□□□■■■□□□)
 
 		
-// 		// CrudBase共通処理（前）
-// 		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+ 		// CrudBase共通処理（前）
+ 		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
 		
 		
 // 		// CBBXS-1019
