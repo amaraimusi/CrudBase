@@ -19,3 +19,4 @@ Route::get('/', function () {
 
 	Route::get('neko/bark', 'NekoController@bark');
 	Route::get('neko', 'NekoController@index');
+	Route::get('neko2', 'NekoController@index2');

@@ -68,12 +68,14 @@ class CrudBaseController {
 	private $gets = []; // GETデータ
 	private $strategy = null; // ICrudBaseStrategy.php フレームワーク・ストラテジー
 	private $crudBaseModel; // CrudBaseModelクラス
+	private $MainModel; // クライアントモデル
 	
 	/**
 	 * 初期化
 	 * @param array $param
 	 *  - fw_type フレームワークタイプ    plain:プレーン(デフォルト), cake:cakephp2.x, wp:wordpress, laravel7:Laravel7
 	 *  - ctrl クライアントコントローラのオブジェクト
+	 *  - model クライアントモデルのオブジェクト
 	 *  - kensakuJoken array 検索条件情報
 	 *  - kjs_validate array 検索条件バリデーション
 	 *  - field_data array フィールドデータ
@@ -83,6 +85,7 @@ class CrudBaseController {
 		$this->kensakuJoken = $param['kensakuJoken']; // 検索条件情報
 		$this->kjs_validate = $param['kjs_validate']; // 検索条件バリデーション
 		$this->field_data = $param['field_data']; // フィールドデータ
+		$this->MainModel = $param['model'];
 		
 		// フレームワークタイプを取得
 		$fw_type = 'plain';
@@ -93,7 +96,7 @@ class CrudBaseController {
 			require_once 'cakephp/CrudBaseStrategyForCake.php';
 			$this->strategy = new CrudBaseStrategyForCake();
 			if(isset($param['ctrl'])) $this->strategy->setCtrl($param['ctrl']); // クライアントコントローラのセット
-			if(isset($param['model'])) $this->strategy->setModel($param['model']); // クライアントモデルのセット
+			$this->strategy->setModel($this->MainModel); // クライアントモデルのセット
 				
 		}
 		
@@ -151,7 +154,7 @@ class CrudBaseController {
 		
 		
 		// ▼ 画面に関連づいているモデル名関連を取得
-		$this->MainModel=ClassRegistry::init($name);
+		//$this->MainModel=ClassRegistry::init($name);■■■□□□■■■□□□
 		$this->main_model_name=$name;
 		$this->main_model_name_s=$this->snakize($name);
 
@@ -667,7 +670,7 @@ class CrudBaseController {
 	 *
 	 */
 	protected function edit_before($name){
-		$this->MainModel=ClassRegistry::init($name);
+		//$this->MainModel=ClassRegistry::init($name);■■■□□□■■■□□□
 		$this->main_model_name=$name;
 		$this->main_model_name_s=$this->snakize($name);
 
@@ -754,7 +757,7 @@ class CrudBaseController {
 	 *
 	 */
 	protected function reg_before($name){
-		$this->MainModel=ClassRegistry::init($name);
+		//$this->MainModel=ClassRegistry::init($name);//■■■□□□■■■□□□
 		$this->main_model_name=$name;
 		$this->main_model_name_s=$this->snakize($name);
 
@@ -1651,11 +1654,6 @@ class CrudBaseController {
 	 */
 	public function ajax_pwms(){
 
-		// ■■■□□□■■■□□□
-// 		App::uses('Sanitize', 'Utility');
-
-// 		$this->autoRender = false;//ビュー(ctp)を使わない。
-
 		$json_param=$_POST['key1'];
 
 		$param=json_decode($json_param,true);//JSON文字を配列に戻す
@@ -1671,9 +1669,6 @@ class CrudBaseController {
 
 		// 更新ユーザーを取得する
 		$update_user = $userInfo['update_user'];
-		
-		// ■■■□□□■■■□□□
-		//$this->MainModel=ClassRegistry::init($this->name);
 
 		// アクション種別ごとに処理を分岐
 		switch ($kind_no){

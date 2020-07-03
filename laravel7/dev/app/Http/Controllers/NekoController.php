@@ -18,6 +18,23 @@ class NekoController
 	 */
 	public function index(){
 		
+		//session(['key' => 'value1']);
+		// セッションから一つのデータを取得する
+		//$value = session('key');
+		
+		//\Session::put('neko_key', ['abc'=> '野良猫にエサをあげる大臣', 'value2'=>'白い猫']);
+		//\Session::put('neko_key', '野良猫にエサをあげる大臣');
+ 		$value = session('neko_key');
+ 		dump($value);//■■■□□□■■■□□□)
+// 		// デフォルト値を指定する場合
+// 		$value = session('neko_key', '小さい猫');
+// 		dump($value);//■■■□□□■■■□□□)
+		
+// 		$value = session('neko_key');
+// 		dump($value);//■■■□□□■■■□□□)
+		
+// 		$value = session()->get('neko_key');
+// 		dump($value);//■■■□□□■■■□□□)
 		
 		$this->md = new Neko();
 
@@ -25,7 +42,7 @@ class NekoController
 		
 		
 		// CrudBase共通処理（前）
-		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+		//$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
 		
 // 		// CBBXS-1019
 		
@@ -67,7 +84,13 @@ class NekoController
 	}
 	
 	
-	
+	public function index2(){
+		$data = [];
+		
+		\Session::put('neko_key', ['abc'=> '野良猫にエサをあげる大臣', 'value2'=>'白い猫']);
+		//\Session::put('neko_key', '野良猫にエサをあげる大臣');
+		return view('neko.index', compact('data'));
+	}
 	
 	/**
 	 * CrudBase用の初期化処理
