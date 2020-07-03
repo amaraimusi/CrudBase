@@ -1,7 +1,7 @@
 <?php
 require_once 'ICrudBaseStrategy.php';
 require_once 'CrudBaseModel.php';
-
+require_once 'HashCustom.php';
 
 /**
  * CRUD系画面用の基本クラス
@@ -98,6 +98,12 @@ class CrudBaseController {
 			if(isset($param['ctrl'])) $this->strategy->setCtrl($param['ctrl']); // クライアントコントローラのセット
 			$this->strategy->setModel($this->MainModel); // クライアントモデルのセット
 				
+		}else if($fw_type == 'laravel7' || $fw_type == 'laravel'){
+			require_once 'laravel7/CrudBaseStrategyForLaravel7.php';
+			$this->strategy = new CrudBaseStrategyForLaravel7();
+			if(isset($param['ctrl'])) $this->strategy->setCtrl($param['ctrl']); // クライアントコントローラのセット
+			$this->strategy->setModel($this->MainModel); // クライアントモデルのセット
+			
 		}
 		
 		// CrudBaseモデルクラスの生成
@@ -166,22 +172,24 @@ class CrudBaseController {
 
 		// アクションを判定してアクション種別を取得する（0:初期表示、1:検索ボタン、2:ページネーション、3:ソート）
 		$actionType = $this->judgActionType();
-		
+
  		// 新バージョンであるかチェック。新バージョンである場合セッションクリアを行う。２回目のリクエスト（画面表示）から新バージョンではなくなる。
 		$new_version_chg = 0; // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
 		//if($option['func_new_version'] != 0){
 			$system_version = $this->checkNewPageVersion($this->this_page_version);
+			
 			if(!empty($system_version)){
 				$new_version_chg = 1;
 				$this->sessionClear();
 			}
 		//}
-
+			
 		//URLクエリ（GET)にセッションクリアフラグが付加されている場合、当画面に関連するセッションをすべてクリアする。
 		if(!empty($this->request->query['sc'])){
 			$this->sessionClear();
 		}
-
+		
+		
 		//フィールドデータが画面コントローラで定義されている場合、以下の処理を行う。
 		if(!empty($this->field_data)){
 			$res = $this->exe_field_data($this->field_data,$this->main_model_name_s);//フィールドデータに関する処理
@@ -189,17 +197,17 @@ class CrudBaseController {
 			$this->field_data = $res['field_data'];
 
 		}
-
+		
 		//フィールドデータから列表示配列を取得
 		$csh_ary = $this->exstractClmShowHideArray($this->field_data);
 		$csh_json = json_encode($csh_ary);
-
-		//サニタイズクラスをインポート
-		App::uses('Sanitize', 'Utility');
+		
+// 		//サニタイズクラスをインポート// ■■■□□□■■■□□□
+// 		App::uses('Sanitize', 'Utility');
 
 		//検索条件情報をPOST,GET,デフォルトのいずれから取得。
 		$kjs = $this->getKjs($name);
-
+		
 		// 検索条件情報のバリデーション
 		$errTypes = [];
 		$errMsg = $this->valid($kjs,$this->kjs_validate);
@@ -222,7 +230,7 @@ class CrudBaseController {
 			$pages=$this->getPageParam($overData);
 			
 		}
-
+		
 		$bigDataFlg=$this->checkBigDataFlg($kjs);//巨大データ判定
 
 		//巨大データフィールドデータを取得
@@ -482,7 +490,7 @@ class CrudBaseController {
 
 		$csh_ary=array();
 		if(!empty($field_data)){
-			$csh_ary=Hash::extract($field_data, 'active.{n}.clm_show');
+			$csh_ary=HashCustom::extract($field_data, 'active.{n}.clm_show');
 		}
 		return $csh_ary;
 	}
@@ -718,7 +726,7 @@ class CrudBaseController {
 
  			//エンティティには入力フォーム分のフィールドしか入っていないため、不足分のフィールドをDBから取得しマージする
  			$ent2=$this->MainModel->findEntity($ent['id']);
- 			$ent=Hash::merge($ent2,$ent);
+ 			$ent=HashCustom::merge($ent2,$ent);
 
 		}
 
@@ -994,7 +1002,7 @@ class CrudBaseController {
 		$pages = $this->gets; 
 
 		// 上書き
-		$pages=Hash::merge($pages,$overData);
+		$pages=HashCustom::merge($pages,$overData);
 
 		$defs=$this->getDefKjs();//デフォルト情報を取得
 
@@ -1301,7 +1309,7 @@ class CrudBaseController {
 
 		$kjs=$this->kensakuJoken;//メンバの検索条件情報を取得
 
-		$defKjs=Hash::combine($kjs, '{n}.name','{n}.def');//構造変換
+		$defKjs=HashCustom::combine($kjs, '{n}.name','{n}.def');//構造変換
 
 		//リセット対象外フィールドリストが空でなければ、対象外のフィールドをはずす。
 		if(!empty($noResets)){

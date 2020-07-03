@@ -18,31 +18,38 @@ class NekoController
 	 */
 	public function index(){
 		
-		//session(['key' => 'value1']);
-		// セッションから一つのデータを取得する
-		//$value = session('key');
 		
-		//\Session::put('neko_key', ['abc'=> '野良猫にエサをあげる大臣', 'value2'=>'白い猫']);
-		//\Session::put('neko_key', '野良猫にエサをあげる大臣');
- 		$value = session('neko_key');
- 		dump($value);//■■■□□□■■■□□□)
-// 		// デフォルト値を指定する場合
-// 		$value = session('neko_key', '小さい猫');
-// 		dump($value);//■■■□□□■■■□□□)
-		
-// 		$value = session('neko_key');
-// 		dump($value);//■■■□□□■■■□□□)
-		
-// 		$value = session()->get('neko_key');
-// 		dump($value);//■■■□□□■■■□□□)
+		$data = [];
 		
 		$this->md = new Neko();
 
 		$this->crudBaseCon = $this->initCrudBase();
 		
 		
-		// CrudBase共通処理（前）
-		//$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+// 		$data = \DB::select("UPDATE `nekos` SET `neko_val`=2000,`neko_name`='シャム猫' WHERE id=4");
+// 		dump($data);//■■■□□□■■■□□□)
+		
+// 		$res = \DB::statement('ALTER TABLE nekos auto_increment = 1;');
+// 		dump($res);//■■■□□□■■■□□□)
+		
+// 		$res = \DB::update("UPDATE `nekos` SET `neko_val`=100,`neko_name`='黒猫' WHERE id=4");
+// 		dump($res);//■■■□□□■■■□□□)
+// 		$res = \DB::update("UPDATE `nekos` SET `neko_val`=?,`neko_name`=? WHERE id=?", [101,'白猫',5]);
+// 		dump($res);//■■■□□□■■■□□□)
+		
+		
+// 		//$data = \DB::select('select * from nekos where id = :id', ['id' => 4]);
+// 		//$data = \DB::select('select * from nekos where id= 4');
+		
+// 		$data = \DB::insert("INSERT INTO `nekos`(`neko_val`, `neko_name`) VALUES (1001, 'ホンハブ')");
+// 		dump($data);//■■■□□□■■■□□□)
+// 		$data = \DB::insert("INSERT INTO `nekos`(`neko_val`, `neko_name`) VALUES (?, ?)", [1002, 'ヒメハブ']);
+// 		dump($data);//■■■□□□■■■□□□)
+
+		
+// 		// CrudBase共通処理（前）
+// 		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+		
 		
 // 		// CBBXS-1019
 		
@@ -50,6 +57,7 @@ class NekoController
 		
 // 		//一覧データを取得
 // 		$data = $this->Neko->findData($crudBaseData);
+
 		
 // 		// CrudBase共通処理（後）
 // 		$crudBaseData = $this->crudBaseCon->indexAfter($crudBaseData);//indexアクションの共通後処理
@@ -68,18 +76,18 @@ class NekoController
 		
 		
 		
-		echo '<br>';
-		echo $_SERVER['DOCUMENT_ROOT'];
-		echo '<br>';
-		$data = ['neko'=>'猫', 'yagi'=>'山羊'];
+// 		echo '<br>';
+// 		echo $_SERVER['DOCUMENT_ROOT'];
+// 		echo '<br>';
+// 		$data = ['neko'=>'猫', 'yagi'=>'山羊'];
 		
-		echo '<pre>';
-		echo config('const.TEST_PATH');
-		echo '<br>';
-		var_dump(config('const.TEST_LIST'));
-		echo '</pre>';
+// 		echo '<pre>';
+// 		echo config('const.TEST_PATH');
+// 		echo '<br>';
+// 		var_dump(config('const.TEST_LIST'));
+// 		echo '</pre>';
 		
-		echo config('const.CRUD_BASE_PATH');
+// 		echo config('const.CRUD_BASE_PATH');
 		return view('neko.index', compact('data'));
 	}
 	
