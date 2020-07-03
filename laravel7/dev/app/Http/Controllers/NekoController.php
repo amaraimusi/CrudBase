@@ -26,6 +26,12 @@ class NekoController
 		$this->crudBaseCon = $this->initCrudBase();
 		
 		
+		\DB::beginTransaction();
+		$data = \DB::insert("INSERT INTO `nekos`(`neko_val`, `neko_name`) VALUES (1003, '猫の裏切り')");
+		//\DB::commit();
+		\DB::rollback();
+		
+		
 // 		$data = \DB::select("UPDATE `nekos` SET `neko_val`=2000,`neko_name`='シャム猫' WHERE id=4");
 // 		dump($data);//■■■□□□■■■□□□)
 		
