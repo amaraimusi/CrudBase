@@ -14,7 +14,7 @@ require_once 'HashCustom.php';
 class CrudBaseController {
 
 	///バージョン
-	var $version = "2.8.2";
+	var $version = "2.8.3";
 
 	///デフォルトの並び替え対象フィールド
 	var $defSortFeild='Neko.sort_no';
@@ -111,14 +111,9 @@ class CrudBaseController {
 			'strategy' => $this->strategy,
 		]); 
 		
-
-		
-		
-		
 		$this->param = $param;
 		
 	}
-	
 	
 	/**
 	 * indexアクションの共通処理
@@ -205,9 +200,6 @@ class CrudBaseController {
 		//フィールドデータから列表示配列を取得
 		$csh_ary = $this->exstractClmShowHideArray($this->field_data);
 		$csh_json = json_encode($csh_ary);
-		
-// 		//サニタイズクラスをインポート// ■■■□□□■■■□□□
-// 		App::uses('Sanitize', 'Utility');
 
 		//検索条件情報をPOST,GET,デフォルトのいずれから取得。
 		$kjs = $this->getKjs($name);
@@ -682,11 +674,8 @@ class CrudBaseController {
 	 *
 	 */
 	protected function edit_before($name){
-		//$this->MainModel=ClassRegistry::init($name);■■■□□□■■■□□□
 		$this->main_model_name=$name;
 		$this->main_model_name_s=$this->snakize($name);
-
-		App::uses('Sanitize', 'Utility');//インクルード
 
 		$err=$this->strategy->sessionRead($this->main_model_name_s.'_err');
 		$this->strategy->sessionDelete($this->main_model_name_s.'_err');
@@ -699,7 +688,9 @@ class CrudBaseController {
 		if(empty($err)){
 
 			$id=$this->getGet('id');//GETからIDを取得
-
+			$id = null;
+			if(!empty($_GET['id'])) $id = $_GET['id'];
+			
 			//IDがnullなら新規登録モード
 			if(empty($id)){
 
@@ -783,7 +774,7 @@ class CrudBaseController {
 			return $this->redirect(array('controller' => $this->main_model_name_s, 'action' => 'index'));
 		}
 
-		App::uses('Sanitize', 'Utility');//インクルード
+		//App::uses('Sanitize', 'Utility');//インクルード■■■□□□■■■□□□
 
 		$ent=$this->getEntityFromPost();
 
@@ -955,7 +946,6 @@ class CrudBaseController {
 		$v=null;
 		if(isset($this->request->data[$this->main_model_name][$key])){
 			$v=$this->request->data[$this->main_model_name][$key];
-			//$v=Sanitize::escape($v);//SQLインジェクションのサニタイズ　// 何らかのバージョンによっては2重サニタイズになってしまう。
 		}
 		return $v;
 	}
@@ -1236,8 +1226,8 @@ class CrudBaseController {
 		// 制限行数が巨大データ判定行数以上である場合
 		if($row_limit >= $this->big_data_limit){
 
-			App::uses('Sanitize', 'Utility');
-			$kjs = Sanitize::clean($kjs, array('encode' => false));
+			// SQLインジェクションサニタイズ
+			$kjs = sqlSanitizeW($kjs);
 			
 			// DBよりデータ件数を取得
 			$cnt=$this->MainModel->findDataCnt($kjs);
@@ -1311,23 +1301,24 @@ class CrudBaseController {
 	////////// 編集画面用 ///////////////////////
 
 
-	/**
-	 * POSTからデータを取得
-	 *
-	 * @note
-	 * SQLインジェクションのサニタイズも行われます。
-	 * 編集画面の内部処理用です。
-	 */
-	protected function getGet($key){
-		$v=null;
-		if(isset($this->params['url'][$key])){
-			$v=$this->params['url'][$key];
-			$v=Sanitize::escape($v);//SQLインジェクションのサニタイズ
+	// ■■■□□□■■■□□□
+// 	/**
+// 	 * POSTからデータを取得
+// 	 *
+// 	 * @note
+// 	 * SQLインジェクションのサニタイズも行われます。
+// 	 * 編集画面の内部処理用です。
+// 	 */
+// 	protected function getGet($key){
+// 		$v=null;
+// 		if(isset($this->params['url'][$key])){
+// 			$v=$this->params['url'][$key];
+// 			$v=SanitizeCustom::escape($v);//SQLインジェクションのサニタイズ
 
-		}
+// 		}
 
-		return $v;
-	}
+// 		return $v;
+// 	}
 
 	/**
 	 * デフォルトエンティティを取得
@@ -1836,6 +1827,83 @@ class CrudBaseController {
 		
 		return $fp;
 	
+	}
+	
+	
+	/**
+	 * XSSサニタイズ
+	 *
+	 * @note
+	 * XSSサニタイズ
+	 * 記号「<>」を「&lt;&gt;」にエスケープする。
+	 *
+	 * @param mixied $data 対象データ | 値および配列を指定
+	 * @return void
+	 */
+	public function xssSanitizeW(&$data){
+		$this->xss_sanitize($data);
+		return $data;
+	}
+	
+	/**
+	 * XSSエスケープ（XSSサニタイズ）
+	 *
+	 * @note
+	 * XSSサニタイズ
+	 * 記号「<>」を「&lt;&gt;」にエスケープする。
+	 * 高速化のため、引数は参照（ポインタ）にしており、返値もかねている。
+	 *
+	 * @param mixied $data 対象データ | 値および配列を指定
+	 * @return void
+	 */
+	private function xss_sanitize(&$data){
+		
+		if(is_array($data)){
+			foreach($data as &$val){
+				$this->xss_sanitize($val);
+			}
+			unset($val);
+		}elseif(gettype($data)=='string'){
+			$data = str_replace(array('<','>'),array('&lt;','&gt;'),$data);
+		}else{
+			// 何もしない
+		}
+	}
+	
+	
+	/**
+	 * SQLインジェクションサニタイズ
+	 * @param mixed $data 文字列および配列に対応
+	 * @return mixed サニタイズ後のデータ
+	 */
+	public function sqlSanitizeW(&$data){
+		$this->sql_sanitize($data);
+		return $data;
+	}
+	
+	
+	/**
+	 * SQLインジェクションサニタイズ(配列用)
+	 *
+	 * @note
+	 * SQLインジェクション対策のためデータをサニタイズする。
+	 * 高速化のため、引数は参照（ポインタ）にしている。
+	 *
+	 * @param array サニタイズデコード対象のデータ
+	 * @return void
+	 */
+	private function sql_sanitize(&$data){
+		
+		if(is_array($data)){
+			foreach($data as &$val){
+				$this->sql_sanitize($val);
+			}
+			unset($val);
+		}elseif(gettype($data)=='string'){
+			$data = addslashes($data);// SQLインジェクション のサニタイズ
+		}else{
+			// 何もしない
+		}
 	}
 	
 
