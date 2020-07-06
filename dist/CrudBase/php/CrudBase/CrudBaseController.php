@@ -14,7 +14,7 @@ require_once 'HashCustom.php';
 class CrudBaseController {
 
 	///バージョン
-	var $version = "2.8.3";
+	var $version = "2.8.4";
 
 	///デフォルトの並び替え対象フィールド
 	var $defSortFeild='Neko.sort_no';
@@ -79,6 +79,7 @@ class CrudBaseController {
 	 *  - kensakuJoken array 検索条件情報
 	 *  - kjs_validate array 検索条件バリデーション
 	 *  - field_data array フィールドデータ
+	 *  - debug デバッグモード 0:OFF 1:OFF
 	 */
 	public function __construct($param = []){
 		
@@ -90,6 +91,8 @@ class CrudBaseController {
 		// フレームワークタイプを取得
 		$fw_type = 'plain';
 		if(!empty($param['fw_type'])) $fw_type = $param['fw_type'];
+		
+		if(empty($param['debug'])) $param['debug'] = 0; // デバッグモード
 		
 		// フレームワーク・ストラテジーの生成
 		if($fw_type == 'cake'){
@@ -242,7 +245,8 @@ class CrudBaseController {
 
 		$def_kjs_json=$this->getDefKjsJson();// 検索条件情報からデフォルト検索情報JSONを取得する
 
-		$debug_mode=Configure::read('debug');//デバッグモードを取得
+		$debug_mode=$this->param['debug'];//デバッグモードを取得
+		
 
 		//アクティブフィールドデータを取得
 		$active = array();
