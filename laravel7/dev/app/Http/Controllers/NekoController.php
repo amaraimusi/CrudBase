@@ -17,16 +17,8 @@ class NekoController
 	 * ネコCRUDページ
 	 */
 	public function index(){
-		
-		if(\Auth::id()){// idは未ログインである場合、nullになる。
-			$user_id = \Auth::id(); // ユーザーID（番号）
-			$user_name = \Auth::user()->name; // ユーザー名
-			$user_email = \Auth::user()->email; // メールアドレス
-			$user_password_hash = \Auth::user()->password; // ハッシュ化（解読不可）されたパスワード
-			
-		}
 
-		
+
 		$data = [];
 		
 		$this->md = new Neko();
@@ -36,7 +28,7 @@ class NekoController
 
 		
  		// CrudBase共通処理（前）
- 		//$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+ 		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
 		
 		
 // 		// CBBXS-1019

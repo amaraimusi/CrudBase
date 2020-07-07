@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Session;
 
 /**
  * Laravel7用ストラテジークラス
- * @version 1.0.2
+ * @version 1.0.3
  * @since 2020-6-10 | 2020-7-3
  * @license MIT
  */
@@ -134,12 +134,12 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	 *  - webroot string  ホーム相対パスのエイリアス(別名)
 	 */
 	public function getPath(){
-		$webroot = $this->ctrl->webroot;
-		$home_r_path = $webroot;
+		$web_root = config('const.WEB_ROOT');
+		$home_r_path = $web_root;
 		
 		return [
-			'home_r_path' => $home_r_path,
-			'webroot' => $webroot,
+				'home_r_path' => $home_r_path,
+				'webroot' => $web_root,
 		];
 	}
 	
