@@ -9,6 +9,7 @@
 	<body>
 		<div>
 			インデックスにゃーん
+			<input type="button" value="test" class="btn btn-info btn-sm" />
 		</div>
 	</body>
 </html>

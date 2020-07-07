@@ -36,7 +36,7 @@ class NekoController
 
 		
  		// CrudBase共通処理（前）
- 		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+ 		//$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
 		
 		
 // 		// CBBXS-1019
