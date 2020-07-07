@@ -114,6 +114,7 @@ class CrudBaseController {
 			'strategy' => $this->strategy,
 		]); 
 		
+		
 		$this->param = $param;
 		
 	}
@@ -657,7 +658,7 @@ class CrudBaseController {
 	 */
 	public function getUserInfo(){
 
-		$userInfo = $this->crudBaseModel->getUserInfo();
+		$userInfo = $this->strategy->getUserInfo();
 
 		return $userInfo;
 	}

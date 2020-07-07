@@ -96,19 +96,32 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	 */
 	public function getUserInfo(){
 		
-		//■■■□□□■■■□□□
-// 		$userInfo = $this->ctrl->Auth->user();
-// 		$update_user = '';
-// 		if(! empty($userInfo['username'])) $update_user = $userInfo['username'];
-// 		$userInfo['update_user'] = $update_user;// 更新ユーザー
-// 		$userInfo['ip_addr'] = $_SERVER["REMOTE_ADDR"];// IPアドレス
-// 		$userInfo['user_agent'] = $_SERVER['HTTP_USER_AGENT']; // ユーザーエージェント
+		$userInfo =[
+				'update_user' => '',
+				'user_name' => '',
+				'user_id' => '',
+				'user_email' => '',
+				'ip_addr' => $_SERVER["REMOTE_ADDR"], // IPアドレス,
+				'user_agent' => $_SERVER['HTTP_USER_AGENT'], // ユーザーエージェント,
+				'role' => 'none',
+		];
 		
-// 		// 権限が空であるならオペレータ扱いにする
-// 		if(empty($userInfo['role'])){
-// 			$userInfo['role'] = 'oparator';
-// 		}
-		
+		if(\Auth::id()){// idは未ログインである場合、nullになる。
+			$user_id = \Auth::id(); // ユーザーID（番号）
+			$user_name = \Auth::user()->name; // ユーザー名
+			$user_email = \Auth::user()->email; // メールアドレス
+			
+			$userInfo['update_user'] = $user_name;
+			$userInfo['user_name'] = $user_name;
+			$userInfo['user_id'] = $user_id;
+			$userInfo['user_email'] = $user_email;
+			
+			// 		// 権限が空であるならオペレータ扱いにする
+			// 		if(empty($userInfo['role'])){
+			// 			$userInfo['role'] = 'oparator';
+			// 		}
+			
+		}
 		
 		return $userInfo;
 	}
