@@ -5,11 +5,11 @@ use Illuminate\Http\Request;
 use App\Models\Neko;
 use Illuminate¥Support¥Facades¥DB;
 
-//class NekoController extends Controller
+//class NekoController extends Controller■■■□□□■■■□□□
 class NekoController
 {
 	
-	private $crudBaseCon; // CrudBase制御クラス
+	private $cb; // CrudBase制御クラス
 	private $md; // モデル
 
 
@@ -18,29 +18,25 @@ class NekoController
 	 */
 	public function index(){
 
-
+		$this->cb = $this->initCrudBase();
 		$data = [];
 		
-		$this->md = new Neko();
+		$this->md = new Neko($this->cb);
 
-		$this->crudBaseCon = $this->initCrudBase();
-		
-
-		
  		// CrudBase共通処理（前）
- 		$crudBaseData = $this->crudBaseCon->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
-		
-		
+ 		$crudBaseData = $this->cb->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+
 // 		// CBBXS-1019
 		
 // 		// CBBXE
 		
-// 		//一覧データを取得
-// 		$data = $this->Neko->findData($crudBaseData);
+		//一覧データを取得
+		$res = $this->md->getData($crudBaseData);
+		$data = $res['data'];
+		$non_limit_count = $res['non_limit_count']; // LIMIT制限なし・データ件数
 
-		
-// 		// CrudBase共通処理（後）
-// 		$crudBaseData = $this->crudBaseCon->indexAfter($crudBaseData);//indexアクションの共通後処理
+		// CrudBase共通処理（後）
+		$crudBaseData = $this->cb->indexAfter($crudBaseData, ['non_limit_count'=>$non_limit_count]);
 		
 // 		// CBBXS-1020
 // 		$nekoGroupList = $this->Neko->getNekoGroupList();
@@ -68,7 +64,11 @@ class NekoController
 // 		echo '</pre>';
 		
 // 		echo config('const.CRUD_BASE_PATH');
-		return view('neko.index', compact('data'));
+
+		
+		return view('neko.index', compact('crudBaseData'));
+		
+		
 	}
 	
 	
@@ -327,7 +327,7 @@ class NekoController
 		unset($fEnt);
 		
 		
-		$crud_base_path = dump(config('const.CRUD_BASE_PATH'));
+		$crud_base_path = config('const.CRUD_BASE_PATH');
 		require_once $crud_base_path . 'CrudBaseController.php';
 		
 		$crudBaseCon = new \CrudBaseController([
@@ -337,6 +337,7 @@ class NekoController
 				'kensakuJoken' => $kensakuJoken, //検索条件情報
 				'kjs_validate' => $kjs_validate, //検索条件バリデーション
 				'field_data' => $field_data, //フィールドデータ
+				'crud_base_path' => $crud_base_path,
 		]);
 		
 		

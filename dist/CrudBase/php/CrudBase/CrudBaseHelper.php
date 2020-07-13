@@ -1,6 +1,8 @@
 <?php
-App::uses('FormHelper', 'View/Helper');
-App::uses('FrontAHelperX', 'View/Helper/CrudBaseComponent');
+
+// ■■■□□□■■■□□□
+//App::uses('FormHelper', 'View/Helper');
+//App::uses('FrontAHelperX', 'View/Helper/CrudBaseComponent');
 
 /**
  * CrudBase用ヘルパー
@@ -15,7 +17,10 @@ App::uses('FrontAHelperX', 'View/Helper/CrudBaseComponent');
  * @license MIT
  */
 
-class CrudBaseHelper extends FormHelper {
+//class CrudBaseHelper extends FormHelper {■■■□□□■■■□□□
+class CrudBaseHelper {
+	
+	private $crudBaseData;
 
 	private $_mdl=""; // モデル名(.)
 	private $_mdl_cml=''; // モデル名（キャメル記法）
@@ -31,6 +36,11 @@ class CrudBaseHelper extends FormHelper {
 	
 	// コンポーネント
 	private $frontAHelper; // フロントA画面・ヘルパーコンポーネント
+	
+	
+	public function __construct(&$crudBaseData){
+		$this->crudBaseData = $crudBaseData;
+	}
 	
 	/**
 	 * 初期化
@@ -51,9 +61,10 @@ class CrudBaseHelper extends FormHelper {
 		
 		$this->param = $param;
 
-		// フロントAヘルパーの初期化
-		$this->frontAHelper = new FrontAHelperX();
-		$this->frontAHelper->init();
+		// ■■■□□□■■■□□□
+// 		// フロントAヘルパーの初期化
+// 		$this->frontAHelper = new FrontAHelperX();
+// 		$this->frontAHelper->init();
 		
 	}
 	
@@ -74,6 +85,8 @@ class CrudBaseHelper extends FormHelper {
 	 * @return array CSSファイルリスト
 	 */
 	public function getCssList(){
+		
+		
 		return [
 			'bootstrap.min',
 			'bootstrap-theme.min',
@@ -153,32 +166,65 @@ class CrudBaseHelper extends FormHelper {
 	 * @param string $wamei フィールド和名
 	 * @param int $width 入力フォームの横幅（省略可）
 	 * @param string $title ツールチップメッセージ（省略可）
-	 * @param int $maxlength 最大文字数(共通フィールドは設定不要）
+	 * @param [] option
+	 *  - int maxlength 最大文字数(共通フィールドは設定不要）
+	 *  - string model_name_c モデル名（キャメル記法）
+	 *  - string placeholder
 	 */
-	public function inputKjMain($kjs,$field,$wamei,$width=200,$title=null,$maxlength=255){
-		
-		if($title==null){
-			$title = $wamei."で検索";
-		}
+	public function inputKjMain($kjs, $field, $wamei, $width=200,$title=null, $option = []){
+
+		if($title===null) $title = $wamei."で検索";
 		
 		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
-		if($maxlength==255){
+		$maxlength=0;
+		if(empty($option['maxlength'])){
 			$maxlength = $this->getMaxlenIfCommonField($field,$maxlength);
+		}else{
+			$maxlength=$option['maxlength'];
 		}
 		
-		echo "<div class='' data-field='{$field}' style='display:inline-block'>";
-		echo $this->input($this->_mdl.$field, array(
-				'id' => $field,
-				'value' => $kjs[$field],
-				'type' => 'search',
-				'label' => false,
-				'placeholder' => $wamei,
-				'style'=>"width:{$width}px",
-				'class' => 'kjs_inp',
-				'title'=>$title,
-				'maxlength'=>$maxlength,
-		));
-		echo "</div>\n";
+
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		
+		$placeholder = '';
+		if(empty($option['placeholder'])){
+			$placeholder = $wamei;
+		}else{
+			$placeholder = $option['placeholder'];
+		}
+		
+		$html = "
+			<div class='' data-field='{$field}' style='display:inline-block'>
+				<div class='input search'>
+					<input 
+						name='data[{$model_name_c}][{$field}]' 
+						id='{$field}' 
+						value='' placeholder='{$placeholder}' 
+						style='width:{$width}px; ' 
+						class='kjs_inp' 
+						title='{$title}' maxlength='{$maxlength}' type='search' />
+				</div>
+			</div>
+		";
+		
+		echo $html;
+		//
+// 		echo "<div class='' data-field='{$field}' style='display:inline-block'>";
+// 		echo $this->input($this->_mdl.$field, array(
+// 				'id' => $field,
+// 				'value' => $kjs[$field],
+// 				'type' => 'search',
+// 				'label' => false,
+// 				'placeholder' => $wamei,
+// 				'style'=>"width:{$width}px",
+// 				'class' => 'kjs_inp',
+// 				'title'=>$title,
+// 				'maxlength'=>$maxlength,
+// 		));
+// 		echo "</div>\n";
 	}
 	
 	

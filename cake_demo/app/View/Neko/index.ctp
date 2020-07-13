@@ -1,5 +1,12 @@
 <?php
-echo $this->element('CrudBase/crud_base_helper_init');
+extract($crudBaseData, EXTR_REFS);
+
+require_once $crud_base_path . 'CrudBaseHelper.php';
+$this->CrudBase = new CrudBaseHelper($crudBaseData);
+
+//■■■□□□■■■□□□
+//echo $this->element('CrudBase/crud_base_helper_init');
+
 
 // CSSファイルのインクルード
 $cssList = $this->CrudBase->getCssList();

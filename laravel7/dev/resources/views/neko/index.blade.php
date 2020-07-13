@@ -1,3 +1,13 @@
+<?php 
+
+
+extract($crudBaseData, EXTR_REFS);
+
+require_once $crud_base_path . 'CrudBaseHelper.php';
+$this->CrudBase = new CrudBaseHelper($crudBaseData);
+
+
+?>
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 	<head>
@@ -11,14 +21,22 @@
 	</head>
 	<body>
 		<div>
-			Hello World!<br>
-<button type="button" class="btn btn-primary">Primary</button>
-<button type="button" class="btn btn-secondary">Secondary</button>
-<button type="button" class="btn btn-success">Success</button>
-<button type="button" class="btn btn-danger">Danger</button>
-<button type="button" class="btn btn-warning">Warning</button> 
-<button type="button" class="btn btn-info">Info</button>
-<button type="button" class="btn btn-light">Light</button>
+
+
+<div class="cb_func_line">
+
+
+	<div class="cb_breadcrumbs">
+	<?php
+// 		$this->Html->addCrumb("トップ",'/');
+// 		$this->Html->addCrumb("ネコ画面");
+// 		echo $this->Html->getCrumbs(" > ");
+	?>
+	</div>
+	
+
+
+
 		</div>
 	</body>
 </html>

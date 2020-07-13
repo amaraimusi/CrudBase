@@ -2,7 +2,7 @@
 require_once 'ICrudBaseStrategy.php';
 require_once 'CrudBaseModel.php';
 require_once 'HashCustom.php';
-
+require_once 'PagenationForCake.php';
 /**
  * CRUD系画面用の基本クラス
  * 
@@ -74,6 +74,7 @@ class CrudBaseController {
 	 * 初期化
 	 * @param array $param
 	 *  - fw_type フレームワークタイプ    plain:プレーン(デフォルト), cake:cakephp2.x, wp:wordpress, laravel7:Laravel7
+	 *  - crud_base_path CrudBaseライブラリへのパス
 	 *  - ctrl クライアントコントローラのオブジェクト
 	 *  - model クライアントモデルのオブジェクト
 	 *  - kensakuJoken array 検索条件情報
@@ -114,7 +115,6 @@ class CrudBaseController {
 			'strategy' => $this->strategy,
 		]); 
 		
-		
 		$this->param = $param;
 		
 	}
@@ -130,7 +130,6 @@ class CrudBaseController {
 	 *  - func_csv_export CSVエクスポート機能 0:OFF ,1:ON(デフォルト)
 	 *  - func_file_upload ファイルアップロード機能 0:OFF , 1:ON(デフォルト)
 	 *  - sql_dump_flg SQLダンプフラグ   true:SQLダンプを表示（デバッグモードである場合。デフォルト） , false:デバッグモードであってもSQLダンプを表示しない。
-	 *  
 	 * @return array
 	 * - kjs <array> 検索条件情報
 	 * - errMsg <string> 検索条件入力のエラーメッセージ
@@ -138,22 +137,11 @@ class CrudBaseController {
 	 * - bigDataFlg <bool> true:一覧データ件数が500件を超える,false:500件以下。500件の制限はオーバーライドで変更可能。
 	 *
 	 */
-	public function indexBefore($name,$option = array()){
+	public function indexBefore($name,$option = []){
 		
 		// ▼ HTTPリクエストを取得
 		$this->posts = $_POST;
 		$this->gets = $_GET;
-		
-		
-		// ■■■□□□■■■□□□
-//		$request = [];
-// 		if(empty($option['request'])){
-// 			//$request = $this->request->data;■■■□□□■■■□□□
-// 			$request = $_POST;
-// 		}else{
-// 			$request = $option['request'];
-// 		}
-
 
 		// ▼ オプションの初期化
 		if(empty($option['func_new_version'])) $option['func_new_version'] = 0;
@@ -163,7 +151,6 @@ class CrudBaseController {
 		
 		
 		// ▼ 画面に関連づいているモデル名関連を取得
-		//$this->MainModel=ClassRegistry::init($name);■■■□□□■■■□□□
 		$this->main_model_name=$name;
 		$this->main_model_name_s=$this->snakize($name);
 
@@ -211,7 +198,7 @@ class CrudBaseController {
 		// 検索条件情報のバリデーション
 		$errTypes = [];
 		$errMsg = $this->valid($kjs,$this->kjs_validate);
-		if(isset($errMsg)){//入力エラーがあった場合。
+		if(!empty($errMsg)){//入力エラーがあった場合。
 			//再表示用の検索条件情報をSESSION,あるいはデフォルトからパラメータを取得する。
 			$kjs= $this->getKjsSD($name);
 			$errTypes[] = 'kjs_err';
@@ -228,6 +215,7 @@ class CrudBaseController {
 			//ページネーション用パラメータを取得
 			$overData['row_limit']=$kjs['row_limit'];
 			$pages=$this->getPageParam($overData);
+			
 			
 		}
 		
@@ -276,7 +264,7 @@ class CrudBaseController {
 
 		$paths = $this->getPaths();
 		
-		$crudBaseData = array(
+		$crudBaseData = [
 				'model_name_c'=> $this->main_model_name, // モデル名（キャメル記法）
 				'model_name_s'=> $this->main_model_name_s, // モデル名（スネーク記法）
 				'field_data'=>$active, 		// アクティブフィールドデータ
@@ -301,7 +289,8 @@ class CrudBaseController {
 				'header' => 'header', // header.ctpの埋め込み
 				'this_page_version' => $this->this_page_version, // 当ページのバージョン
 				'paths' => $paths, // ホーム相対パス
-		);
+				'crud_base_path' => $this->param['crud_base_path'], // CrudBaseライブラリへのパス
+		];
 		
 		
 		return $crudBaseData;
@@ -503,6 +492,7 @@ class CrudBaseController {
 	 * @param $option
 	 *  - pagenation_param ページネーションの目次に付加するパラメータ
 	 *  - method_url 基本URLのメソッド部分
+	 *  - non_limit_count LIMIT制限なし・データ件数
 	 * @return $crudBaseData
 	 */
 	public function indexAfter(&$crudBaseData,$option=[]){
@@ -512,7 +502,16 @@ class CrudBaseController {
 
 		// 検索データ数を取得
 		$kjs = $crudBaseData['kjs'];
-		$data_count=$this->MainModel->findDataCnt($kjs); 
+		
+		// LIMIT制限なし・データ件数の取得
+		$non_limit_count = 0;
+		if(isset($option['non_limit_count'])){
+			$non_limit_count = $option['non_limit_count'];
+		}else{
+			$non_limit_count=$this->MainModel->findDataCnt($kjs); 
+		}
+		$data_count = $non_limit_count;
+		
 
 		// パス情報からホーム相対パスを取得する
 		$paths = $crudBaseData['paths'];
@@ -970,9 +969,6 @@ class CrudBaseController {
 	 */
 	protected function getPageParam($overData){
 		
-// 		debug($this->gets);//■■■□□□■■■□□□)
-// 		//GETよりパラメータを取得する。
-// 		$pages=$this->params['url'];
 
 		//GETよりパラメータを取得する。
 		$pages = $this->gets; 
@@ -980,6 +976,7 @@ class CrudBaseController {
 		// 上書き
 		$pages=HashCustom::merge($pages,$overData);
 
+		
 		$defs=$this->getDefKjs();//デフォルト情報を取得
 
 		//空ならデフォルトをセット
@@ -1095,12 +1092,6 @@ class CrudBaseController {
 	protected function getParam($key,$formKey,&$def){
 		$v=null;
 
-		// ■■■□□□■■■□□□
-// 		//POSTからデータ取得を試みる。
-// 		if(isset($this->request->data[$formKey][$key])){
-// 			$v=$this->request->data[$formKey][$key];
-// 		}
-		
 		if(isset($this->posts[$formKey][$key])){
 			$v = $this->posts[$formKey][$key];
 		}
@@ -1114,24 +1105,6 @@ class CrudBaseController {
 			$v = $def[$key];
 		}
 		
-		
-		// ■■■□□□■■■□□□
-// 		if(isset($this->posts[$formKey][$key])){
-// 			$v=$this->request->data[$formKey][$key];
-// 		}
-		
-		
-
-// 		//GETからデータ取得を試みる。
-// 		elseif(isset($this->params['url'][$key])){
-// 			$v=$this->params['url'][$key];
-// 		}
-
-// 		//デフォルトのパラメータをセット
-// 		else{
-// 			$v=$def[$key];
-// 		}
-
 		return $v;
 	}
 	

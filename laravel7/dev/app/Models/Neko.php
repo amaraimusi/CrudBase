@@ -10,148 +10,194 @@ class Neko extends Model
 	protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。
 	public $timestamps = false; // タイムスタンプ。 trueならcreated_atフィールド、updated_atフィールドに適用される。（それ以外のフィールドを設定で指定可）
 	
-	public function getData(){
+	
+	private $cb; // CrudBase制御クラス
+	
+	public function __construct($cb){
+		$this->cb = $cb;
+	}
+	
+	
+	/**
+	 * 検索条件とページ情報を元にDBからデータを取得する
+	 * @param array $crudBaseData
+	 * @return number[]|unknown[]
+	 *  - array data データ
+	 *  - int non_limit_count LIMIT制限なし・データ件数
+	 */
+	public function getData($crudBaseData){
 		
-		$query = \DB::table('nekos')->
-		selectRaw('id, neko_name, neko_val as CatValue');
-		dump($query->toSql()); // →"select id, neko_name, neko_val as CatValue from `nekos`"
+		//■■■□□□■■■□□□
+// 		$query = \DB::table('nekos AS Neko')->
+// 		select('id', 'neko_name as cat', 'neko_val', 'neko_date');
+// 		dump($query->toSql()); // →"select `id`, `neko_name` as `cat`, `neko_val`, `neko_date` from `nekos` as `Neko`"
+		
+// 		$data = $query->get();
+// 		dump($data);
+		
+		
+		$kjs = $crudBaseData['kjs'];//検索条件情報
+		$pages = $crudBaseData['pages'];//ページネーション情報
+
+		$page_no = $pages['page_no']; // ページ番号
+		$row_limit = $pages['row_limit']; // 表示件数
+		$sort_field = $pages['sort_field']; // ソートフィールド
+		$sort_desc = $pages['sort_desc']; // ソートタイプ 0:昇順 , 1:降順
+		
+		//条件を作成
+ 		$conditions=$this->createKjConditions($kjs);
+		
+		// オフセットの組み立て
+		$offset=null;
+		if(!empty($row_limit)) $offset = $page_no * $row_limit;
+		
+		// ORDER文の組み立て
+		$order = $sort_field;
+		if(empty($order)) $order='sort_no';
+		
+		$order_option = 'ASC';
+		if(!empty($sort_desc)) $order_option = ' DESC';
+		
+		$query = \DB::table('nekos as Neko')->
+			selectRaw('SQL_CALC_FOUND_ROWS *')->
+			whereRaw($conditions)->
+			offset($offset)->
+			limit($row_limit)->
+			orderBy($order, $order_option);
+		dump($query->toSql()); // →■■■□□□■■■□□□
 		
 		$data = $query->get();
 		dump($data);
 		
-// 		$query = \DB::table('nekos')->
-// 		select('id', 'neko_name as cat', 'neko_val', 'neko_date');
-// 		dump($query->toSql()); // →"select `id`, `neko_name` as `cat`, `neko_val`, `neko_date` from `nekos`"
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
-		
-// 		$query = \DB::table('nekos')->
-// 			whereRaw('neko_val = 4')->
-// 			orderByRaw('neko_name desc');
-// 		dump($query->toSql()); // →"select * from `nekos` where neko_val = 4 order by neko_name desc"
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
-		
-		
-// 		$query = \DB::table('nekos')->orderBy('neko_name');
-// 		dump($query->toSql()); // → "select * from `nekos` order by `neko_name` asc"
-			
-// 		$data = $query->get();
-// 		dump($data);
-			
-// 		$res = \DB::table('nekos')->where('id', 999)->doesntExist(); // true:レコード存在, false:存在しない
-// 		dump($res);//■■■□□□■■■□□□)
-		
-		
-// 		\DB::table('nekos')->orderBy('id')->chunk(4, function ($chunk) {
-// 			dump(count($chunk));// → 4 → 4件ずつDBからデータ取得していることを意味している。
-// 			foreach ($chunk as $ent) {
-// 				$ent = (array)$ent;
-// 				//dump($ent['neko_name']);
-// 			}
-// 		});
-		
-		
-		
-// 		$query = \DB::table('nekos');
-// 		dump($query->toSql()); // "select * from `nekos`"
-		
-// 		$value1 = $query->count('id'); // 件数
-// 		$value2 = $query->max('neko_val'); // 最大
-// 		$value3 = $query->min('neko_val'); // 最小
-// 		$value4 = $query->avg('neko_val'); // 平均
-// 		$value5 = $query->sum('neko_val'); // 合計
+		// LIMIT制限なし・データ件数
+		$non_limit_count = 0;
+		$res = \DB::select('SELECT FOUND_ROWS()');
+		if(!empty($res)){
+			$non_limit_count = reset($res[0]);
+		}
 
+		return ['data' => $data, 'non_limit_count' => $non_limit_count];
 		
-		
-		
-// 		$query = \DB::table('nekos')->where('id', '=', 4);
-// 		dump($query->toSql()); 
-		
-// 		$value = $query->first();
-// 		dump($value);
-		
-		
-		
-// 		$query = \DB::table('nekos')->where('neko_val', '<', 5);
-// 		dump($query->toSql()); // →"select * from `nekos` where `neko_val` < ?"
-		
-// 		$list = $query->pluck('neko_name');
-// 		dump($list);
-		
-		
-		
-// 		$query = \DB::table('nekos')
-// 			->where('neko_name', '=', 'ゴボウ')
-// 			->orWhere('neko_val', '<', 4);
-// 			dump($query->toSql()); // →"select * from `nekos` where `neko_name` = ? or `neko_val` < ?"
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
-		
-		
-// 		$query = \DB::table('nekos')->whereNotBetween ('neko_val', [2,4]);
-// 		dump($query->toSql()); // →"select * from `nekos` where `neko_val` not between ? and ?"
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
-		
-		
-// 		$query = \DB::table('nekos')->where ([
-// 				['neko_name', 'kame'],
-// 				['neko_val', 3],
-// 		]);
-// 		dump($query->toSql()); // →"select * from `nekos` where (`neko_name` = ? and `neko_val` = ?)"
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
-		
-		
-// 		$query = \DB::table('nekos')->whereColumn ('created', '<', 'modified');
-// 		dump($query->toSql()); // →"select * from `nekos` where `created` < `modified`"
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
-// 		$query = \DB::table('nekos')->whereTime ('neko_dt', '10:05:00');
-// 		dump($query->toSql()); // → 
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
-		
-// 		$query = \DB::table('nekos')->whereNotNull ('neko_val');
-// 		dump($query->toSql()); // → "select * from `nekos` where `neko_val` is not null"
-		
-// 		$data = $query->get();
-// 		dump($data);
-
-		
-// 		$data = \DB::table('nekos')
-// 		->whereNotIn('neko_name', ['buta', 'ゴボウ', 'ハマダイコン'])
-// 			->toSql();
-// 		dump($data);
-		
-		
-// 		$ent = \DB::table('nekos')->where('id', '4')->first();
-// 		//$ent = \DB::table('nekos')->first();
-// 		dump($ent);
-		
-		
-// 		$data = \DB::table($this->table)->where('neko_val', '>' , 3)->get();
-		
-
-// // 		$query = \DB::table($this->table);
-// // 		$query->where('id', 4);
-// // 		$data = $query->get();
-		
-// 		dump($data);
 	}
+	
+	
+	/**
+	 * 検索条件情報からWHERE情報を作成。
+	 * @param array $kjs	検索条件情報
+	 * @return string WHERE情報
+	 */
+	private function createKjConditions($kjs){
+		
+		$cnds=null;
+		
+		$kjs = $this->cb->xssSanitizeW($kjs); // SQLサニタイズ
+		
+		if(!empty($kjs['kj_main'])){
+			$cnds[]="CONCAT( IFNULL(Neko.neko_name, '') ,IFNULL(Neko.note, '')) LIKE '%{$kjs['kj_main']}%'";
+		}
+		
+		// CBBXS-1003
+		
+		if(!empty($kjs['kj_id'])){
+			$cnds[]="Neko.id = {$kjs['kj_id']}";
+		}
+		
+		if(!empty($kjs['kj_neko_val1'])){
+			$cnds[]="Neko.neko_val >= {$kjs['kj_neko_val1']}";
+		}
+		
+		if(!empty($kjs['kj_neko_val2'])){
+			$cnds[]="Neko.neko_val <= {$kjs['kj_neko_val2']}";
+		}
+		
+		if(!empty($kjs['kj_neko_name'])){
+			$cnds[]="Neko.neko_name LIKE '%{$kjs['kj_neko_name']}%'";
+		}
+		
+		if(!empty($kjs['kj_neko_date1'])){
+			$cnds[]="Neko.neko_date >= '{$kjs['kj_neko_date1']}'";
+		}
+		
+		if(!empty($kjs['kj_neko_date2'])){
+			$cnds[]="Neko.neko_date <= '{$kjs['kj_neko_date2']}'";
+		}
+		
+		if(!empty($kjs['kj_neko_group'])){
+			$cnds[]="Neko.neko_group = {$kjs['kj_neko_group']}";
+		}
+		
+		if(!empty($kjs['kj_neko_dt'])){
+			$kj_neko_dt = $kjs['kj_neko_dt'];
+			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_neko_dt);
+			$cnds[]="DATE_FORMAT(Neko.neko_dt,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
+		}
+		
+		$kj_neko_flg = $kjs['kj_neko_flg'];
+		if(!empty($kjs['kj_neko_flg']) || $kjs['kj_neko_flg'] ==='0' || $kjs['kj_neko_flg'] ===0){
+			if($kjs['kj_neko_flg'] != -1){
+				$cnds[]="Neko.neko_flg = {$kjs['kj_neko_flg']}";
+			}
+		}
+		
+		if(!empty($kjs['kj_img_fn'])){
+			$cnds[]="Neko.img_fn = '{$kjs['kj_img_fn']}'";
+		}
+		
+		if(!empty($kjs['kj_note'])){
+			$cnds[]="Neko.note LIKE '%{$kjs['kj_note']}%'";
+		}
+		
+		if(!empty($kjs['kj_sort_no']) || $kjs['kj_sort_no'] ==='0' || $kjs['kj_sort_no'] ===0){
+			$cnds[]="Neko.sort_no = {$kjs['kj_sort_no']}";
+		}
+		
+		$kj_delete_flg = $kjs['kj_delete_flg'];
+		if(!empty($kjs['kj_delete_flg']) || $kjs['kj_delete_flg'] ==='0' || $kjs['kj_delete_flg'] ===0){
+			if($kjs['kj_delete_flg'] != -1){
+				$cnds[]="Neko.delete_flg = {$kjs['kj_delete_flg']}";
+			}
+		}
+		
+		if(!empty($kjs['kj_update_user'])){
+			$cnds[]="Neko.update_user = '{$kjs['kj_update_user']}'";
+		}
+		
+		if(!empty($kjs['kj_ip_addr'])){
+			$cnds[]="Neko.ip_addr = '{$kjs['kj_ip_addr']}'";
+		}
+		
+		if(!empty($kjs['kj_user_agent'])){
+			$cnds[]="Neko.user_agent LIKE '%{$kjs['kj_user_agent']}%'";
+		}
+		
+		if(!empty($kjs['kj_created'])){
+			$kj_created=$kjs['kj_created'].' 00:00:00';
+			$cnds[]="Neko.created >= '{$kj_created}'";
+		}
+		
+		if(!empty($kjs['kj_modified'])){
+			$kj_modified=$kjs['kj_modified'].' 00:00:00';
+			$cnds[]="Neko.modified >= '{$kj_modified}'";
+		}
+		
+		// CBBXE
+		
+		$cnd=null;
+		if(!empty($cnds)){
+			$cnd=implode(' AND ',$cnds);
+		}
+		
+		return $cnd;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

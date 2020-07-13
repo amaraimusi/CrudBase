@@ -1,7 +1,4 @@
 <?php
-// ■■■□□□■■■□□□
-// App::uses('CrudBaseController', 'Vendor/CrudBase');
-// App::uses('PagenationForCake', 'Vendor/CrudBase');
 
 /**
  * ネコ
@@ -20,8 +17,9 @@ class NekoController extends AppController {
 	/// 使用しているモデル[CakePHPの機能]
 	public $uses = array('Neko');
 	
-	/// オリジナルヘルパーの登録[CakePHPの機能]
-	public $helpers = array('CrudBase');
+	// ■■■□□□■■■□□□
+// 	/// オリジナルヘルパーの登録[CakePHPの機能]
+// 	public $helpers = array('CrudBase');
 
 	/// デフォルトの並び替え対象フィールド
 	public $defSortFeild='Neko.sort_no';
@@ -70,7 +68,7 @@ class NekoController extends AppController {
 
 	
 		require_once CRUD_BASE_PATH . 'CrudBaseController.php';
-		require_once CRUD_BASE_PATH . 'PagenationForCake.php';
+		//require_once CRUD_BASE_PATH . 'PagenationForCake.php';■■■□□□■■■□□□
 
 		$this->crudBaseCon = $this->initCrudBase();// フィールド関連の定義をする。
 	
@@ -107,11 +105,11 @@ class NekoController extends AppController {
 		$this->set(array('nekoGroupList' => $nekoGroupList,'neko_group_json' => $neko_group_json));
 		// CBBXE
 		
-		$this->set($crudBaseData);
-		$this->set(array(
-			'title_for_layout'=>'ネコ',
-			'data'=> $data,
-		));
+		$this->set([
+				'title_for_layout'=>'ネコ',
+				'crudBaseData'=>$crudBaseData,
+				'data'=> $data,
+		]);
 
 
 	}
@@ -714,14 +712,14 @@ class NekoController extends AppController {
 		unset($fEnt);
 		
 		$crudBaseCon = new CrudBaseController([
-			'fw_type' => 'cake',
-			'ctrl' => $this,
-			'model' => $this->Neko,
-			'kensakuJoken' => $kensakuJoken, //検索条件情報
-			'kjs_validate' => $kjs_validate, //検索条件バリデーション
-			'field_data' => $field_data, //フィールドデータ
+				'fw_type' => 'cake',
+				'ctrl' => $this,
+				'model' => $this->Neko,
+				'kensakuJoken' => $kensakuJoken, //検索条件情報
+				'kjs_validate' => $kjs_validate, //検索条件バリデーション
+				'field_data' => $field_data, //フィールドデータ
+				'crud_base_path' => CRUD_BASE_PATH
 		]);
-		
 		
 		return $crudBaseCon;
 
