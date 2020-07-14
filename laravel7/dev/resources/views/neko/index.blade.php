@@ -5,6 +5,7 @@ extract($crudBaseData, EXTR_REFS);
 
 require_once $crud_base_path . 'CrudBaseHelper.php';
 $this->CrudBase = new CrudBaseHelper($crudBaseData);
+$ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン文字列
 
 
 ?>
@@ -16,7 +17,10 @@ $this->CrudBase = new CrudBaseHelper($crudBaseData);
 		<title>猫インデックスにゃーん</title>
 		<script src="{{ asset('js/app.js') }}" defer></script>
 		<script src="{{ asset('/js/test.js') }}"></script>
+		<script src="{{ $crud_base_js . $ver_str }}" defer></script>
 		<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+		<link href="{{ $crud_base_css . $ver_str }}" rel="stylesheet">
+		
 		
 	</head>
 	<body>

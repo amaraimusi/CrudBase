@@ -9,6 +9,9 @@
 
 $crud_base_path = $_SERVER['DOCUMENT_ROOT'] . '\CrudBase\dist\CrudBase\php\CrudBase\\';
 define('CRUD_BASE_PATH', $crud_base_path); // CrudBaseのパス
+define('CRUD_BASE_JS', '/CrudBase/dist/CrudBase/js/CrudBase/dist/CrudBase.min.js'); //
+define('CRUD_BASE_CSS', '/CrudBase/dist/CrudBase/css/CrudBase/dist/CrudBase.min.css'); // 
+
 
 // 値種別定数    この定数を主に利用しているファイルと関数 → 「app/View/Helper/AppHelper.php : ent_show_x」
 define('CB_FLD_SANITAIZE','1'); // サニタイズ

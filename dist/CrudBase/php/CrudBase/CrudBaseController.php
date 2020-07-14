@@ -119,6 +119,8 @@ class CrudBaseController {
 		
 	}
 	
+	
+	
 	/**
 	 * indexアクションの共通処理
 	 *
@@ -290,6 +292,8 @@ class CrudBaseController {
 				'this_page_version' => $this->this_page_version, // 当ページのバージョン
 				'paths' => $paths, // ホーム相対パス
 				'crud_base_path' => $this->param['crud_base_path'], // CrudBaseライブラリへのパス
+				'crud_base_js' => $this->param['crud_base_js'], // CrudBase.min.jsのパス
+				'crud_base_css' => $this->param['crud_base_css'], // CrudBase.min.cssのパス
 		];
 		
 		

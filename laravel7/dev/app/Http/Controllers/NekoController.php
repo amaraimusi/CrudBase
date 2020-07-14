@@ -328,6 +328,8 @@ class NekoController
 		
 		
 		$crud_base_path = config('const.CRUD_BASE_PATH');
+		$crud_base_js = config('const.CRUD_BASE_JS');
+		$crud_base_css = config('const.CRUD_BASE_CSS');
 		require_once $crud_base_path . 'CrudBaseController.php';
 		
 		$crudBaseCon = new \CrudBaseController([
@@ -338,6 +340,8 @@ class NekoController
 				'kjs_validate' => $kjs_validate, //検索条件バリデーション
 				'field_data' => $field_data, //フィールドデータ
 				'crud_base_path' => $crud_base_path,
+				'crud_base_js' => $crud_base_js,
+				'crud_base_css' => $crud_base_css,
 		]);
 		
 		

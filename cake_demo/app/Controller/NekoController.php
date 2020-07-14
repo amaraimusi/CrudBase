@@ -718,7 +718,9 @@ class NekoController extends AppController {
 				'kensakuJoken' => $kensakuJoken, //検索条件情報
 				'kjs_validate' => $kjs_validate, //検索条件バリデーション
 				'field_data' => $field_data, //フィールドデータ
-				'crud_base_path' => CRUD_BASE_PATH
+				'crud_base_path' => CRUD_BASE_PATH,
+				'crud_base_js' => CRUD_BASE_JS,
+				'crud_base_css' => CRUD_BASE_CSS,
 		]);
 		
 		return $crudBaseCon;
