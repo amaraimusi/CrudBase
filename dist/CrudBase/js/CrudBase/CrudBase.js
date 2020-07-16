@@ -179,7 +179,7 @@ class CrudBase{
 	 */
 	newVersionReload(){
 		// 新バージョンである場合、強制的にセッションクリア
-		let new_version_flg = jQuery('#new_version_flg').val();
+		let new_version_flg =this.param.new_version_flg;
 		if(new_version_flg != 0){
 			this._clear();
 			location.reload(true);

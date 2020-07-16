@@ -78,8 +78,7 @@ function init(){
 	
 	// CBBXS-1023
 	// ネコグループリストJSON
-	var neko_group_json = jQuery('#neko_group_json').val();
-	var nekoGroupList = JSON.parse(neko_group_json);
+	let nekoGroupList = crudBaseData.nekoGroupList
 	disFilData['neko_group'] ={'fil_type':'select','option':{'list':nekoGroupList}};
 	// CBBXE
 
