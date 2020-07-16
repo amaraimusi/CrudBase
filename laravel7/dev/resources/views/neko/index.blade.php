@@ -44,7 +44,8 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		$this->CrudBase->inputKjMoDateRng($kjs,'kj_neko_date','ネコ日付');
 		$this->CrudBase->inputKjNumRange($kjs,'neko_val','ネコ数値'); 
 		$this->CrudBase->inputKjSelect($kjs,'kj_neko_group','ネコ種別', $masters['nekoGroupList']); 
-			
+		$this->CrudBase->inputKjText($kjs,'kj_neko_dt','ネコ日時',150);
+		$this->CrudBase->inputKjFlg($kjs,'kj_neko_flg','ネコフラグ');
 		?></div>
 		
 		<input id="crud_base_json" type="hidden" value='<?php echo $crud_base_json?>' />

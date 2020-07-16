@@ -223,9 +223,13 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *  - string placeholder
 	 */
-	public function inputKjText($kjs, $field, $wamei, $width=200,$title=null, $option = []){
+	public function inputKjText($kjs, $field, $wamei, $width=200, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
 		
 		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
 		$maxlength=0;
@@ -234,11 +238,6 @@ class CrudBaseHelper {
 		}else{
 			$maxlength=$option['maxlength'];
 		}
-		
-		// モデル名を取得
-		$model_name_c = $this->crudBaseData['model_name_c'];
-		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
-		
 		
 		$placeholder = '';
 		if(empty($option['placeholder'])){
@@ -352,24 +351,7 @@ class CrudBaseHelper {
 				</div>
 			</div>
 		";
-		
 
-		
-		// ■■■□□□■■■□□□
-// 		echo "<div class='kj_div kj_wrap' data-field='{$field}'>\n";
-// 		echo $this->input($this->_mdl.$field, array(
-// 				'id' => $field,
-// 				'type' => 'select',
-// 				'options' => $list,
-// 				'empty' => "-- {$wamei} --",
-// 				'default' => $kjs[$field],
-// 				'label' => false,
-// 				'style'=>"width:{$width}px",
-// 				'class' => 'kjs_inp',
-// 				'title'=>$title,
-// 		));	
-// 		echo "</div>\n";
-		
 		echo $html;
 	}
 
@@ -512,23 +494,33 @@ class CrudBaseHelper {
 	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
+	 * @param string $title ツールチップメッセージ（省略可）
+	 * @param [] option
+	 *  - string model_name_c モデル名（キャメル記法）
 	 *
 	 */
-	public function inputKjFlg($kjs,$field,$wamei){
-		echo "<div class='kj_div kj_wrap' data-field='{$field}'>\n";
-		echo $this->input($this->_mdl.$field, array(
-			'id' => $field,
-			'type' => 'select',
-			'options' => array(
-					-1=>"-- {$wamei} --",
-				0=>'OFF',
-				1=>'ON',
-			),
-			'default' => $kjs[$field],
-			'label' => false,
-			'class' => 'kjs_inp',
-		));
-		echo "</div>\n";
+	public function inputKjFlg($kjs, $field, $wamei, $title=null, $option = []){
+		
+		if($title===null) $title = $wamei."で検索";
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		$html = "
+			<div class='kj_div kj_wrap' data-field='{$field}'>
+				<div class='input select'>
+					<select name='data[{$model_name_c}][{$field}]' id='{$field}' class='kjs_inp'>
+						<option value='-1'>-- ネコフラグ --</option>
+						<option value='0'>OFF</option>
+						<option value='1'>ON</option>
+					</select>
+				</div>
+			</div>
+		";
+		
+		echo $html;
+		
 	}
 	
 	
