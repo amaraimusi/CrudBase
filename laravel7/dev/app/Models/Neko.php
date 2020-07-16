@@ -64,10 +64,8 @@ class Neko extends Model
 			offset($offset)->
 			limit($row_limit)->
 			orderBy($order, $order_option);
-		dump($query->toSql()); // →■■■□□□■■■□□□
 		
 		$data = $query->get();
-		dump($data);
 		
 		// LIMIT制限なし・データ件数
 		$non_limit_count = 0;
@@ -190,6 +188,35 @@ class Neko extends Model
 		return $cnd;
 		
 	}
+	
+	
+	// CBBXS-1021
+	
+	/**
+	 * 猫種別リストをDBから取得する
+	 */
+	public function getNekoGroupList(){
+
+		// DBからデータを取得
+		$query = \DB::table('neko_groups')->
+		whereRaw("delete_flg = 0")->
+		orderBy('sort_no', 'ASC');
+		$data = $query->get();
+
+		// リスト変換
+		$list = [];
+		foreach($data as $ent){
+			$ent = (array)$ent;
+			$id = $ent['id'];
+			$name = $ent['neko_group_name'];
+			$list[$id] = $name;
+		}
+
+		return $list;
+		
+	}
+	
+	// CBBXE
 	
 	
 	

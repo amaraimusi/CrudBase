@@ -34,21 +34,29 @@ function init(){
 //	var alwc = new AjaxLoginWithCake();
 //	var alwcParam = {'btn_type':0,'form_slt':'#ajax_login_with_cake'}
 //	alwc.loginCheckEx(alwcParam);
-	
-	// 検索条件情報を取得する
-	let kjs = crudBaseData.kjs;
+	//■■■□□□■■■□□□
+//	// 検索条件情報を取得する
+//	let kjs = crudBaseData.kjs;
 	
 	// ■■■□□□■■■□□□
 //	var kjs_json = jQuery('#kjs_json').val();
 //	var kjs = jQuery.parseJSON(kjs_json);
 	
-	//AjaxによるCRUD
-	crudBase = new CrudBase({
-			'src_code':'neko', // 画面コード（スネーク記法)
-			'kjs':kjs,
-			'ni_tr_place':1,
-			configData:{delete_alert_flg:1} // 削除アラートフラグ    1:一覧行の削除ボタンを押したときアラートを表示する
-		});
+	
+	crudBaseData['ni_tr_place'] = 1; // 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
+	crudBaseData['configData'] = {delete_alert_flg:1} // 削除アラートフラグ    1:一覧行の削除ボタンを押したときアラートを表示する
+	
+	// CRUD基本クラス
+	crudBase = new CrudBase(crudBaseData);
+	
+	// ■■■□□□■■■□□□
+//	//AjaxによるCRUD
+//	crudBase = new CrudBase({
+//			'src_code':'neko', // 画面コード（スネーク記法)
+//			'kjs':kjs,
+//			'ni_tr_place':1,
+//			configData:{delete_alert_flg:1} // 削除アラートフラグ    1:一覧行の削除ボタンを押したときアラートを表示する
+//		});
 
 	// 表示フィルターデータの定義とセット
 	var disFilData = {

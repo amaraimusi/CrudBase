@@ -38,11 +38,13 @@ class NekoController
 		// CrudBase共通処理（後）
 		$crudBaseData = $this->cb->indexAfter($crudBaseData, ['non_limit_count'=>$non_limit_count]);
 		
-// 		// CBBXS-1020
-// 		$nekoGroupList = $this->Neko->getNekoGroupList();
-// 		$neko_group_json = json_encode($nekoGroupList,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
-// 		$this->set(array('nekoGroupList' => $nekoGroupList,'neko_group_json' => $neko_group_json));
-// 		// CBBXE
+		$masters = []; // マスターリスト群
+		// CBBXS-1020
+		$nekoGroupList = $this->md->getNekoGroupList();
+		$masters['nekoGroupList'] = $nekoGroupList;
+		// CBBXE
+		
+		$crudBaseData['masters'] = $masters;
 		
 // 		$this->set($crudBaseData);
 // 		$this->set(array(

@@ -274,7 +274,6 @@ class CrudBaseController {
 				'def_kjs_json'=>$def_kjs_json, // デフォルト検索情報JSON
 				'errMsg'=>$errMsg, 			// エラーメッセージ
 				'errTypes' => $errTypes, 	// エラータイプ
-				'err_types_json' => $err_types_json, // エラータイプJSON
 				'version'=>$this->version, 	// CrudBaseのバージョン
 				'userInfo'=>$userInfo, 		// ユーザー情報
 				'new_version_chg'=>$new_version_chg, // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
