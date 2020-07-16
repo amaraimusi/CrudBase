@@ -49,6 +49,10 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		$this->CrudBase->inputKjText($kjs,'kj_img_fn','ネコ名前',200);
 		$this->CrudBase->inputKjText($kjs,'kj_note','備考',200,'部分一致検索');
 		$this->CrudBase->inputKjId($kjs); 
+		$this->CrudBase->inputKjHidden($kjs,'kj_sort_no');
+		$this->CrudBase->inputKjDeleteFlg($kjs);
+		$this->CrudBase->inputKjText($kjs,'kj_update_user','更新者',150);
+		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','更新IPアドレス',200);
 		?></div>
 		
 		<input id="crud_base_json" type="hidden" value='<?php echo $crud_base_json?>' />

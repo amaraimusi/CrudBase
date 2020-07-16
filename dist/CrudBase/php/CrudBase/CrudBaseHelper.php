@@ -346,15 +346,20 @@ class CrudBaseHelper {
 	 * @param string $field フィールド名
 	 */
 	public function inputKjHidden($kjs,$field){
+		
+		$model_name_c = $this->crudBaseData['model_name_c'];
 	
+		$html = "
+			<input type='hidden' 
+				name='data[{$model_name_c}][{$field}]' 
+				id='{$field}' 
+				value='' 
+				data-field='{$field}' 
+				class='kj_wrap kjs_inp'>
+		";
 
-		echo $this->input($this->_mdl.$field, array(
-			'id' => $field,
-			'value' => $kjs[$field],
-			'type' => 'hidden',
-			'data-field' => $field,
-			'class' => 'kj_wrap kjs_inp',
-		));
+		echo $html;
+
 		
 	}
 	
@@ -516,24 +521,41 @@ class CrudBaseHelper {
 	/**
 	 * 検索用の削除フラグフォームを作成
 	 *
-	 * @param array $kjs 検索条件データ
+	 * @param [] $kjs 検索条件データ
+	 * @param string $field フィールド名（省略可）
+	 * @param string $wamei フィールド和名（省略可）
+	 * @param int $width 入力フォームの横幅（省略可）
+	 * @param string $title ツールチップメッセージ（省略可）
+	 * @param [] option
+	 *  - string model_name_c モデル名（キャメル記法）
+	 * 
 	 * 
 	 */	
-	public function inputKjDeleteFlg($kjs){
-		echo "<div class='kj_div kj_wrap' data-field='kj_delete_flg'>\n";
-		echo $this->input($this->_mdl.'kj_delete_flg', array(
-			'id' => 'kj_delete_flg',
-			'type' => 'select',
-			'options' => array(
-				-1=>'すべて表示',
-				0=>'有効',
-				1=>'削除',
-			),
-			'default' => $kjs['kj_delete_flg'],
-			'label' => false,
-			'class' => 'kjs_inp',
-		));
-		echo "</div>\n";
+	public function inputKjDeleteFlg($kjs, $field='kj_delete_flg', $wamei='削除', $width=null, $title=null, $option = []){
+		if($title===null) $title = $wamei."で検索";
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		$width_style='';
+		if(!empty($width)) $width_style="width:{$width}px;";
+		
+		$html = "
+			<div class='kj_div kj_wrap' data-field='{$field}'>
+				<span>有効/削除</span>
+				<div class='input select' style='display:inline-block'>
+					<select name='data[{$model_name_c}][{$field}]' id='{$field}' class='kjs_inp' title='{$title}' style='{$width_style}'>
+						<option value='-1'>すべて表示</option>
+						<option value='0' selected='selected'>有効</option>
+						<option value='1'>削除</option>
+					</select>
+				</div>
+			</div>
+		";
+		
+		echo $html;
+
 	}
 	
 	
