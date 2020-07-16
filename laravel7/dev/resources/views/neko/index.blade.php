@@ -46,6 +46,9 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		$this->CrudBase->inputKjSelect($kjs,'kj_neko_group','ネコ種別', $masters['nekoGroupList']); 
 		$this->CrudBase->inputKjText($kjs,'kj_neko_dt','ネコ日時',150);
 		$this->CrudBase->inputKjFlg($kjs,'kj_neko_flg','ネコフラグ');
+		$this->CrudBase->inputKjText($kjs,'kj_img_fn','ネコ名前',200);
+		$this->CrudBase->inputKjText($kjs,'kj_note','備考',200,'部分一致検索');
+		$this->CrudBase->inputKjId($kjs); 
 		?></div>
 		
 		<input id="crud_base_json" type="hidden" value='<?php echo $crud_base_json?>' />

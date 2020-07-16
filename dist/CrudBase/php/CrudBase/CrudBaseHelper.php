@@ -131,24 +131,76 @@ class CrudBaseHelper {
 	/**
 	 * 検索用のid入力フォームを作成
 	 * 
-	 * @param array $kjs 検索条件データ
+	 * @param [] $kjs 検索条件データ
+	 * @param string $field フィールド名（省略可）
+	 * @param string $wamei フィールド和名（省略可）
+	 * @param int $width 入力フォームの横幅（省略可）
+	 * @param string $title ツールチップメッセージ（省略可）
+	 * @param [] option
+	 *  - int maxlength 最大文字数(共通フィールドは設定不要）
+	 *  - string model_name_c モデル名（キャメル記法）
+	 *  - string placeholder
+	 * 
+	 * 
 	 */
-	public function inputKjId($kjs){
-
-		echo "<div class='kj_div kj_wrap' data-field='kj_id'>\n";
-		echo $this->input($this->_mdl.'kj_id', array(
-				'id' => 'kj_id',
-				'value' => $kjs['kj_id'],
-				'type' => 'text',
-				'label' => false,
-				'placeholder' => '-- ID --',
-				'style'=>'width:100px',
-				'class' => 'kjs_inp',
-				'title'=>'IDによる検索',
-				'maxlength'=>8,
-		));
+	public function inputKjId($kjs, $field='kj_id', $wamei='ID', $width=100, $title=null, $option = []){
 		
-		echo "</div>\n";
+		if($title===null) $title = $wamei."で検索";
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
+		$maxlength=0;
+		if(empty($option['maxlength'])){
+			$maxlength = 8;
+		}else{
+			$maxlength=$option['maxlength'];
+		}
+		
+		$placeholder = '';
+		if(empty($option['placeholder'])){
+			$placeholder = $wamei;
+		}else{
+			$placeholder = $option['placeholder'];
+		}
+
+		$html = "
+			<div class='kj_div kj_wrap' data-field='{$field}'>
+				<div class='input text'>
+					<input 
+						name='data[{$model_name_c}][{$field}]' 
+						id='{$field}' 
+						value='' 
+						placeholder='{$placeholder}' 
+						style='width:{$width}px' 
+						class='kjs_inp' 
+						title='{$title}' 
+						maxlength='{$maxlength}' 
+						type='text'>
+				</div>
+			</div>
+		";
+		
+		echo $html;
+		
+		
+		// ■■■□□□■■■□□□
+// 		echo "<div class='kj_div kj_wrap' data-field='kj_id'>\n";
+// 		echo $this->input($this->_mdl.'kj_id', array(
+// 				'id' => 'kj_id',
+// 				'value' => $kjs['kj_id'],
+// 				'type' => 'text',
+// 				'label' => false,
+// 				'placeholder' => '-- ID --',
+// 				'style'=>'width:100px',
+// 				'class' => 'kjs_inp',
+// 				'title'=>'IDによる検索',
+// 				'maxlength'=>8,
+// 		));
+		
+// 		echo "</div>\n";
 				
 	}
 	
