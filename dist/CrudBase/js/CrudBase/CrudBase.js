@@ -380,10 +380,10 @@ class CrudBase{
 	 * @reutrn CrudBaseRowExchange 行入替機能・コンポーネント
 	 */
 	_factoryCrudBaseRowExchange(){
-		var rowExchange;
+		let rowExchange;
 		
 		// クラス（JSファイル）がインポートされていない場合、「空」の実装をする。
-		var t = typeof CrudBaseRowExchange;
+		let t = typeof CrudBaseRowExchange;
 		if(t == null || t == 'undefined'){
 			// 「空」実装
 			rowExchange = {
@@ -398,7 +398,8 @@ class CrudBase{
 		});
 		
 		// 行入替機能のボタン表示切替
-		var row_exc_flg = jQuery('#row_exc_flg').val();
+		//let row_exc_flg = jQuery('#row_exc_flg').val();■■■□□□■■■□□□
+		let row_exc_flg =this.param.row_exc_flg;
 		this.rowExcBtnShow(row_exc_flg);
 		
 		return rowExchange;
@@ -1280,10 +1281,11 @@ class CrudBase{
 		if(exempts==null) exempts=[];
 		
 		//デフォルト検索条件JSONを取得およびパースする。
-		var def_kjs_json=jQuery('#def_kjs_json').val();
-		var defKjs=jQuery.parseJSON(def_kjs_json);
+//		let def_kjs_json=jQuery('#def_kjs_json').val();■■■□□□■■■□□□
+//		let defKjs=jQuery.parseJSON(def_kjs_json);■■■□□□■■■□□□
+		let defKjs = this.param.defKjs; // デフォルト検索条件データ
 		
-		for(var key in defKjs){
+		for(let key in defKjs){
 			
 			//リセット対象外でなければ、検索条件入力フォームをリセットする。
 			if(exempts.indexOf(key) < 0){
@@ -3477,26 +3479,28 @@ class CrudBase{
 
 		// 検索条件情報が省略されている場合はHTMLの埋込JSONから取得する。
 		if(kjs==null){
-			var kjs_json = jQuery('#kjs_json').val();
-			kjs = JSON.parse(kjs_json);
+//			let kjs_json = jQuery('#kjs_json').val();//■■■□□□■■■□□□
+//			kjs = JSON.parse(kjs_json);
+			kjs = this.param.kjs;
 		}
 
 		// デフォルト検索条件が省略されている場合はHTMLの埋込JSONから取得する。
 		if(defKjs==null){
-			var def_kjs_json = jQuery('#def_kjs_json').val();
-			defKjs = JSON.parse(def_kjs_json);
+//			let def_kjs_json = jQuery('#def_kjs_json').val(); // ■■■□□□■■■□□□
+//			defKjs = JSON.parse(def_kjs_json);; // ■■■□□□■■■□□□
+			let defKjs = this.param.defKjs; // デフォルト検索条件データ
 		}
 
 		// 比較対象外フィールドマッピング
-		var outFieldMap = {};
-		for(var i in outFields){
-			var field = outFields[i];
+		let outFieldMap = {};
+		for(let i in outFields){
+			let field = outFields[i];
 			outFieldMap[field] = 1;
 		}
 
-		var is_def_flg = 1; // 検索初期状態
+		let is_def_flg = 1; // 検索初期状態
 
-		for(var field in defKjs){
+		for(let field in defKjs){
 
 			// 対象外フィールドに存在するフィールドであればコンテニュー。
 			if(outFieldMap[field]){
@@ -3508,12 +3512,12 @@ class CrudBase{
 			}else{
 
 				// null,null,空文字はnullとして扱う。
-				var kjs_value = kjs[field];
+				let kjs_value = kjs[field];
 				if(this._emptyNotZero(kjs_value)){
 					kjs_value = null;
 				}
 				
-				var def_value = defKjs[field];
+				let def_value = defKjs[field];
 				if(this._emptyNotZero(def_value)){
 					def_value = null;
 				}
@@ -3887,16 +3891,16 @@ class CrudBase{
 	 */
 	rowExchangeAfter(){
 
-		var data = this.getDataFromTbl();// Htmlテーブルからデータを取得
+		let data = this.getDataFromTbl();// Htmlテーブルからデータを取得
 		
-		var page_no = jQuery("#page_no").val() * 1;
-		var limit = jQuery("#row_limit").val() * 1;
-
+		let page_no = this.param.pages.page_no * 1;
+		let limit = this.param.pages.row_limit * 1;
+		
 		// データに順番をセットする
-		var sort_no = (page_no * limit) + 1;
+		let sort_no = (page_no * limit) + 1;
 		
-		for(var i in data){
-			var ent = data[i];
+		for(let i in data){
+			let ent = data[i];
 			ent['sort_no'] = sort_no;
 			sort_no ++;
 		}
@@ -3904,11 +3908,11 @@ class CrudBase{
 		this._btnsDisabledSwich(true);
 		
 		// 自動保存後のコーバック
-		var afterCallBack = function(){
+		let afterCallBack = function(){
 			this._btnsDisabledSwich(false);
 		}.bind(this);
 		
-		var option = {
+		let option = {
 				'reflect_on_tbl':1, // 1:HTMLテーブルにdataを反映する
 				'afterCallBack':afterCallBack,
 		}
@@ -4248,8 +4252,8 @@ class CrudBase{
 		
 		var hiddensElm = this._getHiddensElm(); // hiddenデータ要素を取得（埋込データ要素）
 
-		var referer_url = hiddensElm.find('#referer_url').val(); // リファラURL
-		var now_url = hiddensElm.find('#now_url').val(); // 現在URL
+		let referer_url = this.param.referer_url; // リファラURL
+		let now_url = this.param.now_url; // 現在URL
 		
 		// GETクエリ部分を取り除いたURLを取得する
 		var r_url_b = this._stringLeft(referer_url, '?', 1);
@@ -4411,8 +4415,9 @@ class CrudBase{
 	 */
 	_getKjs(){
 		if(this.kjs == null){
-			var kjs_json = jQuery('#kjs_json').val();
-			this.kjs = JSON.parse(kjs_json);
+//			var kjs_json = jQuery('#kjs_json').val();■■■□□□■■■□□□
+//			this.kjs = JSON.parse(kjs_json);
+			this.kjs = this.param.kjs;
 		}
 		return this.kjs;
 	}

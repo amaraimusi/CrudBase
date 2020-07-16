@@ -234,7 +234,7 @@ class CrudBaseController {
 
 		}
 
-		$def_kjs_json=$this->getDefKjsJson();// 検索条件情報からデフォルト検索情報JSONを取得する
+		$defKjs = $this->getDefKjsForReset();// 検索条件情報からデフォルト検索情報データを取得する
 
 		$debug_mode=$this->param['debug'];//デバッグモードを取得
 		
@@ -271,7 +271,7 @@ class CrudBaseController {
 				'model_name_s'=> $this->main_model_name_s, // モデル名（スネーク記法）
 				'field_data'=>$active, 		// アクティブフィールドデータ
 				'kjs'=>$kjs, 				// 検索条件情報
-				'def_kjs_json'=>$def_kjs_json, // デフォルト検索情報JSON
+				'defKjs'=>$defKjs, // デフォルト検索情報データ
 				'errMsg'=>$errMsg, 			// エラーメッセージ
 				'errTypes' => $errTypes, 	// エラータイプ
 				'version'=>$this->version, 	// CrudBaseのバージョン
@@ -1279,15 +1279,15 @@ class CrudBaseController {
 	}
 
 	/**
-	 * 検索条件情報からデフォルト検索JSONを取得する
+	 * 検索条件情報からデフォルト検索データを取得する
 	 *
 	 * @note
-	 * デフォルト検索JSONはリセットボタンの処理に使われます。
+	 * デフォルト検索データはリセットボタンの処理に使われます。
 	 *
-	 * @param array $noResets リセット対象外フィールドリスト 省略可
-	 * @return string デフォルト検索JSON
+	 * @param {} $noResets リセット対象外フィールドリスト 省略可
+	 * @return {} デフォルト検索データ
 	 */
-	protected function getDefKjsJson($noResets=null){
+	private function getDefKjsForReset($noResets=null){
 
 		$kjs=$this->kensakuJoken;//メンバの検索条件情報を取得
 
@@ -1300,9 +1300,7 @@ class CrudBaseController {
 			}
 		}
 
-		$def_kjs_json=json_encode($defKjs);//JSON化
-
-		return $def_kjs_json;
+		return $defKjs;
 	}
 
 
