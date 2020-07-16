@@ -65,9 +65,6 @@ class CrudBase{
 		//this.fieldData = this._addMoreFieldData(this.param.tbl_slt,this.fieldData);// ■■■□□□■■■□□□一時的に保留
 		this.fieldData = this.param.field_data;
 
-		console.log('this.fieldData');//■■■□□□■■■□□□)
-		console.log(this.fieldData);//■■■□□□■■■□□□)
-
 		// フィールドデータへフォーム内の要素情報をセットする
 		this.fieldData = this._setFieldDataFromForm(this.fieldData,this.formInfo,'new_inp');
 		this.fieldData = this._setFieldDataFromForm(this.fieldData,this.formInfo,'edit');
@@ -313,14 +310,6 @@ class CrudBase{
 			param['device_type'] = this.judgDeviceType(); // デバイスタイプ（PC/SP）の判定
 		}
 
-		// ■■■□□□■■■□□□
-//		// エラータイプリスト
-//		if(param['errTypes'] == null){
-//			var err_types_json = jQuery('#err_types_json').val();
-//			param['errTypes'] = jQuery.parseJSON(err_types_json);
-//		}
-		
-		
 		if(param['drag_and_resize_flg'] == null) param['drag_and_resize_flg'] = 1;
 		
 		// フォームモード
@@ -398,7 +387,6 @@ class CrudBase{
 		});
 		
 		// 行入替機能のボタン表示切替
-		//let row_exc_flg = jQuery('#row_exc_flg').val();■■■□□□■■■□□□
 		let row_exc_flg =this.param.row_exc_flg;
 		this.rowExcBtnShow(row_exc_flg);
 		
@@ -1281,8 +1269,6 @@ class CrudBase{
 		if(exempts==null) exempts=[];
 		
 		//デフォルト検索条件JSONを取得およびパースする。
-//		let def_kjs_json=jQuery('#def_kjs_json').val();■■■□□□■■■□□□
-//		let defKjs=jQuery.parseJSON(def_kjs_json);■■■□□□■■■□□□
 		let defKjs = this.param.defKjs; // デフォルト検索条件データ
 		
 		for(let key in defKjs){
@@ -3479,15 +3465,11 @@ class CrudBase{
 
 		// 検索条件情報が省略されている場合はHTMLの埋込JSONから取得する。
 		if(kjs==null){
-//			let kjs_json = jQuery('#kjs_json').val();//■■■□□□■■■□□□
-//			kjs = JSON.parse(kjs_json);
 			kjs = this.param.kjs;
 		}
 
 		// デフォルト検索条件が省略されている場合はHTMLの埋込JSONから取得する。
 		if(defKjs==null){
-//			let def_kjs_json = jQuery('#def_kjs_json').val(); // ■■■□□□■■■□□□
-//			defKjs = JSON.parse(def_kjs_json);; // ■■■□□□■■■□□□
 			let defKjs = this.param.defKjs; // デフォルト検索条件データ
 		}
 
@@ -4415,8 +4397,6 @@ class CrudBase{
 	 */
 	_getKjs(){
 		if(this.kjs == null){
-//			var kjs_json = jQuery('#kjs_json').val();■■■□□□■■■□□□
-//			this.kjs = JSON.parse(kjs_json);
 			this.kjs = this.param.kjs;
 		}
 		return this.kjs;
