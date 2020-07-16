@@ -206,57 +206,66 @@ class CrudBaseHelper {
 		";
 		
 		echo $html;
-		//
-// 		echo "<div class='' data-field='{$field}' style='display:inline-block'>";
-// 		echo $this->input($this->_mdl.$field, array(
-// 				'id' => $field,
-// 				'value' => $kjs[$field],
-// 				'type' => 'search',
-// 				'label' => false,
-// 				'placeholder' => $wamei,
-// 				'style'=>"width:{$width}px",
-// 				'class' => 'kjs_inp',
-// 				'title'=>$title,
-// 				'maxlength'=>$maxlength,
-// 		));
-// 		echo "</div>\n";
+
 	}
 	
 	
 	/**
-	 * 検索用のテキスト入力フォームを作成
-	 * 
+	 * メイン検索の入力フォームを作成
+	 *
 	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param int $width 入力フォームの横幅（省略可）
 	 * @param string $title ツールチップメッセージ（省略可）
-	 * @param int $maxlength 最大文字数(共通フィールドは設定不要）
+	 * @param [] option
+	 *  - int maxlength 最大文字数(共通フィールドは設定不要）
+	 *  - string model_name_c モデル名（キャメル記法）
+	 *  - string placeholder
 	 */
-	public function inputKjText($kjs,$field,$wamei,$width=200,$title=null,$maxlength=255){
+	public function inputKjText($kjs, $field, $wamei, $width=200,$title=null, $option = []){
 		
-		if($title==null){
-			$title = $wamei."で検索";
-		}
+		if($title===null) $title = $wamei."で検索";
 		
 		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
-		if($maxlength==255){
+		$maxlength=0;
+		if(empty($option['maxlength'])){
 			$maxlength = $this->getMaxlenIfCommonField($field,$maxlength);
+		}else{
+			$maxlength=$option['maxlength'];
 		}
-
-		echo "<div class='kj_div kj_wrap' data-field='{$field}'>\n";
-		echo $this->input($this->_mdl.$field, array(
-				'id' => $field,
-				'value' => $kjs[$field],
-				'type' => 'text',
-				'label' => false,
-				'placeholder' => $wamei,
-				'class'=>"kjs_inp",
-				'style'=>"width:{$width}px",
-				'title'=>$title,
-				'maxlength'=>$maxlength,
-		));
-		echo "</div>\n";
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		
+		$placeholder = '';
+		if(empty($option['placeholder'])){
+			$placeholder = $wamei;
+		}else{
+			$placeholder = $option['placeholder'];
+		}
+		
+		
+		$html = "
+			<div class='kj_div kj_wrap' data-field='{$field}'>
+				<div class='input text'>
+					<input 
+						name='data[{$model_name_c}][{$field}]' 
+						id='{$field}' 
+						value='' 
+						placeholder='{$placeholder}' 
+						class='kjs_inp' 
+						style='width:{$width}px; '
+						title='{$title}' 
+						maxlength='{$maxlength}' 
+						type='text'>
+				</div>
+			</div>
+		";
+		
+		echo $html;
 	}
 	
 	/**
@@ -592,7 +601,7 @@ class CrudBaseHelper {
 		
 		
 		echo "<div class='kj_div'>";
-		echo "	<input type='button' class='ympicker_toggle_btn' value='' onclick=\"$('.{$kj_dates}').fadeToggle()\" title='日付範囲入力を表示します' />";
+		echo "	<input type='button' class='ympicker_toggle_btn' value='' onclick=\"jQuery('.{$kj_dates}').fadeToggle()\" title='日付範囲入力を表示します' />";
 		echo "</div>";
 		
 		

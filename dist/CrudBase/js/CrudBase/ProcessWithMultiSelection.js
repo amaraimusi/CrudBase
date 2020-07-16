@@ -102,13 +102,13 @@ var ProcessWithMultiSelection =function(param){
 					location.reload(true);
 					
 				}else{
-					$("#err").html(res);
+					jQuery("#err").html(res);
 				}
 				
 
 			},
 			error: function(xmlHttpRequest, textStatus, errorThrown){
-				$('#err').html(xmlHttpRequest.responseText);//詳細エラーの出力
+				jQuery('#err').html(xmlHttpRequest.responseText);//詳細エラーの出力
 				alert(textStatus);
 			}
 		});
@@ -128,9 +128,9 @@ var ProcessWithMultiSelection =function(param){
 		var ids = []; // IDリスト
 		
 		var slt = myself.param.tbl_slt + ' tbody tr';
-		$(slt).each(function(){
+		jQuery(slt).each(function(){
 			
-			var tr = $(this);
+			var tr = jQuery(this);
 			
 			// TR要素内からname属性またはclass属性を指定してチェックボックス要素を取得する
 			var cb = getElmByNameOrClass(tr,myself.param.cb_slt);
@@ -199,14 +199,14 @@ var ProcessWithMultiSelection =function(param){
 	this.switchAllSelection = function(triggerCb){
 
 		// トリガーチェックボックスのチェックを取得する
-		var trigCb = $(triggerCb);
+		var trigCb = jQuery(triggerCb);
 		var trigChecked = trigCb.prop('checked');
 		
 		// 一覧をループして全行のチェック切替を行う
 		var slt = myself.param.tbl_slt + ' tbody tr';
-		$(slt).each(function(){
+		jQuery(slt).each(function(){
 			
-			var tr = $(this);
+			var tr = jQuery(this);
 			
 			// TR要素内からname属性またはclass属性を指定してチェックボックス要素を取得する
 			var cb = getElmByNameOrClass(tr,myself.param.cb_slt);

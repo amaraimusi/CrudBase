@@ -5,7 +5,7 @@
  * @date 2015-1-1 | 2017-9-25
  */
 
-$(function(){
+jQuery(function(){
 	
 	// もし入力エラーであるなら詳細要素を表示します。
 	errShowDetail();
@@ -18,13 +18,13 @@ $(function(){
 function errShowDetail(){
 	
 	// エラー要素および詳細要素が存在しなければ、処理をしません。
-	if(!$('#err')[0] || !$('#detail_div')[0]) return;
+	if(!jQuery('#err')[0] || !jQuery('#detail_div')[0]) return;
 	
 	// エラーメッセージが空でない場合、詳細要素を表示します。
-	var msg = $('#err').html();
+	var msg = jQuery('#err').html();
 	msg = msg.trim();
 	if(msg!=""){
-		$('#detail_div').show();
+		jQuery('#detail_div').show();
 	}
 	
 	
@@ -46,14 +46,14 @@ function resetKjs(exempts){
 	}
 	
 	//デフォルト検索条件JSONを取得およびパースする。
-	var def_kjs_json=$('#def_kjs_json').val();
+	var def_kjs_json=jQuery('#def_kjs_json').val();
 	var defKjs=$.parseJSON(def_kjs_json);
 	
 	for(var key in defKjs){
 		
 		//リセット対象外でなければ、検索条件入力フォームをリセットする。
 		if(exempts.indexOf(key) < 0){
-			$('#' + key).val(defKjs[key]);
+			jQuery('#' + key).val(defKjs[key]);
 		}
 		
 	}
@@ -72,7 +72,7 @@ function moveClmSorterBase(page_code){
 	
 	var csh_json = null;
 	if(csh_ary.length == 0){
-		csh_json = $('#csh_json').val();
+		csh_json = jQuery('#csh_json').val();
 	}else{
 		csh_json = JSON.stringify(csh_ary);
 	}
@@ -80,7 +80,7 @@ function moveClmSorterBase(page_code){
 	var csh_u=encodeURIComponent(csh_json);
 
 	//列並替画面に遷移する。
-	var webroot = $('#webroot').val();
+	var webroot = jQuery('#webroot').val();
 	var url = webroot + 'clm_sorter?p=' + page_code + '&csh_u=' + csh_u;
 	location.href=url;
 	
@@ -96,7 +96,7 @@ function moveClmSorterBase(page_code){
  */
 function loadSvg(svg_fn,svg_slt){
 	
-	$(svg_slt + ":empty").load(svg_fn, function(){
+	jQuery(svg_slt + ":empty").load(svg_fn, function(){
 		
 	});
 	
@@ -117,7 +117,7 @@ function toggleSvg(svg_fn,svg_slt){
 	// SVG画像ファイルを読み込んで指定要素に表示する（指定要素が空である場合のみ）
 	loadSvg(svg_fn,svg_slt);
 	
-	var elm = $(svg_slt);
+	var elm = jQuery(svg_slt);
 	
 	var display = elm.css('display');
 	if(display=='none'){
@@ -141,7 +141,7 @@ function toggleSvg(svg_fn,svg_slt){
  */
 function linkByRowdata(thisElm,base_url,field){
 	
-	thisElm = $(thisElm);
+	thisElm = jQuery(thisElm);
 	
 	if(field==null){
 		field = 'id';

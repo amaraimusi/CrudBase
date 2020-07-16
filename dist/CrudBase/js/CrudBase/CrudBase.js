@@ -1278,14 +1278,14 @@ class CrudBase{
 		if(exempts==null) exempts=[];
 		
 		//デフォルト検索条件JSONを取得およびパースする。
-		var def_kjs_json=$('#def_kjs_json').val();
+		var def_kjs_json=jQuery('#def_kjs_json').val();
 		var defKjs=jQuery.parseJSON(def_kjs_json);
 		
 		for(var key in defKjs){
 			
 			//リセット対象外でなければ、検索条件入力フォームをリセットする。
 			if(exempts.indexOf(key) < 0){
-				$('#' + key).val(defKjs[key]);
+				jQuery('#' + key).val(defKjs[key]);
 			}
 			
 		}
@@ -3475,13 +3475,13 @@ class CrudBase{
 
 		// 検索条件情報が省略されている場合はHTMLの埋込JSONから取得する。
 		if(kjs==null){
-			var kjs_json = $('#kjs_json').val();
+			var kjs_json = jQuery('#kjs_json').val();
 			kjs = JSON.parse(kjs_json);
 		}
 
 		// デフォルト検索条件が省略されている場合はHTMLの埋込JSONから取得する。
 		if(defKjs==null){
-			var def_kjs_json = $('#def_kjs_json').val();
+			var def_kjs_json = jQuery('#def_kjs_json').val();
 			defKjs = JSON.parse(def_kjs_json);
 		}
 
@@ -4099,7 +4099,7 @@ class CrudBase{
 		var draggableDiv = form.draggable();
 		
 		//ドラッグ移動を組み込むとテキスト選択ができなくなるので、パネルボディ部分をテキスト選択可能にする。
-		$('.panel-body',draggableDiv).mousedown((ev) => {
+		jQuery('.panel-body',draggableDiv).mousedown((ev) => {
 			  draggableDiv.draggable('disable');
 			}).mouseup((ev) => {
 			  draggableDiv.draggable('enable');

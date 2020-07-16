@@ -382,7 +382,7 @@ class CsvExin{
 	_addEventStrCodeRadioClick(){
 		this.mainElm.find("input[name='csv_exin_str_code']").click((evt)=>{
 			
-			var btnElm = $(evt.currentTarget);
+			var btnElm = jQuery(evt.currentTarget);
 			this.csvParam['str_code'] = btnElm.val();
 			
 			this.mainElm.find('#csv_exin_file').prop('disabled', false);

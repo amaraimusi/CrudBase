@@ -5,7 +5,6 @@ var terser = require('gulp-terser');
 gulp.task('CrudBase', function () {
 	gulp.src('../js/CrudBase/*.js')
 	.pipe(concat('CrudBase.min.js'))
-	.pipe(terser())
 	.pipe(gulp.dest('../js/CrudBase/dist'));
 });
 
