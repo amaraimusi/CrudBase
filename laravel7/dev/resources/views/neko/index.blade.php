@@ -53,6 +53,8 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		$this->CrudBase->inputKjDeleteFlg($kjs);
 		$this->CrudBase->inputKjText($kjs,'kj_update_user','更新者',150);
 		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','更新IPアドレス',200);
+		$this->CrudBase->inputKjCreated($kjs);
+		$this->CrudBase->inputKjModified($kjs);
 		?></div>
 		
 		<input id="crud_base_json" type="hidden" value='<?php echo $crud_base_json?>' />

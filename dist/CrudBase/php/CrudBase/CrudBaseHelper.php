@@ -488,30 +488,42 @@ class CrudBaseHelper {
 	 * @param string $list 選択肢リスト（省略可）
 	 * @param int $width 入力フォームの横幅（省略可）
 	 * @param string $title ツールチップメッセージ（省略可）
+	 * @param [] option
+	 *  - string model_name_c モデル名（キャメル記法）
 	 */
-	public function inputKjDateTimeA($kjs,$field,$wamei,$list=array(),$width=200,$title=null){
+	public function inputKjDateTimeA($kjs, $field, $wamei, $list=[], $width=200 ,$title=null, $option = []){
 	
-		if($title==null){
-			$title = $wamei."で検索";
+		$width_style = '';
+		if(!empty($width)) $width_style="width:{$width}px;";
+		
+		if($title===null) $title = $wamei . "で検索";
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		if(empty($list)) $list = $this->getDateTimeList();
+		
+		// option要素群
+		$options_str = ''; // option要素群文字列
+		foreach($list as $id => $name){
+			$name = htmlspecialchars($name); // XSSサニタイズ
+			$options_str .= "<option value='{$id}'>{$name}</option>";
 		}
 		
-		if(empty($list)){
-			$list = $this->getDateTimeList();
-		}
-	
-		echo "<div class='kj_div kj_wrap' data-field='{$field}' >\n";
-		echo $this->input($this->_mdl.$field, array(
-				'id' => $field,
-				'type' => 'select',
-				'options' => $list,
-				'empty' => "-- {$wamei} --",
-				'default' => $kjs[$field],
-				'label' => false,
-				'style' => "width:{$width}px",
-				'class' => 'kjs_inp',
-				'title' => $title,
-		));
-		echo "</div>\n";
+		$html = "
+			<div class='kj_div kj_wrap' data-field='{$field}'>
+				<div class='input select'>
+					<select name='data[{$model_name_c}][{$field}]' id='{$field}' style='{$width_style}' class='kjs_inp' title='{$title}'>
+						<option value=''>-- {$wamei} --</option>
+						{$options_str}
+					</select>
+				</div>
+			</div>
+		";
+		
+		echo $html;
+		
 	}
 	
 	
