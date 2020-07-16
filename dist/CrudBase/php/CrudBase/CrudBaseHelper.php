@@ -314,32 +314,63 @@ class CrudBaseHelper {
 	/**
 	 * 検索用のセレクトフォームを作成
 	 * 
-	 * @param array $kjs 検索条件データ
+	 * @param [] $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param string $list 選択肢リスト
 	 * @param int $width 入力フォームの横幅（省略可）
 	 * @param string $title ツールチップメッセージ（省略可）
+	 * @param [] option
+	 *  - string model_name_c モデル名（キャメル記法）
 	 */
-	public function inputKjSelect($kjs,$field,$wamei,$list,$width=150,$title=null){
+	public function inputKjSelect($kjs, $field, $wamei, $list, $width=null, $title=null, $option = []){
 		
-		if($title==null){
-			$title = $wamei."で検索";
+		
+		$width_style = '';
+		if(!empty($width)) $width_style="width:{$width}px";
+		
+		if($title===null) $title = $wamei . "で検索";
+
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		$options_str = ''; // option要素群文字列
+		foreach($list as $id => $name){
+			$name = htmlspecialchars($name); // XSSサニタイズ
+			$options_str .= "<option value='{$id}'>{$name}</option>";
 		}
 		
-		echo "<div class='kj_div kj_wrap' data-field='{$field}'>\n";
-		echo $this->input($this->_mdl.$field, array(
-				'id' => $field,
-				'type' => 'select',
-				'options' => $list,
-				'empty' => "-- {$wamei} --",
-				'default' => $kjs[$field],
-				'label' => false,
-				'style'=>"width:{$width}px",
-				'class' => 'kjs_inp',
-				'title'=>$title,
-		));	
-		echo "</div>\n";
+		
+		$html = "
+			<div class='kj_div kj_wrap' data-field='{$field}'>
+				<div class='input select'>
+					<select name='data[{$model_name_c}][{$field}]' id='{$field}' style='{$width_style}' class='kjs_inp' title='{$title}'>
+						<option value=''>-- {$wamei} --</option>
+						$options_str
+					</select>
+				</div>
+			</div>
+		";
+		
+
+		
+		// ■■■□□□■■■□□□
+// 		echo "<div class='kj_div kj_wrap' data-field='{$field}'>\n";
+// 		echo $this->input($this->_mdl.$field, array(
+// 				'id' => $field,
+// 				'type' => 'select',
+// 				'options' => $list,
+// 				'empty' => "-- {$wamei} --",
+// 				'default' => $kjs[$field],
+// 				'label' => false,
+// 				'style'=>"width:{$width}px",
+// 				'class' => 'kjs_inp',
+// 				'title'=>$title,
+// 		));	
+// 		echo "</div>\n";
+		
+		echo $html;
 	}
 
 
@@ -664,14 +695,13 @@ class CrudBaseHelper {
 		
 		echo "
 			<div class='kj_div'>
-				<div class='input number'>
+				<div class='input number' style='display:inline-block'>
 					<input name='data[Neko][kj_{$field}1]' id='kj_{$field}1' value='' 
 						class='kjs_inp' placeholder='{$wamei}～' title='{$wamei}～' 
 						type='number' style='width:{$width}'>
 				</div>
-			</div>			
-			<div class='kj_div'>
-				<div class='input number'>
+				<span>～</span>
+				<div class='input number' style='display:inline-block'>
 					<input name='data[Neko][kj_{$field}2]' id='kj_{$field}2' value='' 
 						class='kjs_inp' placeholder='～{$wamei}' title='～{$wamei}' 
 						type='number' style='width:{$width}'>
