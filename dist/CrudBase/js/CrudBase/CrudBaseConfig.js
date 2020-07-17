@@ -110,12 +110,12 @@ class CrudBaseConfig{
 	 */
 	_createHtml(){
 		let html = `
-	<input class='cb_conf_f_show_btn btn btn-default btn-xs' type="button" value='設定' />
+	<input class='cb_conf_f_show_btn btn btn-secondary btn-sm' type="button" value='設定' />
 	<div class='cb_conf_func_div' style="display:none">
 		<div style="display:inline-block;padding:10px;border:solid 4px #5bd59e;border-radius:5px;margin-bottom:10px">
 			<div style="color:#5bd59e;font-weight:bold">設定</div>
 			
-			<input value="ボタン設定" type="button" class="btn btn-default btn-xs" onclick="jQuery('#CbBtnSizeChanger').toggle(300);" />
+			<input value="ボタン設定" type="button" class="btn btn-secondary btn-sm" onclick="jQuery('#CbBtnSizeChanger').toggle(300);" />
 			<div id="CbBtnSizeChanger" style="display:none"></div>
 			
 			<table class='cb_conf_form tbl2' style="margin-top:8px"><tbody>
@@ -127,7 +127,7 @@ class CrudBaseConfig{
 			
 			<div style="margin-top:8px">
 				<input class="cb_conf_apply_btn btn btn-success" type='button' value="適用" />
-				<input class="cb_conf_def_btn btn btn-default btn-xs" type='button' value="初期に戻す" />
+				<input class="cb_conf_def_btn btn btn-secondary btn-sm" type='button' value="初期に戻す" />
 			</div>
 			
 			<div class="cb_conf_res text-success"></div>

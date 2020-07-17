@@ -71,12 +71,12 @@ class CbBtnSizeChanger{
 	 */
 	_getDefaultCnfData(){
 		var defCnfData = [
-			{'slt':'.row_edit_btn','wamei':'編集ボタン','visible':true ,'def_size':'btn-xs','size':'btn-xs'},
-			{'slt':'.row_copy_btn','wamei':'複製ボタン','visible':true ,'def_size':'btn-xs','size':'btn-xs'},
-			{'slt':'.row_delete_btn','wamei':'削除ボタン','visible':true ,'def_size':'btn-xs','size':'btn-xs'},
-			{'slt':'.row_eliminate_btn','wamei':'抹消ボタン','visible':false ,'def_size':'btn-xs','size':'btn-xs'},
-			{'slt':'.row_exc_btn','wamei':'行入替ボタン(↑↓ボタン)','visible':true ,'def_size':'btn-xs','size':'btn-xs'},
-			{'slt':'.row_enabled_btn','wamei':'有効ボタン','visible':false ,'def_size':'btn-xs','size':'btn-xs'},
+			{'slt':'.row_edit_btn','wamei':'編集ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
+			{'slt':'.row_copy_btn','wamei':'複製ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
+			{'slt':'.row_delete_btn','wamei':'削除ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
+			{'slt':'.row_eliminate_btn','wamei':'抹消ボタン','visible':false ,'def_size':'btn-sm','size':'btn-sm'},
+			{'slt':'.row_exc_btn','wamei':'行入替ボタン(↑↓ボタン)','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
+			{'slt':'.row_enabled_btn','wamei':'有効ボタン','visible':false ,'def_size':'btn-sm','size':'btn-sm'},
 			
 		];
 		
@@ -102,7 +102,7 @@ class CbBtnSizeChanger{
 		// ラジオボタンデータ
 		if(param['radioData'] == null){
 			param['radioData'] = [
-				{'value':'btn-xs', 'wamei':' 極小'},
+				{'value':'btn-sm', 'wamei':' 極小'},
 				{'value':'btn-sm', 'wamei':' 小　'},
 				{'value':'', 'wamei':' 普通'},
 				{'value':'btn-lg', 'wamei':' 大　'},
@@ -180,8 +180,8 @@ class CbBtnSizeChanger{
 		
 		html += `
 				</tbody></table>
-				<input id='cbbsc_def_btn' type='button' value='初期に戻す' class='btn btn-default btn-xs' >
-				<input id='cbbsc_close_btn' type='button' value='閉じる' class='btn btn-default btn-xs' >
+				<input id='cbbsc_def_btn' type='button' value='初期に戻す' class='btn btn-secondary btn-sm' >
+				<input id='cbbsc_close_btn' type='button' value='閉じる' class='btn btn-secondary btn-sm' >
 			</div>
 		`;
 		
@@ -306,7 +306,7 @@ class CbBtnSizeChanger{
 		// ▼ ボタンサイズのclass属性をいったん除去する
 		var radioData = this.param.radioData; // ラジオボタンデータ
 		for(var i in radioData){
-			var class_str = radioData[i].value; // ボタンサイズのclass属性  btn-xs, btn-sm, btn-lg
+			var class_str = radioData[i].value; // ボタンサイズのclass属性  btn-sm, btn-sm, btn-lg
 			if(class_str == '') continue;
 			if(btn.hasClass(class_str)){
 				if(size == class_str) return; // 変更不要であるなら処理抜け

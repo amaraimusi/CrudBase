@@ -118,7 +118,7 @@ class CrudBaseBulkAdd{
 				<div id="cbba_head" >
 					<h4>一括追加</h4>
 					<div id="cbba_close_btn_w" style="">
-						<input id="cbba_close_btn" type='button' value="閉じる" class="btn btn-primary btn-xs" onclick="" />
+						<input id="cbba_close_btn" type='button' value="閉じる" class="btn btn-primary btn-sm" onclick="" />
 					</div>
 				</div>
 				<div style="clear:both"></div>

@@ -148,7 +148,7 @@ class AjaxLoginWithCake{
 
 		var btn_html = "";
 		if(this.param.btn_type == 1){
-			btn_html = "<span class='text-success'>認証中です </span><a href='" + logout_url + "' id='logout_btn' class='btn btn-default btn-xs'>ログアウト</a>";
+			btn_html = "<span class='text-success'>認証中です </span><a href='" + logout_url + "' id='logout_btn' class='btn btn-secondary btn-sm'>ログアウト</a>";
 		}else{
 			btn_html = "<a href='" + logout_url + "' id='logout_btn'>ログアウト</a>";
 		}

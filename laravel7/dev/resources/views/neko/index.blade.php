@@ -30,6 +30,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 
 <div class="cb_func_line">
 
+	<div class="cb_kj_main">
 	<!-- 検索条件入力フォーム -->
 	<form action="" class="form_kjs" id="{{$model_name_c}}IndexForm" method="post" accept-charset="utf-8">
 		
@@ -39,7 +40,10 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 			<button type="button" class="btn btn-secondary btn-sm" title="詳細検索項目を表示する" onclick="jQuery('.cb_kj_detail').toggle(300)">詳細検索</button>
 			<a href="" class="ini_rtn btn btn-primary btn-sm" title="この画面を最初に表示したときの状態に戻します。（検索状態、列並べの状態を解除）">リセット</a>
 		</div>
-		<div class="cb_kj_detail" ><?php 
+		<div class="cb_kj_detail" style="display:none">
+		<?php 
+		
+		// --- CBBXS-1004
 		$this->CrudBase->inputKjText($kjs,'kj_neko_name','ネコ名前');
 		$this->CrudBase->inputKjMoDateRng($kjs,'kj_neko_date','ネコ日付');
 		$this->CrudBase->inputKjNumRange($kjs,'neko_val','ネコ数値'); 
@@ -55,19 +59,79 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','更新IPアドレス',200);
 		$this->CrudBase->inputKjCreated($kjs);
 		$this->CrudBase->inputKjModified($kjs);
-		?></div>
+		// --- CBBXE
 		
-		<input id="crud_base_json" type="hidden" value='<?php echo $crud_base_json?>' />
+		$this->CrudBase->inputKjLimit($kjs);
+		echo "<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success' />";
+		
+		
+		?>
+				<div class="kj_div" style="margin-top:5px">
+					<input type="button" value="検索入力リセット" title="検索入力を初期に戻します" onclick="resetKjs()" class="btn btn-primary btn-sm" />
+				</div>
+				
+				<input id="crud_base_json" type="hidden" value='<?php echo $crud_base_json?>' />
+		</div>
 	</form>
+	</div><!-- cb_kj_main -->
+	<div id="cb_func_btns" class="btn-group" >
+		<button type="button" onclick="jQuery('#detail_div').toggle(300);" class="btn btn-secondary btn-sm">ツール</button>
+	</div>
+</div><!-- cb_func_line -->
 
-TEST
-</div>
+<div style="clear:both"></div>
+
+<!-- 一括追加機能  -->
+<div id="crud_base_bulk_add" style="display:none"></div>
+
+<?php $this->CrudBase->divNewPageVarsion(); // 新バージョン通知区分を表示?>
+<div id="err" class="text-danger"><?php echo $errMsg;?></div>
+
+<div style="clear:both"></div>
+
+<div id="detail_div" style="display:none">
+	<div id="main_tools" style="margin-bottom:10px;">
+		<?php 
+			// 列表示切替機能
+			$this->CrudBase->divCsh();
+			
+			// CSVエクスポート機能
+ 			$csv_dl_url =  'csv_download';
+ 			$this->CrudBase->makeCsvBtns($csv_dl_url);
+
+		?>
+
+		<button id="crud_base_bulk_add_btn" type="button" class="btn btn-default btn-secondary btn-sm" onclick="crudBase.crudBaseBulkAdd.showForm()" >一括追加</button>
+		
+	</div><!-- main_tools -->
+	
+	<div id="sub_tools">
+		<!-- CrudBase設定 -->
+		<div id="crud_base_config" style="display:inline-block"></div>
+		
+		<button id="calendar_view_k_btn" type="button" class="btn btn-default btn-secondary btn-sm" onclick="calendarViewKShow()" >カレンダーモード</button>
+		
+		<button type="button" class="btn btn-default btn-secondary btn-sm" onclick="sessionClear()" >セッションクリア</button>
+	
+		<button id="table_transform_tbl_mode" type="button" class="btn btn-default btn-secondary btn-sm" onclick="tableTransform(0)" style="display:none">一覧の変形・テーブルモード</button>	
+		<button id="table_transform_div_mode" type="button" class="btn btn-default btn-secondary btn-sm" onclick="tableTransform(1)" >一覧の変形・スマホモード</button>
+		
+	</div><!-- sub_tools -->
+</div><!-- detail_div -->
 
 
+<div id="new_inp_form_point"></div><!-- 新規入力フォーム表示地点 -->
+
+<?php $this->CrudBase->divPagenation(); // ページネーション ?>
+
+<div id="calendar_view_k"></div>
 
 
+<div id="crud_base_auto_save_msg" style="height:20px;" class="text-success"></div>
 
-
+<?php if(!empty($data)){ ?>
+	<button type="button" class="btn btn-warning btn-sm" onclick="newInpShow(this, 'add_to_top');">新規追加</span></button>
+<?php } ?>
 
 		
 </div></body>

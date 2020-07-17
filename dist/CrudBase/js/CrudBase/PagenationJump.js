@@ -82,13 +82,13 @@ class PagenationJump{
 	_createHtml(){
 		// テキストボックス cbpjump_tb、ジャンプボタン cbpjump_btn
 		let html = `
-	<button class="cbpjump_show_btn btn btn-default btn-xs" title="ページジャンプ">
+	<button class="cbpjump_show_btn btn btn-secondary btn-sm" title="ページジャンプ">
 			<span class="glyphicon glyphicon-hand-up"></span>
 	</button>
 	<div style="display:inline-block">
 		<div class="cbpjump_div1" style="margin-right:16px;display:none">
 			<input class="cbpjump_tb" type="textbox" style="width:60px">
-			<input class="cbpjump_jump_btn btn btn-warning btn-xs" type="button" value='ページジャンプ' />
+			<input class="cbpjump_jump_btn btn btn-warning btn-sm" type="button" value='ページジャンプ' />
 		</div>
 	</div>
 		`;

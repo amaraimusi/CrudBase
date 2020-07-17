@@ -61,7 +61,7 @@ class CsvExin{
 			<aside>基本的に上書きでDB登録されますが、idが空のレコードもしくはDBに存在しないidのレコードは「新規追加」になります。</aside>
 			<div id="csv_exin_step2" style="display:none">
 				<input id="csv_bulk_reg_btn" type="button" value="一括登録" class="btn btn-danger btn-sm" />
-				<input id="csv_exin_retry_btn" type="button" value="やり直し" class="btn btn-default btn-xs" />
+				<input id="csv_exin_retry_btn" type="button" value="やり直し" class="btn btn-secondary btn-sm" />
 			</div>
 			<div id="csv_exin_err" style="color:red"></div>
 			<div id="csv_exin_success" class="text-success"></div>

@@ -406,19 +406,19 @@ var ClmShowHide =function(){
 		cbs.append("<div style='clear:both'></div>");
 
 		//列表示保存ボタンを作成
-		var saveBtn="<div class='csh_func_btn'><input type='button' value='列表示を保存' id='" + tblId + "_save_btn' class='btn btn-primary btn-xs' /></div>";
+		var saveBtn="<div class='csh_func_btn'><input type='button' value='列表示を保存' id='" + tblId + "_save_btn' class='btn btn-primary btn-sm' /></div>";
 		cbs.append(saveBtn);
 
 		//すべてチェックボタンを作成
-		var allCheckedBtn="<div class='csh_func_btn'><input type='button' value='すべてチェック' id='" + tblId + "_all_checked_btn' class='btn btn-primary btn-xs' /></div>";
+		var allCheckedBtn="<div class='csh_func_btn'><input type='button' value='すべてチェック' id='" + tblId + "_all_checked_btn' class='btn btn-primary btn-sm' /></div>";
 		cbs.append(allCheckedBtn);
 		
 		//すべてはずすボタンを作成
-		var allUncheckBtn="<div class='csh_func_btn'><input type='button' value='すべてはずす' id='" + tblId + "_all_uncheck_btn' class='btn btn-primary btn-xs' /></div>";
+		var allUncheckBtn="<div class='csh_func_btn'><input type='button' value='すべてはずす' id='" + tblId + "_all_uncheck_btn' class='btn btn-primary btn-sm' /></div>";
 		cbs.append(allUncheckBtn);		
 
 		//「初期に戻す」ボタンを作成
-		var defaultBtn="<div class='csh_func_btn'><input type='button' value='初期に戻す' id='" + tblId + "_default_btn' class='btn btn-primary btn-xs' /></div>";
+		var defaultBtn="<div class='csh_func_btn'><input type='button' value='初期に戻す' id='" + tblId + "_default_btn' class='btn btn-primary btn-sm' /></div>";
 		cbs.append(defaultBtn);
 
 

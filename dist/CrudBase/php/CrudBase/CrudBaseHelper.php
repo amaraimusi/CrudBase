@@ -22,6 +22,8 @@ class CrudBaseHelper {
 	
 	private $crudBaseData;
 
+	
+	//■■■□□□■■■□□□
 	private $_mdl=""; // モデル名(.)
 	private $_mdl_cml=''; // モデル名（キャメル記法）
 	private $_mdl_snk=''; // モデル名（スネーク記法）
@@ -143,7 +145,7 @@ class CrudBaseHelper {
 	 * 
 	 * 
 	 */
-	public function inputKjId($kjs, $field='kj_id', $wamei='ID', $width=100, $title=null, $option = []){
+	public function inputKjId(&$kjs, $field='kj_id', $wamei='ID', $width=100, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
 		
@@ -218,7 +220,7 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *  - string placeholder
 	 */
-	public function inputKjMain($kjs, $field, $wamei, $width=200,$title=null, $option = []){
+	public function inputKjMain(&$kjs, $field, $wamei, $width=200,$title=null, $option = []){
 
 		if($title===null) $title = $wamei."で検索";
 		
@@ -275,7 +277,7 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *  - string placeholder
 	 */
-	public function inputKjText($kjs, $field, $wamei, $width=200, $title=null, $option = []){
+	public function inputKjText(&$kjs, $field, $wamei, $width=200, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
 		
@@ -345,7 +347,7 @@ class CrudBaseHelper {
 	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 */
-	public function inputKjHidden($kjs,$field){
+	public function inputKjHidden(&$kjs,$field){
 		
 		$model_name_c = $this->crudBaseData['model_name_c'];
 	
@@ -379,7 +381,7 @@ class CrudBaseHelper {
 	 * @param [] option
 	 *  - string model_name_c モデル名（キャメル記法）
 	 */
-	public function inputKjSelect($kjs, $field, $wamei, $list, $width=null, $title=null, $option = []){
+	public function inputKjSelect(&$kjs, $field, $wamei, $list, $width=null, $title=null, $option = []){
 		
 		
 		$width_style = '';
@@ -420,7 +422,7 @@ class CrudBaseHelper {
 	 * 検索用の更新日時セレクトフォームを作成
 	 * @param array $kjs 検索条件データ
 	 */
-	public function inputKjModified($kjs){
+	public function inputKjModified(&$kjs){
 	
 		$this->inputKjDateTimeA($kjs,'kj_modified','更新日時');
 	}
@@ -436,7 +438,7 @@ class CrudBaseHelper {
 	 * @param string $title ツールチップメッセージ（省略可）
 	 * @param int $maxlength 最大文字数(共通フィールドは設定不要）
 	 */
-	public function inputKjDateTime($kjs,$field,$wamei,$width=200,$title=null,$maxlength=255){
+	public function inputKjDateTime(&$kjs,$field,$wamei,$width=200,$title=null,$maxlength=255){
 		
 		if($title==null){
 			$title = $wamei."で検索";
@@ -470,7 +472,7 @@ class CrudBaseHelper {
 	 * 検索用の生成日時セレクトフォームを作成
 	 * @param array $kjs 検索条件データ
 	 */
-	public function inputKjCreated($kjs){
+	public function inputKjCreated(&$kjs){
 	
 		$this->inputKjDateTimeA($kjs,'kj_created','生成日時');
 	}
@@ -491,7 +493,7 @@ class CrudBaseHelper {
 	 * @param [] option
 	 *  - string model_name_c モデル名（キャメル記法）
 	 */
-	public function inputKjDateTimeA($kjs, $field, $wamei, $list=[], $width=200 ,$title=null, $option = []){
+	public function inputKjDateTimeA(&$kjs, $field, $wamei, $list=[], $width=200 ,$title=null, $option = []){
 	
 		$width_style = '';
 		if(!empty($width)) $width_style="width:{$width}px;";
@@ -543,7 +545,7 @@ class CrudBaseHelper {
 	 * 
 	 * 
 	 */	
-	public function inputKjDeleteFlg($kjs, $field='kj_delete_flg', $wamei='削除', $width=null, $title=null, $option = []){
+	public function inputKjDeleteFlg(&$kjs, $field='kj_delete_flg', $wamei='削除', $width=null, $title=null, $option = []){
 		if($title===null) $title = $wamei."で検索";
 		
 		// モデル名を取得
@@ -585,7 +587,7 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *
 	 */
-	public function inputKjFlg($kjs, $field, $wamei, $title=null, $option = []){
+	public function inputKjFlg(&$kjs, $field, $wamei, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
 		
@@ -619,26 +621,28 @@ class CrudBaseHelper {
 	 * @param array $kjs 検索条件データ
 	 * 
 	 */	
-	public function inputKjLimit($kjs){
-		echo "<div class='kj_div kj_wrap' data-field='row_limit'>\n";
-		echo $this->input($this->_mdl.'row_limit', array(
-				'id' => 'row_limit',
-				'type' => 'select',
-				'options' => array(
-						5=>'5件表示',
-						10=>'10件表示',
-						20=>'20件表示',
-						50=>'50件表示',
-						100=>'100件表示',
-						200=>'200件表示',
-						500=>'500件表示',
-				),
-				'default' => $kjs['row_limit'],
-				'label' => false,
-				'style' => 'height:27px',
-				'class' => 'kjs_inp',
-		));
-		echo "</div>\n";
+	public function inputKjLimit(&$kjs){
+		
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		
+		$html = "
+			<div class='kj_div kj_wrap' data-field='row_limit'>
+				<div class='input select'>
+					<select name='data[{$model_name_c}][row_limit]' id='row_limit' style='height:27px' class='kjs_inp'>
+						<option value='5'>5件表示</option>
+						<option value='10'>10件表示</option>
+						<option value='20'>20件表示</option>
+						<option value='50' selected='selected'>50件表示</option>
+						<option value='100'>100件表示</option>
+						<option value='200'>200件表示</option>
+						<option value='500'>500件表示</option>
+					</select>
+				</div>
+			</div>
+		";
+		
+		echo $html;
+		
 	}
 	
 	
@@ -656,7 +660,7 @@ class CrudBaseHelper {
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 */
-	public function inputKjMoDateRng($kjs,$field,$wamei){
+	public function inputKjMoDateRng(&$kjs,$field,$wamei){
 
 		// 年月を取得
 		$kj_field_ym = $field . '_ym';
@@ -673,83 +677,6 @@ class CrudBaseHelper {
 	}
 	
 	
-	/**
-	 * 月・日付範囲検索(非推奨）
-	 * 
-	 * @param array $kjs 検索条件データ
-	 * @param string $field フィールド名
-	 * @param string $wamei フィールド和名
-	 */
-	public function inputKjMoDateRngOld($kjs,$field,$wamei){
-
-
-		$kj_date_ym = $field.'_ym';
-		$kj_date1 = $field.'1';
-		$kj_date2 = $field.'2';
-		$kj_dates = $field.'s';
-		
-		$kj_ym_value = $kjs[$kj_date1];
-		if(!empty($kj_ym_value)){
-			$kj_ym_value=date('Y/m',strtotime($kj_ym_value));
-		}
-		
-		echo "<div class='kj_div kj_wrap' data-field='{$field}' data-gadget='mo_date_rng'>";
-		echo "<div class='kj_div' style='margin-right:2px'>";
-		echo $this->input($kj_date_ym, array(
-				'id' => $kj_date_ym,
-				'value' => $kj_ym_value,
-				'type' => 'text',
-				'label' => false,
-				'placeholder' => '-- '.$wamei.'年月 --',
-				'class' => 'datepicker kjs_inp',
-				'style'=>'width:100px;',
-		));
-		echo "</div>";
-		
-		
-		
-		
-		echo "<div class='kj_div'>";
-		echo "	<input type='button' class='ympicker_toggle_btn' value='' onclick=\"jQuery('.{$kj_dates}').fadeToggle()\" title='日付範囲入力を表示します' />";
-		echo "</div>";
-		
-		
-		
-		
-		echo "<div class='kj_div {$kj_dates}' style='display:none'>";
-		echo $this->input($this->_mdl.$kj_date1, array(
-				'id' => $kj_date1,
-				'value' => $kjs[$kj_date1],
-				'type' => 'text',
-				'label' => false,
-				'placeholder' => '-- '.$wamei.'【範囲1】--',
-				'style'=>'width:150px',
-				'class' => 'kjs_inp',
-				'title'=>'入力日以降を検索',
-		));
-		echo "</div>";
-		
-		
-		
-		echo "<div class='kj_div {$kj_dates}' style='display:none'>";
-		echo $this->input($this->_mdl.$kj_date2, array(
-				'id' => $kj_date2,
-				'value' => $kjs[$kj_date2],
-				'type' => 'text',
-				'label' => false,
-				'placeholder' => '-- '.$wamei.'【範囲2】--',
-				'style'=>'width:150px',
-				'class' => 'kjs_inp',
-				'title'=>'入力日以前を検索',
-		));
-		echo "</div>";
-		echo "</div>";
-
-		
-	}
-	
-	
-	
 	
 	
 	
@@ -763,7 +690,7 @@ class CrudBaseHelper {
 	 * @param string $field フィールド名（ kj_ を付けないこと）
 	 * @param string $wamei フィールド和名
 	 */
-	public function inputKjNumRange($kjs, $field, $wamei, $option=array()){
+	public function inputKjNumRange(&$kjs, $field, $wamei, $option=array()){
 		
 		// テキストの幅を自動指定する
 		$str_len = mb_strlen($wamei);
@@ -1871,8 +1798,8 @@ class CrudBaseHelper {
 	public function makeCsvBtns($csv_dl_url){
 		
 		$html = "
-		<a href='{$csv_dl_url}' class='btn btn-default btn-sm'><span class='glyphicon glyphicon-save'></span>CSVエクスポート</a>
-		<input type='button' value='CSVインポート' class='btn btn-default btn-xs' onclick='jQuery(\"#csv_fu_div\").toggle(300);' style='display:none' />
+		<a href='{$csv_dl_url}' class='btn btn-default btn-secondary btn-sm'>CSVエクスポート</a>
+		<input type='button' value='CSVインポート' class='btn btn-default btn-secondary btn-sm' onclick='jQuery(\"#csv_fu_div\").toggle(300);' style='display:none' />
 		<div id='csv_fu_div' style='display:none'><input type='file' id='csv_fu' /></div>
 		";
 		
@@ -1998,6 +1925,73 @@ class CrudBaseHelper {
 		$url = "https://maps.google.com/maps?q={$lat},{$lon}";
 		echo "<a href='{$url}' class='{$class}' target='blank'>$text</a>";
 		
+	}
+	
+	
+	/**
+	 * 新バージョン通知区分を表示
+	 */
+	public function divNewPageVarsion(){
+		
+		$new_version_flg = $this->crudBaseData['new_version_flg'];
+		$this_page_version = $this->crudBaseData['this_page_version'];
+		
+		if(empty($new_version_flg)) return;
+		$html = "
+			<div style='padding:10px;background-color:#fac9cc'>
+				<div>新バージョン：{$this_page_version}</div>
+				<div class='text-danger'>当画面は新しいバージョンに変更されています。
+				セッションクリアボタンを押してください。</div>
+				<input type='button' class='btn btn-danger btn-xs' value='セッションクリア' onclick='sessionClear()' >
+			</div>
+		";
+		echo $html;
+	}
+	
+	
+	/**
+	 * 列表示切替機能の区分を表示
+	 */
+	public function divCsh(){
+		
+		$html = "
+			<div id='csh_div' style='display:inline-block'>
+				<input type='button' value='列表示切替' class='btn btn-default btn-secondary btn-sm' onclick=\"jQuery('#clm_cbs_detail').toggle(300)\" />
+				<div id='clm_cbs_detail' style='display:none;margin-top:5px'>
+					<div id='clm_cbs_rap'>
+						<p>列表示切替</p>
+						<div id='clm_cbs'></div>
+						<a href='#help_csh' class='livipage btn btn-info btn-sm' title='ヘルプ'>?</a>
+					</div>
+					<hr class='hr_purple'>
+				</div>
+			</div>
+		";
+		echo $html;
+	}
+	
+	/**
+	 * ページネーション区分の表示
+	 */
+	public function divPagenation(){
+		
+		$pages = $this->crudBaseData['pages'];
+		$data_count = $this->crudBaseData['data_count'];
+		
+		$html = "
+			<div class='pagenation_w' style='margin-top:8px;'>
+				<div style='display:inline-block'>
+					{$pages['page_index_html']}
+				</div>
+				<div id='pagenation_jump' 
+					data-row-limit='{$pages['row_limit']}' 
+					data-count='{$data_count}' 
+					data-hina-url='{$pages['def_url']}' 
+					style='display:inline-block'></div>
+				<div style='display:inline-block'>件数:{$data_count}</div>
+			</div>
+		";
+		echo $html;
 	}
 	
 	
