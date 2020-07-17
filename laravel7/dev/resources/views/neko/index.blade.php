@@ -133,6 +133,71 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	<button type="button" class="btn btn-warning btn-sm" onclick="newInpShow(this, 'add_to_top');">新規追加</span></button>
 <?php } ?>
 
+
+<!-- 一覧テーブル -->
+<table id="neko_tbl" class="table table-striped table-bordered table-condensed" style="display:none;margin-bottom:0px">
+
+<thead>
+<tr>
+	<?php
+	foreach($field_data as $ent){
+		$row_order=$ent['row_order'];
+		echo "<th class='{$ent['id']}'>{$pages['sorts'][$row_order]}</th>";
+	}
+	?>
+	<th></th>
+</tr>
+</thead>
+<tbody>
+<?php
+
+// td要素出力を列並モードに対応させる
+$this->CrudBase->startClmSortMode($field_data);
+
+foreach($data as $i=>&$ent){
+
+	echo "<tr id='ent{$ent['id']}' >";
+	// CBBXS-1005
+	$this->CrudBase->tdId($ent,'id',array('checkbox_name'=>'pwms'));
+	$this->CrudBase->tdMoney($ent,'neko_val');
+	$this->CrudBase->tdStr($ent,'neko_name');
+	$this->CrudBase->tdList($ent,'neko_group',$nekoGroupList);
+	$this->CrudBase->tdPlain($ent,'neko_date');
+	$this->CrudBase->tdPlain($ent,'neko_dt');
+	$this->CrudBase->tdFlg($ent,'neko_flg');
+	$this->CrudBase->tdImage($ent,'img_fn');
+	$this->CrudBase->tdNote($ent,'note',50);
+	$this->CrudBase->tdPlain($ent,'sort_no');
+	$this->CrudBase->tdDeleteFlg($ent,'delete_flg');
+	$this->CrudBase->tdPlain($ent,'update_user');
+	$this->CrudBase->tdPlain($ent,'ip_addr');
+	$this->CrudBase->tdPlain($ent,'created');
+	$this->CrudBase->tdPlain($ent,'modified');
+	// CBBXE
+	
+	$this->CrudBase->tdsEchoForClmSort();// 列並に合わせてTD要素群を出力する
+	
+	// 行のボタン類
+	echo "<td><div style='display:inline-block'>";
+	$id = $ent['id'];
+	echo  "<input type='button' value='↑↓' onclick='rowExchangeShowForm(this)' class='row_exc_btn btn btn-info btn-xs' />";
+	$this->CrudBase->rowEditBtn($id);
+	$this->CrudBase->rowPreviewBtn($id);
+	$this->CrudBase->rowCopyBtn($id);
+	echo "</div>&nbsp;";
+	echo "<div style='display:inline-block'>";
+	$this->CrudBase->rowDeleteBtn($ent); // 削除ボタン
+	$this->CrudBase->rowEnabledBtn($ent); // 有効ボタン
+	echo "&nbsp;";
+	$this->CrudBase->rowEliminateBtn($ent);// 抹消ボタン
+	echo "</div>";
+	echo "</td>";
+	echo "</tr>";
+}
+
+?>
+</tbody>
+</table>
 		
 </div></body>
 </html>

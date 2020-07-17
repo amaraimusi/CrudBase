@@ -73,8 +73,14 @@ class Neko extends Model
 		if(!empty($res)){
 			$non_limit_count = reset($res[0]);
 		}
+		
+		// 構造変換
+		$data2 = [];
+		foreach($data as $ent){
+			$data2[] = (array)$ent;
+		}
 
-		return ['data' => $data, 'non_limit_count' => $non_limit_count];
+		return ['data' => $data2, 'non_limit_count' => $non_limit_count];
 		
 	}
 	

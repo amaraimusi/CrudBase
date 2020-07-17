@@ -68,7 +68,7 @@ class NekoController
 // 		echo config('const.CRUD_BASE_PATH');
 
 		$crud_base_json = json_encode($crudBaseData,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
-		return view('neko.index', compact('crudBaseData', 'crud_base_json'));
+		return view('neko.index', compact('data', 'crudBaseData', 'crud_base_json'));
 		
 		
 	}
