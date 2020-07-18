@@ -1923,6 +1923,50 @@ class CrudBaseHelper {
 		echo $html;
 	}
 	
+	/**
+	 * ページネーション区分の表示(下段用）
+	 */
+	public function divPagenationB(){
+		
+		$pages = $this->crudBaseData['pages'];
+		$data_count = $this->crudBaseData['data_count'];
+		
+		$html="
+			<div  class='pagenation_w' style='margin-top:8px;'>
+				<div style='display:inline-block'>
+					{$pages['page_index_html']}
+				</div>
+				<div id='pagenation_jump_b' 
+					data-row-limit='{$pages['row_limit']}' 
+					data-count='{$data_count}' 
+					data-hina-url='{$pages['def_url']}' 
+					style='display:inline-block'></div>
+				<div style='display:inline-block'>件数:{$data_count}</div>
+			</div>
+		";
+		
+		echo $html;
+	}
+	
+	
+	/**
+	 * 複数有効/削除の区分を表示する
+	 */
+	public function divPwms(){
+		$html = "
+			<div style='margin-top:10px;margin-bottom:10px'>
+				<label for='pwms_all_select'>すべてチェックする <input type='checkbox' name='pwms_all_select' onclick='pwms.switchAllSelection(this);' /></label>
+				<button type='button' onclick='pwms.action(10)' class='btn btn-success btn-sm'>有効</button>
+				<button type='button' onclick='pwms.action(11)' class='btn btn-danger btn-sm'>削除</button>
+				<aside>
+					※ID列の左側にあるチェックボックスにチェックを入れてから「削除」ボタンを押すと、まとめて削除されます。<br>
+					削除の復元は画面下側のヘルプボタンを参照してください。<br>
+				</aside>
+			</div>
+		";
+		echo $html;
+	}
+	
 	
 	/**
 	 * 0以外の空判定

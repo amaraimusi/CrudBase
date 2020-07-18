@@ -145,7 +145,7 @@ function newInpShow(btnElm, ni_tr_place){
  * @param btnElm ボタン要素
  */
 function editShow(btnElm){
-	
+	console.log('A0001');//■■■□□□■■■□□□)
 	var option = {};
 	crudBase.editShow(btnElm,option);
 }

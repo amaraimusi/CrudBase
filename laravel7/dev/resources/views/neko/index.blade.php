@@ -200,6 +200,355 @@ foreach($data as $i=>&$ent){
 ?>
 </tbody>
 </table>
+
+<?php $this->CrudBase->divPagenationB(); ?>
+<br>
+	
+<button type="button" class="btn btn-warning btn-sm" onclick="newInpShow(this, 'add_to_top');">新規追加</span></button>	
+
+<?php $this->CrudBase->divPwms(); // 複数有効/削除の区分を表示する ?>
+
+
+<table id="crud_base_forms">
+
+	<!-- 新規入力フォーム -->
+	<tr id="ajax_crud_new_inp_form" class="crud_base_form" style="display:none;padding-bottom:60px"><td colspan='5'>
+	
+		<div>
+			<div style="color:#3174af;float:left">新規入力</div>
+			<div style="float:left;margin-left:10px">
+				<button type="button"  onclick="newInpReg();" class="btn btn-success btn-xs reg_btn">
+					<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
+				</button>
+			</div>
+			<div style="float:right">
+				<button type="button" class="btn btn-primary btn-xs" onclick="closeForm('new_inp')"><span class="glyphicon glyphicon-remove"></span></button>
+			</div>
+		</div>
+		<div style="clear:both;height:4px"></div>
+		<div class="err text-danger"></div>
 		
+		<div style="display:none">
+	    	<input type="hidden" name="form_type">
+	    	<input type="hidden" name="row_index">
+	    	<input type="hidden" name="sort_no">
+		</div>
+	
+	
+		<!-- CBBXS-1006 -->
+		
+		<div class="cbf_inp_wrap">
+			<div class='cbf_inp_label_long' >画像ファイル名: </div>
+			<div class='cbf_input'>
+				<label for="img_fn_n" class="fuk_label" style="width:100px;height:100px;">
+					<input type="file" id="img_fn_n" class="img_fn" style="display:none" accept="image/*" title="画像ファイルをドラッグ＆ドロップ(複数可)"  data-inp-ex='image_fuk' data-fp='' />
+				</label>
+			</div>
+		</div>
+	
+		<div class="cbf_inp_wrap">
+			<div class='cbf_inp' >ネコ名: </div>
+			<div class='cbf_input'>
+				<input type="text" name="neko_name" class="valid " value=""  maxlength="255" title="255文字以内で入力してください" />
+				<label class="text-danger" for="neko_name"></label>
+			</div>
+		</div>
+	
+		<div class="cbf_inp_wrap">
+			<div class='cbf_inp_label' >ネコ数値: </div>
+			<div class='cbf_input'>
+				<input type="text" name="neko_val" class="valid" value="" pattern="^[0-9]+$" maxlength="11" title="数値を入力してください" />
+				<label class="text-danger" for="neko_val" ></label>
+			</div>
+		</div>
+		
+		<div class="cbf_inp_wrap">
+			<div class='cbf_inp_label' >ネコ日付: </div>
+			<div class='cbf_input'>
+				<input type="text" name="neko_date" class="valid datepicker" value=""  pattern="([0-9]{4})(\/|-)([0-9]{1,2})(\/|-)([0-9]{1,2})" title="日付形式（Y-m-d）で入力してください(例：2012-12-12)" />
+				<label class="text-danger" for="neko_date"></label>
+			</div>
+		</div>
+		
+		<div class="cbf_inp_wrap">
+			<div class='cbf_inp_label' >ネコ種別: </div>
+			<div class='cbf_input'>
+				<?php $this->CrudBase->selectX('neko_group',null,$nekoGroupList,null);?>
+				<label class="text-danger" for="neko_group"></label>
+			</div>
+		</div>
+	
+		<div class="cbf_inp_wrap">
+			<div class='cbf_inp_label' >ネコ日時: </div>
+			<div class='cbf_input'>
+				<input type="text" name="neko_dt" class="valid " value=""  pattern="([0-9]{4})(\/|-)([0-9]{1,2})(\/|-)([0-9]{1,2}) \d{2}:\d{2}:\d{2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 12:12:12)" />
+				<label class="text-danger" for="neko_dt"></label>
+			</div>
+		</div>
+		
+		<div class="cbf_inp_wrap">
+			<div class='cbf_inp_label' >ネコフラグ: </div>
+			<div class='cbf_input'>
+				<input type="checkbox" name="neko_flg" class="valid"/>
+				<label class="text-danger" for="neko_flg" ></label>
+			</div>
+		</div>
+		
+		<div class="cbf_inp_wrap_long">
+			<div class='cbf_inp_label' >備考： </div>
+			<div class='cbf_input'>
+				<textarea name="note" maxlength="1000" title="1000文字以内で入力してください" style="height:100px;width:100%"></textarea>
+				<label class="text-danger" for="note"></label>
+			</div>
+		</div>
+		<!-- CBBXE -->
+		
+		<div style="clear:both"></div>
+		<div class="cbf_inp_wrap">
+			<button type="button" onclick="newInpReg();" class="btn btn-success reg_btn">
+				<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
+			</button>
+		</div>
+	</td></tr><!-- new_inp_form -->
+
+
+
+	<!-- 編集フォーム -->
+	<tr id="ajax_crud_edit_form" class="crud_base_form" style="display:none"><td colspan='5'>
+		<div  style='width:100%'>
+	
+			<div>
+				<div style="color:#3174af;float:left">編集</div>
+				<div style="float:left;margin-left:10px">
+					<button type="button"  onclick="editReg();" class="btn btn-success btn-xs reg_btn">
+						<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
+					</button>
+				</div>
+				<div style="float:right">
+					<button type="button" class="btn btn-primary btn-xs" onclick="closeForm('edit')"><span class="glyphicon glyphicon-remove"></span></button>
+				</div>
+			</div>
+			<div style="clear:both;height:4px"></div>
+			<div class="err text-danger"></div>
+			
+			<!-- CBBXS-1007 -->
+			
+			<div style="display:none">
+				<input type="hidden" name="sort_no">
+			</div>
+			
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp' >ID: </div>
+				<div class='cbf_input'>
+					<span class="id"></span>
+				</div>
+			</div>
+			
+			<div class="cbf_inp_wrap_long">
+				<div class='cbf_inp' >ネコ名: </div>
+				<div class='cbf_input'>
+					<input type="text" name="neko_name" class="valid " value=""  maxlength="255" title="255文字以内で入力してください" />
+					<label class="text-danger" for="neko_name"></label>
+				</div>
+			</div>
+			
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp_label_long' >画像ファイル名: </div>
+				<div class='cbf_input'>
+					<label for="img_fn_e" class="fuk_label" style="width:100px;height:100px;">
+						<input type="file" id="img_fn_e" class="img_fn" style="display:none" accept="image/*" title="画像ファイルをドラッグ＆ドロップ(複数可)" data-inp-ex='image_fuk' data-fp='' />
+					</label>
+				</div>
+			</div>
+		
+		
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp_label' >ネコ数値: </div>
+				<div class='cbf_input'>
+					<input type="text" name="neko_val" class="valid" value="" pattern="^[0-9]+$" maxlength="11" title="数値を入力してください" />
+					<label class="text-danger" for="neko_val" ></label>
+				</div>
+			</div>
+			
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp_label' >ネコ日付: </div>
+				<div class='cbf_input'>
+					<input type="text" name="neko_date" class="valid datepicker" value=""  pattern="([0-9]{4})(\/|-)([0-9]{1,2})(\/|-)([0-9]{1,2})" title="日付形式（Y-m-d）で入力してください(例：2012-12-12)" />
+					<label class="text-danger" for="neko_date"></label>
+				</div>
+			</div>
+			
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp_label' >ネコ種別: </div>
+				<div class='cbf_input'>
+					<?php $this->CrudBase->selectX('neko_group',null,$nekoGroupList,null);?>
+					<label class="text-danger" for="neko_group"></label>
+				</div>
+			</div>
+
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp_label' >ネコ日時: </div>
+				<div class='cbf_input'>
+					<input type="text" name="neko_dt" class="valid " value=""  pattern="([0-9]{4})(\/|-)([0-9]{1,2})(\/|-)([0-9]{1,2}) \d{2}:\d{2}:\d{2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 12:12:12)" />
+					<label class="text-danger" for="neko_dt"></label>
+				</div>
+			</div>
+			
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp_label' >ネコフラグ: </div>
+				<div class='cbf_input'>
+					<input type="checkbox" name="neko_flg" class="valid"/>
+					<label class="text-danger" for="neko_flg" ></label>
+				</div>
+			</div>
+			
+			<div class="cbf_inp_wrap">
+				<div class='cbf_inp_label' >削除：</div>
+				<div class='cbf_input'>
+					<input type="checkbox" name="delete_flg" class="valid"  />
+				</div>
+			</div>
+			
+			<div class="cbf_inp_wrap_long">
+				<div class='cbf_inp_label' >備考： </div>
+				<div class='cbf_input'>
+					<textarea name="note" maxlength="1000" title="1000文字以内で入力してください" data-folding-ta="40" style="height:100px;width:100%"></textarea>
+					<label class="text-danger" for="note"></label>
+				</div>
+			</div>
+			
+			<!-- CBBXE -->
+			
+			<div style="clear:both"></div>
+			<div class="cbf_inp_wrap">
+				<button type="button"  onclick="editReg();" class="btn btn-success reg_btn">
+					<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
+				</button>
+			</div>
+			
+			<div class="cbf_inp_wrap" style="padding:5px;">
+				<input type="button" value="更新情報" class="btn btn-default btn-xs" onclick="$('#ajax_crud_edit_form_update').toggle(300)" /><br>
+				<aside id="ajax_crud_edit_form_update" style="display:none">
+					更新日時: <span class="modified"></span><br>
+					生成日時: <span class="created"></span><br>
+					ユーザー名: <span class="update_user"></span><br>
+					IPアドレス: <span class="ip_addr"></span><br>
+				</aside>
+			</div>
+		</div>
+	</td></tr>
+</table>
+
+
+
+
+
+
+
+<!-- 削除フォーム -->
+<div id="ajax_crud_delete_form" class="panel panel-danger" style="display:none">
+
+	<div class="panel-heading">
+		<div class="pnl_head1">削除</div>
+		<div class="pnl_head2"></div>
+		<div class="pnl_head3">
+			<button type="button" class="btn btn-default btn-sm" onclick="closeForm('delete')"><span class="glyphicon glyphicon-remove"></span></button>
+		</div>
+	</div>
+	
+	<div class="panel-body" style="min-width:300px">
+	<table><tbody>
+
+		<!-- Start ajax_form_new -->
+		<tr><td>ID: </td><td>
+			<span class="id"></span>
+		</td></tr>
+		
+
+		<tr><td>ネコ名: </td><td>
+			<span class="neko_name"></span>
+		</td></tr>
+		
+		<tr><td>画像ファイル: </td><td>
+			<label for="img_fn"></label><br>
+			<img src="" class="img_fn" width="80" height="80" ></img>
+		</td></tr>
+
+
+		<!-- Start ajax_form_end -->
+	</tbody></table>
+	<br>
+	
+
+	<button type="button"  onclick="deleteReg();" class="btn btn-danger">
+		<span class="glyphicon glyphicon-remove"></span>　削除する
+	</button>
+	<hr>
+	
+	<input type="button" value="更新情報" class="btn btn-default btn-xs" onclick="$('#ajax_crud_delete_form_update').toggle(300)" /><br>
+	<aside id="ajax_crud_delete_form_update" style="display:none">
+		更新日時: <span class="modified"></span><br>
+		生成日時: <span class="created"></span><br>
+		ユーザー名: <span class="update_user"></span><br>
+		IPアドレス: <span class="ip_addr"></span><br>
+		ユーザーエージェント: <span class="user_agent"></span><br>
+	</aside>
+	
+
+	</div><!-- panel-body -->
+</div>
+
+
+
+<!-- 抹消フォーム -->
+<div id="ajax_crud_eliminate_form" class="panel panel-danger" style="display:none">
+
+	<div class="panel-heading">
+		<div class="pnl_head1">抹消</div>
+		<div class="pnl_head2"></div>
+		<div class="pnl_head3">
+			<button type="button" class="btn btn-default btn-sm" onclick="closeForm('eliminate')"><span class="glyphicon glyphicon-remove"></span></button>
+		</div>
+	</div>
+	
+	<div class="panel-body" style="min-width:300px">
+	<table><tbody>
+
+		<!-- Start ajax_form_new -->
+		<tr><td>ID: </td><td>
+			<span class="id"></span>
+		</td></tr>
+		
+
+		<tr><td>ネコ名: </td><td>
+			<span class="neko_name"></span>
+		</td></tr>
+
+
+		<!-- Start ajax_form_end -->
+	</tbody></table>
+	<br>
+	
+
+	<button type="button"  onclick="eliminateReg();" class="btn btn-danger">
+		<span class="glyphicon glyphicon-remove"></span>　抹消する
+	</button>
+	<hr>
+	
+	<input type="button" value="更新情報" class="btn btn-default btn-xs" onclick="$('#ajax_crud_eliminate_form_update').toggle(300)" /><br>
+	<aside id="ajax_crud_eliminate_form_update" style="display:none">
+		更新日時: <span class="modified"></span><br>
+		生成日時: <span class="created"></span><br>
+		ユーザー名: <span class="update_user"></span><br>
+		IPアドレス: <span class="ip_addr"></span><br>
+		ユーザーエージェント: <span class="user_agent"></span><br>
+	</aside>
+	
+
+	</div><!-- panel-body -->
+</div><br>
+
+
+
 </div></body>
 </html>
