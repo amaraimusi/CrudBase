@@ -205,7 +205,6 @@ function closeForm(form_type){
 }
 
 
-
 /**
  * 検索条件をリセット
  * 
@@ -218,25 +217,6 @@ function resetKjs(exempts){
 	crudBase.resetKjs(exempts);
 	
 }
-
-
-
-// ■■■□□□■■■□□□→廃止
-///**
-// * 列並替画面に遷移する
-// */
-//function moveClmSorter(){
-//	
-//	//列並替画面に遷移する <CrudBase:index.js>
-//	moveClmSorterBase('neko');
-//	
-//}
-
-
-
-
-
-
 
 
 /**

@@ -1281,7 +1281,8 @@ class CrudBase{
 		}
 		
 		// 検索条件要素の各種ガシェットをリセットする
-		this.cbGadgetKj.reset();
+		if(this.cbGadgetKj) this.cbGadgetKj.reset();
+		
 		
 	}
 	
