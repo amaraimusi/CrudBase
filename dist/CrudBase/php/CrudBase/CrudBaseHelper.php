@@ -96,7 +96,6 @@ class CrudBaseHelper {
 	/**
 	 * 検索用のid入力フォームを作成
 	 * 
-	 * @param [] $kjs 検索条件データ
 	 * @param string $field フィールド名（省略可）
 	 * @param string $wamei フィールド和名（省略可）
 	 * @param int $width 入力フォームの横幅（省略可）
@@ -108,7 +107,7 @@ class CrudBaseHelper {
 	 * 
 	 * 
 	 */
-	public function inputKjId(&$kjs, $field='kj_id', $wamei='ID', $width=100, $title=null, $option = []){
+	public function inputKjId($field='kj_id', $wamei='ID', $width=100, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
 		
@@ -156,7 +155,6 @@ class CrudBaseHelper {
 	/**
 	 * メイン検索の入力フォームを作成
 	 *
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param int $width 入力フォームの横幅（省略可）
@@ -166,7 +164,7 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *  - string placeholder
 	 */
-	public function inputKjMain(&$kjs, $field, $wamei, $width=200,$title=null, $option = []){
+	public function inputKjMain($field, $wamei, $width=200,$title=null, $option = []){
 
 		if($title===null) $title = $wamei."で検索";
 		
@@ -213,7 +211,6 @@ class CrudBaseHelper {
 	/**
 	 * メイン検索の入力フォームを作成
 	 *
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param int $width 入力フォームの横幅（省略可）
@@ -223,7 +220,7 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *  - string placeholder
 	 */
-	public function inputKjText(&$kjs, $field, $wamei, $width=200, $title=null, $option = []){
+	public function inputKjText($field, $wamei, $width=200, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
 		
@@ -290,10 +287,9 @@ class CrudBaseHelper {
 	/**
 	 * 検索用のhiddenフォームを作成
 	 *
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 */
-	public function inputKjHidden(&$kjs,$field){
+	public function inputKjHidden($field){
 		
 		$model_name_c = $this->crudBaseData['model_name_c'];
 	
@@ -318,7 +314,6 @@ class CrudBaseHelper {
 	/**
 	 * 検索用のセレクトフォームを作成
 	 * 
-	 * @param [] $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param string $list 選択肢リスト
@@ -327,7 +322,7 @@ class CrudBaseHelper {
 	 * @param [] option
 	 *  - string model_name_c モデル名（キャメル記法）
 	 */
-	public function inputKjSelect(&$kjs, $field, $wamei, $list, $width=null, $title=null, $option = []){
+	public function inputKjSelect($field, $wamei, $list, $width=null, $title=null, $option = []){
 		
 		
 		$width_style = '';
@@ -366,18 +361,16 @@ class CrudBaseHelper {
 	
 	/**
 	 * 検索用の更新日時セレクトフォームを作成
-	 * @param array $kjs 検索条件データ
 	 */
-	public function inputKjModified(&$kjs){
+	public function inputKjModified(){
 	
-		$this->inputKjDateTimeA($kjs,'kj_modified','更新日時');
+		$this->inputKjDateTimeA('kj_modified','更新日時');
 	}
 	
 	
 	/**
 	 * 検索用の日時入力フォームを作成
 	 *
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param int $width 入力フォームの横幅（省略可）
@@ -387,7 +380,7 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *  - string placeholder
 	 */
-	public function inputKjDateTime(&$kjs, $field, $wamei, $width=200, $title=null, $option = []){
+	public function inputKjDateTime($field, $wamei, $width=200, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
 		
@@ -439,11 +432,10 @@ class CrudBaseHelper {
 	
 	/**
 	 * 検索用の生成日時セレクトフォームを作成
-	 * @param array $kjs 検索条件データ
 	 */
-	public function inputKjCreated(&$kjs){
+	public function inputKjCreated(){
 	
-		$this->inputKjDateTimeA($kjs,'kj_created','生成日時');
+		$this->inputKjDateTimeA('kj_created','生成日時');
 	}
 	
 
@@ -453,7 +445,6 @@ class CrudBaseHelper {
 	/**
 	 * 検索用の日時セレクトフォームを作成
 	 *
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param string $list 選択肢リスト（省略可）
@@ -462,7 +453,7 @@ class CrudBaseHelper {
 	 * @param [] option
 	 *  - string model_name_c モデル名（キャメル記法）
 	 */
-	public function inputKjDateTimeA(&$kjs, $field, $wamei, $list=[], $width=200 ,$title=null, $option = []){
+	public function inputKjDateTimeA($field, $wamei, $list=[], $width=200 ,$title=null, $option = []){
 	
 		$width_style = '';
 		if(!empty($width)) $width_style="width:{$width}px;";
@@ -504,7 +495,6 @@ class CrudBaseHelper {
 	/**
 	 * 検索用の削除フラグフォームを作成
 	 *
-	 * @param [] $kjs 検索条件データ
 	 * @param string $field フィールド名（省略可）
 	 * @param string $wamei フィールド和名（省略可）
 	 * @param int $width 入力フォームの横幅（省略可）
@@ -514,7 +504,7 @@ class CrudBaseHelper {
 	 * 
 	 * 
 	 */	
-	public function inputKjDeleteFlg(&$kjs, $field='kj_delete_flg', $wamei='削除', $width=null, $title=null, $option = []){
+	public function inputKjDeleteFlg($field='kj_delete_flg', $wamei='削除', $width=null, $title=null, $option = []){
 		if($title===null) $title = $wamei."で検索";
 		
 		// モデル名を取得
@@ -548,7 +538,6 @@ class CrudBaseHelper {
 	/**
 	 * 検索用のフラグフォームを作成
 	 *
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 * @param string $title ツールチップメッセージ（省略可）
@@ -556,7 +545,7 @@ class CrudBaseHelper {
 	 *  - string model_name_c モデル名（キャメル記法）
 	 *
 	 */
-	public function inputKjFlg(&$kjs, $field, $wamei, $title=null, $option = []){
+	public function inputKjFlg($field, $wamei, $title=null, $option = []){
 		
 		if($title===null) $title = $wamei."で検索";
 		
@@ -586,11 +575,8 @@ class CrudBaseHelper {
 	
 	/**
 	 * 検索用の表示件数セレクトを作成
-	 *
-	 * @param array $kjs 検索条件データ
-	 * 
 	 */	
-	public function inputKjLimit(&$kjs){
+	public function inputKjLimit(){
 		
 		$model_name_c = $this->crudBaseData['model_name_c'];
 		
@@ -625,11 +611,12 @@ class CrudBaseHelper {
 	/**
 	 * 月・日付範囲検索
 	 *
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名
 	 * @param string $wamei フィールド和名
 	 */
-	public function inputKjMoDateRng(&$kjs,$field,$wamei){
+	public function inputKjMoDateRng($field,$wamei){
+		
+		$kjs = $this->crudBaseData['kjs'];
 
 		// 年月を取得
 		$kj_field_ym = $field . '_ym';
@@ -655,11 +642,10 @@ class CrudBaseHelper {
 	 * 
 	 * 検索用の年月入力フォームを作成
 	 * 
-	 * @param array $kjs 検索条件データ
 	 * @param string $field フィールド名（ kj_ を付けないこと）
 	 * @param string $wamei フィールド和名
 	 */
-	public function inputKjNumRange(&$kjs, $field, $wamei, $option=[]){
+	public function inputKjNumRange($field, $wamei, $option=[]){
 		
 		// テキストの幅を自動指定する
 		$str_len = mb_strlen($wamei);

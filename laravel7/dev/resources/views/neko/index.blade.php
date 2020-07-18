@@ -35,7 +35,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	<!-- 検索条件入力フォーム -->
 	<form action="" class="form_kjs" id="{{$model_name_c}}IndexForm" method="post" accept-charset="utf-8">
 		
-		<?php $this->CrudBase->inputKjMain($kjs,'kj_main','',null,'ネコ名、備考を検索する');?>
+		<?php $this->CrudBase->inputKjMain('kj_main','',null,'ネコ名、備考を検索する');?>
 		<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success btn-sm' />
 		<div class="btn-group">
 			<button type="button" class="btn btn-secondary btn-sm" title="詳細検索項目を表示する" onclick="jQuery('.cb_kj_detail').toggle(300)">詳細検索</button>
@@ -45,25 +45,25 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		<?php 
 		
 		// --- CBBXS-1004
-		$this->CrudBase->inputKjText($kjs,'kj_neko_name','ネコ名前');
-		$this->CrudBase->inputKjMoDateRng($kjs,'kj_neko_date','ネコ日付');
-		$this->CrudBase->inputKjNumRange($kjs,'neko_val','ネコ数値'); 
-		$this->CrudBase->inputKjSelect($kjs,'kj_neko_group','ネコ種別', $masters['nekoGroupList']); 
-		$this->CrudBase->inputKjText($kjs,'kj_neko_dt','ネコ日時',150);
-		$this->CrudBase->inputKjFlg($kjs,'kj_neko_flg','ネコフラグ');
-		$this->CrudBase->inputKjText($kjs,'kj_img_fn','ネコ名前',200);
-		$this->CrudBase->inputKjText($kjs,'kj_note','備考',200,'部分一致検索');
-		$this->CrudBase->inputKjId($kjs); 
-		$this->CrudBase->inputKjHidden($kjs,'kj_sort_no');
-		$this->CrudBase->inputKjDeleteFlg($kjs);
-		$this->CrudBase->inputKjText($kjs,'kj_update_user','更新者',150);
-		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','更新IPアドレス',200);
-		$this->CrudBase->inputKjCreated($kjs);
-		$this->CrudBase->inputKjModified($kjs);
+		$this->CrudBase->inputKjText('kj_neko_name','ネコ名前');
+		$this->CrudBase->inputKjMoDateRng('kj_neko_date','ネコ日付');
+		$this->CrudBase->inputKjNumRange('neko_val','ネコ数値'); 
+		$this->CrudBase->inputKjSelect('kj_neko_group','ネコ種別', $masters['nekoGroupList']); 
+		$this->CrudBase->inputKjText('kj_neko_dt','ネコ日時',150);
+		$this->CrudBase->inputKjFlg('kj_neko_flg','ネコフラグ');
+		$this->CrudBase->inputKjText('kj_img_fn','ネコ名前',200);
+		$this->CrudBase->inputKjText('kj_note','備考',200,'部分一致検索');
+		$this->CrudBase->inputKjId(); 
+		$this->CrudBase->inputKjHidden('kj_sort_no');
+		$this->CrudBase->inputKjDeleteFlg();
+		$this->CrudBase->inputKjText('kj_update_user','更新者',150);
+		$this->CrudBase->inputKjText('kj_ip_addr','更新IPアドレス',200);
+		$this->CrudBase->inputKjCreated();
+		$this->CrudBase->inputKjModified();
 		
 		// --- CBBXE
 		
-		$this->CrudBase->inputKjLimit($kjs);
+		$this->CrudBase->inputKjLimit();
 		echo "<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success' />";
 		
 		
