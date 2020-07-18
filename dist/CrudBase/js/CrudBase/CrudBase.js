@@ -63,7 +63,7 @@ class CrudBase{
 		
 		// フィールドデータにプロパティを追加する
 		//this.fieldData = this._addMoreFieldData(this.param.tbl_slt,this.fieldData);// ■■■□□□■■■□□□一時的に保留
-		this.fieldData = this.param.field_data;
+		this.fieldData = this.param.fieldData;
 
 		// フィールドデータへフォーム内の要素情報をセットする
 		this.fieldData = this._setFieldDataFromForm(this.fieldData,this.formInfo,'new_inp');

@@ -239,7 +239,7 @@ class NekoController
 		
 		
 		///フィールドデータ
-		$field_data = array('def'=>array(
+		$fieldData = array('def'=>array(
 				
 				// CBBXS-1002
 				'id'=>array(
@@ -322,7 +322,7 @@ class NekoController
 		
 		// 列並び順をセットする
 		$clm_sort_no = 0;
-		foreach ($field_data['def'] as &$fEnt){
+		foreach ($fieldData['def'] as &$fEnt){
 			$fEnt['clm_sort_no'] = $clm_sort_no;
 			$clm_sort_no ++;
 		}
@@ -340,7 +340,7 @@ class NekoController
 				'model' => $this->md,
 				'kensakuJoken' => $kensakuJoken, //検索条件情報
 				'kjs_validate' => $kjs_validate, //検索条件バリデーション
-				'field_data' => $field_data, //フィールドデータ
+				'fieldData' => $fieldData, //フィールドデータ
 				'crud_base_path' => $crud_base_path,
 				'crud_base_js' => $crud_base_js,
 				'crud_base_css' => $crud_base_css,

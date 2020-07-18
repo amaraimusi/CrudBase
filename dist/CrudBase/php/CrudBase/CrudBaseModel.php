@@ -184,12 +184,12 @@ class CrudBaseModel{
 	
 	/**
 	 * フィールドデータが空でなければ、フィールドデータから一覧列情報を作成する。
-	 * @param array $field_data フィールドデータ
+	 * @param array $fieldData フィールドデータ
 	 * @return array 一覧列情報
 	 */
-	public function makeTableFieldFromFieldData($field_data){
+	public function makeTableFieldFromFieldData($fieldData){
 		$fields=array();
-		$clms=$field_data['active'];
+		$clms=$fieldData['active'];
 	
 		foreach($clms as $clm){
 			$row_order = $clm['row_order'];

@@ -2,6 +2,7 @@
 
 
 extract($crudBaseData, EXTR_REFS);
+extract($masters, EXTR_REFS);
 
 require_once $crud_base_path . 'CrudBaseHelper.php';
 $this->CrudBase = new CrudBaseHelper($crudBaseData);
@@ -35,7 +36,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	<form action="" class="form_kjs" id="{{$model_name_c}}IndexForm" method="post" accept-charset="utf-8">
 		
 		<?php $this->CrudBase->inputKjMain($kjs,'kj_main','',null,'ネコ名、備考を検索する');?>
-		<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success btn-xs' />
+		<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success btn-sm' />
 		<div class="btn-group">
 			<button type="button" class="btn btn-secondary btn-sm" title="詳細検索項目を表示する" onclick="jQuery('.cb_kj_detail').toggle(300)">詳細検索</button>
 			<a href="" class="ini_rtn btn btn-primary btn-sm" title="この画面を最初に表示したときの状態に戻します。（検索状態、列並べの状態を解除）">リセット</a>
@@ -59,6 +60,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','更新IPアドレス',200);
 		$this->CrudBase->inputKjCreated($kjs);
 		$this->CrudBase->inputKjModified($kjs);
+		
 		// --- CBBXE
 		
 		$this->CrudBase->inputKjLimit($kjs);
@@ -78,6 +80,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		<button type="button" onclick="jQuery('#detail_div').toggle(300);" class="btn btn-secondary btn-sm">ツール</button>
 	</div>
 </div><!-- cb_func_line -->
+
 
 <div style="clear:both"></div>
 
@@ -101,7 +104,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 
 		?>
 
-		<button id="crud_base_bulk_add_btn" type="button" class="btn btn-default btn-secondary btn-sm" onclick="crudBase.crudBaseBulkAdd.showForm()" >一括追加</button>
+		<button id="crud_base_bulk_add_btn" type="button" class="btn btn-secondary btn-sm" onclick="crudBase.crudBaseBulkAdd.showForm()" >一括追加</button>
 		
 	</div><!-- main_tools -->
 	
@@ -109,12 +112,12 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		<!-- CrudBase設定 -->
 		<div id="crud_base_config" style="display:inline-block"></div>
 		
-		<button id="calendar_view_k_btn" type="button" class="btn btn-default btn-secondary btn-sm" onclick="calendarViewKShow()" >カレンダーモード</button>
+		<button id="calendar_view_k_btn" type="button" class="btn btn-secondary btn-sm" onclick="calendarViewKShow()" >カレンダーモード</button>
 		
-		<button type="button" class="btn btn-default btn-secondary btn-sm" onclick="sessionClear()" >セッションクリア</button>
+		<button type="button" class="btn btn-secondary btn-sm" onclick="sessionClear()" >セッションクリア</button>
 	
-		<button id="table_transform_tbl_mode" type="button" class="btn btn-default btn-secondary btn-sm" onclick="tableTransform(0)" style="display:none">一覧の変形・テーブルモード</button>	
-		<button id="table_transform_div_mode" type="button" class="btn btn-default btn-secondary btn-sm" onclick="tableTransform(1)" >一覧の変形・スマホモード</button>
+		<button id="table_transform_tbl_mode" type="button" class="btn btn-secondary btn-sm" onclick="tableTransform(0)" style="display:none">一覧の変形・テーブルモード</button>	
+		<button id="table_transform_div_mode" type="button" class="btn btn-secondary btn-sm" onclick="tableTransform(1)" >一覧の変形・スマホモード</button>
 		
 	</div><!-- sub_tools -->
 </div><!-- detail_div -->
@@ -140,19 +143,19 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 <thead>
 <tr>
 	<?php
-	foreach($field_data as $ent){
+	foreach($fieldData as $ent){
 		$row_order=$ent['row_order'];
 		echo "<th class='{$ent['id']}'>{$pages['sorts'][$row_order]}</th>";
 	}
 	?>
-	<th></th>
+	<th style="min-width:207px"></th>
 </tr>
 </thead>
 <tbody>
 <?php
 
 // td要素出力を列並モードに対応させる
-$this->CrudBase->startClmSortMode($field_data);
+$this->CrudBase->startClmSortMode();
 
 foreach($data as $i=>&$ent){
 
@@ -180,9 +183,8 @@ foreach($data as $i=>&$ent){
 	// 行のボタン類
 	echo "<td><div style='display:inline-block'>";
 	$id = $ent['id'];
-	echo  "<input type='button' value='↑↓' onclick='rowExchangeShowForm(this)' class='row_exc_btn btn btn-info btn-xs' />";
+	echo  "<input type='button' value='↑↓' onclick='rowExchangeShowForm(this)' class='row_exc_btn btn btn-info btn-sm' />";
 	$this->CrudBase->rowEditBtn($id);
-	$this->CrudBase->rowPreviewBtn($id);
 	$this->CrudBase->rowCopyBtn($id);
 	echo "</div>&nbsp;";
 	echo "<div style='display:inline-block'>";

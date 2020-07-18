@@ -31,9 +31,9 @@ class CrudBaseController {
 	public $kjs_validate = array();
 
 	///フィールドデータ（要、オーバーライド）
-	public $field_data = array();
+	public $fieldData = array();
 
-	///一覧列情報(ソート機能付	 $field_dataの簡易版）
+	///一覧列情報(ソート機能付	 $fieldDataの簡易版）
 	public $table_fields=array();
 
 	///編集エンティティ定義（要,オーバーライド）
@@ -79,14 +79,14 @@ class CrudBaseController {
 	 *  - model クライアントモデルのオブジェクト
 	 *  - kensakuJoken array 検索条件情報
 	 *  - kjs_validate array 検索条件バリデーション
-	 *  - field_data array フィールドデータ
+	 *  - fieldData array フィールドデータ
 	 *  - debug デバッグモード 0:OFF 1:OFF
 	 */
 	public function __construct($param = []){
 		
 		$this->kensakuJoken = $param['kensakuJoken']; // 検索条件情報
 		$this->kjs_validate = $param['kjs_validate']; // 検索条件バリデーション
-		$this->field_data = $param['field_data']; // フィールドデータ
+		$this->fieldData = $param['fieldData']; // フィールドデータ
 		$this->MainModel = $param['model'];
 		
 		// フレームワークタイプを取得
@@ -183,15 +183,15 @@ class CrudBaseController {
 		
 		
 		//フィールドデータが画面コントローラで定義されている場合、以下の処理を行う。
-		if(!empty($this->field_data)){
-			$res = $this->exe_field_data($this->field_data,$this->main_model_name_s);//フィールドデータに関する処理
+		if(!empty($this->fieldData)){
+			$res = $this->exe_fieldData($this->fieldData,$this->main_model_name_s);//フィールドデータに関する処理
 			$this->table_fields = $res['table_fields'];
-			$this->field_data = $res['field_data'];
+			$this->fieldData = $res['fieldData'];
 
 		}
 		
 		//フィールドデータから列表示配列を取得
-		$csh_ary = $this->exstractClmShowHideArray($this->field_data);
+		$csh_ary = $this->exstractClmShowHideArray($this->fieldData);
 		$csh_json = json_encode($csh_ary);
 
 		//検索条件情報をPOST,GET,デフォルトのいずれから取得。
@@ -227,10 +227,10 @@ class CrudBaseController {
 		$big_data_fields = $this->big_data_fields;
 
 		//フィールドデータが定義されており、巨大データと判定された場合、巨大フィールドデータの再ソートをする。（列並替に対応）
-		if(!empty($this->field_data) && $bigDataFlg ==true){
+		if(!empty($this->fieldData) && $bigDataFlg ==true){
 
 			//巨大データフィールドを列並替に合わせて再ソートする。
-			$big_data_fields = $this->sortBigDataFields($big_data_fields,$this->field_data['active']);
+			$big_data_fields = $this->sortBigDataFields($big_data_fields,$this->fieldData['active']);
 
 		}
 
@@ -241,8 +241,8 @@ class CrudBaseController {
 
 		//アクティブフィールドデータを取得
 		$active = array();
-		if(!empty($this->field_data['active'])){
-			$active = $this->field_data['active'];
+		if(!empty($this->fieldData['active'])){
+			$active = $this->fieldData['active'];
 		}
 
 		// ユーザー情報を取得する
@@ -269,7 +269,7 @@ class CrudBaseController {
 		$crudBaseData = [
 				'model_name_c'=> $this->main_model_name, // モデル名（キャメル記法）
 				'model_name_s'=> $this->main_model_name_s, // モデル名（スネーク記法）
-				'field_data'=>$active, 		// アクティブフィールドデータ
+				'fieldData'=>$active, 		// アクティブフィールドデータ
 				'kjs'=>$kjs, 				// 検索条件情報
 				'defKjs'=>$defKjs, // デフォルト検索情報データ
 				'errMsg'=>$errMsg, 			// エラーメッセージ
@@ -298,7 +298,7 @@ class CrudBaseController {
 // 		$crudBaseData = [
 // 				'model_name_c'=> $this->main_model_name, // モデル名（キャメル記法）
 // 				'model_name_s'=> $this->main_model_name_s, // モデル名（スネーク記法）
-// 				'field_data'=>$active, 		// アクティブフィールドデータ
+// 				'fieldData'=>$active, 		// アクティブフィールドデータ
 // 				'kjs'=>$kjs, 				// 検索条件情報
 // 				'kjs_json'=>$kjs_json, 		// 検索条件JSON
 // 				'def_kjs_json'=>$def_kjs_json, // デフォルト検索情報JSON
@@ -423,7 +423,7 @@ class CrudBaseController {
 		$page_code = $this->main_model_name_s; // スネーク記法のページコード（モデル名）
 		$pageCode = $this->main_model_name; // スネーク記法のページコード（キャメル記法）
 
-		$fd_ses_key=$page_code.'_sorter_field_data';//フィールドデータのセッションキー
+		$fd_ses_key=$page_code.'_sorter_fieldData';//フィールドデータのセッションキー
 		$tf_ses_key=$page_code.'_table_fields';//一覧列情報のセッションキー
 		$err_ses_key=$page_code.'_err';//入力エラー情報のセッションキー
 		$page_ses_key=$pageCode.'_page_param';//ページパラメータのセッションキー
@@ -449,43 +449,43 @@ class CrudBaseController {
 	/**
 	 * フィールドデータに関する処理
 	 * 
-	 * @param array $def_field_data コントローラで定義しているフィールドデータ
+	 * @param array $def_fieldData コントローラで定義しているフィールドデータ
 	 * @param string $page_code ページコード（モデル名）
 	 * @return array res 
 	 * - table_fields 一覧列情報
 	 */
-	private function exe_field_data($def_field_data,$page_code){
+	private function exe_fieldData($def_fieldData,$page_code){
 
 		//フィールドデータをセッションに保存する
-		$fd_ses_key=$page_code.'_sorter_field_data';
+		$fd_ses_key=$page_code.'_sorter_fieldData';
 
 		//一覧列情報のセッションキー
 		$tf_ses_key = $page_code.'_table_fields';
 
 		//セッションキーに紐づくフィールドデータを取得する
-		$field_data=$this->strategy->sessionRead($fd_ses_key);
+		$fieldData=$this->strategy->sessionRead($fd_ses_key);
 		
 
 		$table_fields=array();//一覧列情報
 
 		//フィールドデータが空である場合
-		if(empty($field_data)){
+		if(empty($fieldData)){
 
 			//定義フィールドデータをフィールドデータにセットする。
-			$field_data=$def_field_data;
+			$fieldData=$def_fieldData;
 
 			//defをactiveとして取得。
-			$active=$field_data['def'];
+			$active=$fieldData['def'];
 
 			//列並番号でデータを並び替える。データ構造も変換する。
 			$active = $this->crudBaseModel->sortAndCombine($active);
-			$field_data['active']=$active;
+			$fieldData['active']=$active;
 
 			//セッションにフィールドデータを書き込む
-			$this->strategy->sessionWrite($fd_ses_key,$field_data);
+			$this->strategy->sessionWrite($fd_ses_key,$fieldData);
 
 			//フィールドデータから一覧列情報を作成する。
-			$table_fields=$this->crudBaseModel->makeTableFieldFromFieldData($field_data);
+			$table_fields=$this->crudBaseModel->makeTableFieldFromFieldData($fieldData);
 
 			//セッションに一覧列情報をセットする。
 			$this->strategy->sessionWrite($tf_ses_key,$table_fields);
@@ -498,7 +498,7 @@ class CrudBaseController {
 		}
 
 		$res['table_fields']=$table_fields;
-		$res['field_data']=$field_data;
+		$res['fieldData']=$fieldData;
 
 		return $res;
 
@@ -506,14 +506,14 @@ class CrudBaseController {
 
 	/**
 	 * フィールドデータから列表示配列を取得
-	 * @param array $field_data フィールドデータ
+	 * @param array $fieldData フィールドデータ
 	 * @return array 列表示配列
 	 */
-	private function exstractClmShowHideArray($field_data){
+	private function exstractClmShowHideArray($fieldData){
 
 		$csh_ary=array();
-		if(!empty($field_data)){
-			$csh_ary=HashCustom::extract($field_data, 'active.{n}.clm_show');
+		if(!empty($fieldData)){
+			$csh_ary=HashCustom::extract($fieldData, 'active.{n}.clm_show');
 		}
 		return $csh_ary;
 	}

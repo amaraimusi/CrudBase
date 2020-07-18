@@ -1,47 +1,38 @@
 <?php
 
-// ■■■□□□■■■□□□
-//App::uses('FormHelper', 'View/Helper');
-//App::uses('FrontAHelperX', 'View/Helper/CrudBaseComponent');
 
 /**
  * CrudBase用ヘルパー
  * 
  * @note
  * 検索条件入力フォームや、一覧テーブルのプロパティのラッパーを提供する
+ * 2.0.0よりCakeからの依存から離脱
  * 
- * 
- * @version 1.8.6
- * @since 2016-7-27 | 2020-4-2
+ * @version 2.0.0
+ * @since 2016-7-27 | 2020-7-18
  * @author k-uehara
  * @license MIT
  */
-
-//class CrudBaseHelper extends FormHelper {■■■□□□■■■□□□
 class CrudBaseHelper {
 	
 	private $crudBaseData;
 
-	
-	//■■■□□□■■■□□□
-	private $_mdl=""; // モデル名(.)
-	private $_mdl_cml=''; // モデル名（キャメル記法）
-	private $_mdl_snk=''; // モデル名（スネーク記法）
-	private $_dateTimeList=array(); // 日時選択肢リスト
-	private $param; // CrudBase内部専用パラメータ
-	private $kjs; // 検索条件情報
+	private $_dateTimeList=[]; // 日時選択肢リスト
 	
 	// 列並びモード用
-	private $_clmSortTds = array(); // 列並用TD要素群
-	private $_clmSortMode = 0;		// 列並モード
-	private $_field_data;			// フィールドデータ
-	
-	// コンポーネント
-	private $frontAHelper; // フロントA画面・ヘルパーコンポーネント
+	private $_clmSortTds = []; // 列並用TD要素群
+	private $_clmSortMode = 0;		// 列並モード 0:OFF, 1:ON
+	private $_fieldData;			// フィールドデータ
 	
 	
+	
+	/**
+	 * コンストラクタ
+	 * @param [] $crudBaseData CrudBaseデータ
+	 */
 	public function __construct(&$crudBaseData){
 		$this->crudBaseData = $crudBaseData;
+		$this->_fieldData = $crudBaseData['fieldData'];
 	}
 	
 	/**
@@ -53,33 +44,12 @@ class CrudBaseHelper {
 	 *  - debug_mode	デバッグモード
 	 *  
 	 */
-	public function init($param = array()){
+	public function init($param = []){
 
 		// モデル名関連の設定
 		$model_name = $param['model_name'];
-		$this->_mdl_cml = $model_name;
-		$this->_mdl = $model_name.'.';
-		$this->_mdl_snk = $this->snakize($model_name); //スネーク記法に変換
-		
-		$this->param = $param;
-
-		// ■■■□□□■■■□□□
-// 		// フロントAヘルパーの初期化
-// 		$this->frontAHelper = new FrontAHelperX();
-// 		$this->frontAHelper->init();
 		
 	}
-	
-	
-	/**
-	 * フロントAヘルパーのインスタンスを取得
-	 * @return Object FrontAHelper フロントAヘルパー
-	 */
-	public function getFrontAHelper(){
-		return $this->frontAHelper;
-	}
-	
-
 
 	
 	/**
@@ -118,17 +88,10 @@ class CrudBaseHelper {
 	 * @return string スネーク記法のモデル名
 	 */
 	public function getModelNameSnk(){
-		return $this->_mdl_snk;
+		return $this->crudBaseData['model_name_s'];
 	}
 	
 	
-	/**
-	 * crudBaseDataのセッター
-	 * @param array $kjs 検索条件データ
-	 */
-	public function setKjs(&$kjs){
-		$this->kjs = &$kjs;
-	}
 	
 	/**
 	 * 検索用のid入力フォームを作成
@@ -186,23 +149,6 @@ class CrudBaseHelper {
 		";
 		
 		echo $html;
-		
-		
-		// ■■■□□□■■■□□□
-// 		echo "<div class='kj_div kj_wrap' data-field='kj_id'>\n";
-// 		echo $this->input($this->_mdl.'kj_id', array(
-// 				'id' => 'kj_id',
-// 				'value' => $kjs['kj_id'],
-// 				'type' => 'text',
-// 				'label' => false,
-// 				'placeholder' => '-- ID --',
-// 				'style'=>'width:100px',
-// 				'class' => 'kjs_inp',
-// 				'title'=>'IDによる検索',
-// 				'maxlength'=>8,
-// 		));
-		
-// 		echo "</div>\n";
 				
 	}
 	
@@ -436,32 +382,55 @@ class CrudBaseHelper {
 	 * @param string $wamei フィールド和名
 	 * @param int $width 入力フォームの横幅（省略可）
 	 * @param string $title ツールチップメッセージ（省略可）
-	 * @param int $maxlength 最大文字数(共通フィールドは設定不要）
+	 * @param [] option
+	 *  - int maxlength 最大文字数(共通フィールドは設定不要）
+	 *  - string model_name_c モデル名（キャメル記法）
+	 *  - string placeholder
 	 */
-	public function inputKjDateTime(&$kjs,$field,$wamei,$width=200,$title=null,$maxlength=255){
+	public function inputKjDateTime(&$kjs, $field, $wamei, $width=200, $title=null, $option = []){
 		
-		if($title==null){
-			$title = $wamei."で検索";
-		}
+		if($title===null) $title = $wamei."で検索";
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
 		
 		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
-		if($maxlength==255){
-			$maxlength = $this->getMaxlenIfCommonField($field,$maxlength);
+		$maxlength=0;
+		if(empty($option['maxlength'])){
+			$maxlength = 255;
+		}else{
+			$maxlength=$option['maxlength'];
 		}
 		
-		echo "<div class='kj_div kj_wrap' data-field='{$field}' data-gadget='datetimepicker' >\n";
-		echo $this->input($this->_mdl.$field, array(
-			'id' => $field,
-			'value' => $kjs[$field],
-			'type' => 'text',
-			'label' => false,
-			'placeholder' => $wamei,
-			'class' => 'kjs_inp',
-			'style'=>"width:{$width}px",
-			'title'=>$title,
-			'maxlength'=>$maxlength,
-		));
-		echo "</div>\n";
+		$placeholder = '';
+		if(empty($option['placeholder'])){
+			$placeholder = $wamei;
+		}else{
+			$placeholder = $option['placeholder'];
+		}
+		
+		
+		$html = "
+			<div class='kj_div kj_wrap' data-field='{$field}' data-gadget='datetimepicker'>
+				<div class='input text'>
+					<input
+						name='data[{$model_name_c}][{$field}]'
+						id='{$field}'
+						value=''
+						placeholder='{$placeholder}'
+						class='kjs_inp'
+						style='width:{$width}px; '
+						title='{$title}'
+						maxlength='{$maxlength}'
+						type='text'>
+				</div>
+			</div>
+		";
+		
+		echo $html;
+		
+
 	}
 
 	
@@ -690,7 +659,7 @@ class CrudBaseHelper {
 	 * @param string $field フィールド名（ kj_ を付けないこと）
 	 * @param string $wamei フィールド和名
 	 */
-	public function inputKjNumRange(&$kjs, $field, $wamei, $option=array()){
+	public function inputKjNumRange(&$kjs, $field, $wamei, $option=[]){
 		
 		// テキストの幅を自動指定する
 		$str_len = mb_strlen($wamei);
@@ -717,30 +686,6 @@ class CrudBaseHelper {
 	}
 	
 
-	/**
-	 * 検索入力保存の入力要素を作成する
-	 * @param bool $saveKjFlg
-	 * @param string $hidden true:Hidden要素 , false:チェックボックス
-	 */
-	public function inputKjSaveFlg($saveKjFlg,$hidden=false){
-	
-		if(!empty($hidden)){
-			echo $this->input($this->_mdl."saveKjFlg", array('value' => $saveKjFlg,'type' => 'hidden',));
-			return;
-		}
-		
-		echo "<div class='kj_div kj_wrap' data-field='saveKjFlg' style='margin-top:4px;'>";
-		echo $this->input($this->_mdl."saveKjFlg",array(
-				'type'=>'checkbox',
-				'value' => 1,
-				'checked'=>$saveKjFlg,
-				'label'=>'検索入力保存',
-				'div'=>false,
-		));
-		echo '</div>';
-		
-
-	}
 
 	
 	/**
@@ -768,13 +713,13 @@ class CrudBaseHelper {
 	public function tdStr(&$ent,$field){
 		
 		$v = $ent[$field];
-		$v = h($v);
+		$v = htmlspecialchars($v);
 		$td = "<td><input type='hidden' name='{$field}' value='{$v}' /><span class='{$field}' >{$v}</span></td>\n";
 		$this->setTd($td,$field);
 	
 	}
 	public function tpStr($v,$wamei){
-		$v = h($v);
+		$v = htmlspecialchars($v);
 		$this->tblPreview($v,$wamei);
 	}
 	
@@ -786,7 +731,7 @@ class CrudBaseHelper {
 	public function tdStrRN(&$ent,$field){
 	
 		$v = $ent[$field];
-		$v = h($v); // XSS対策
+		$v = htmlspecialchars($v); // XSS対策
 		$v = nl2br($v);// 改行置換
 		$td = "<td><input type='hidden' name='{$field}' value='{$v}' /><span class='{$field}'>{$v}</span>\n";
 		$this->setTd($td,$field);
@@ -802,7 +747,7 @@ class CrudBaseHelper {
 	 * @param array $option オプション
 	 *  - checkbox_name チェックボックス名プロパティ   このプロパティに値をセットすると、複数選択による一括処理用のチェックボックスが作成される。
 	 */
-	public function tdId(&$ent,$field='id',$option=array()){
+	public function tdId(&$ent,$field='id',$option=[]){
 		
 		$v = $ent[$field];
 		
@@ -833,12 +778,12 @@ class CrudBaseHelper {
 	 * @param string $field フィールド名
 	 * @param array $list リスト
 	 */
-	public function tdList(&$ent,$field,$list=array()){
+	public function tdList(&$ent,$field,$list=[]){
 		
 		$v = $ent[$field];
 
 		$v2 = $this->propList($v,$list);
-		$v2 = h($v2);
+		$v2 = htmlspecialchars($v2);
 		
 		$td = "<td><input type='hidden' name='{$field}' value='{$v}' /><span class='{$field}'>{$v2}</span></td>\n";
 		$this->setTd($td,$field);
@@ -1006,7 +951,7 @@ class CrudBaseHelper {
 		$v2="";
 		$long_over_flg = 0; // 制限文字数オーバーフラグ
 		if(!empty($v)){
-			$v = h($v);
+			$v = htmlspecialchars($v);
 			if($str_len === null){
 				$v2 = $v;
 			}else{
@@ -1024,7 +969,7 @@ class CrudBaseHelper {
 		// ノート詳細開きボタンのHTMLを作成
 		$note_detail_open_html = '';
 		if($long_over_flg) {
-			$note_detail_open_html = "<input type='button' class='btn btn-default btn-xs' value='...' onclick=\"crudBase.openNoteDetail(this, '{$field}')\" />";
+			$note_detail_open_html = "<input type='button' class='btn btn-secondary btn-sm' value='...' onclick=\"crudBase.openNoteDetail(this, '{$field}')\" />";
 		}
 		
 		$td = "
@@ -1046,7 +991,7 @@ class CrudBaseHelper {
 		$v = $ent[$field];
 
 		if(!empty($v)){
-			$v = h($v);
+			$v = htmlspecialchars($v);
 			$v=nl2br($v);
 		
 		}
@@ -1057,7 +1002,7 @@ class CrudBaseHelper {
 	public function tpNote($v,$wamei){
 	
 		if(!empty($v)){
-			$v= str_replace('\\r\\n', '<br>', h($v));
+			$v= str_replace('\\r\\n', '<br>', htmlspecialchars($v));
 			$v= str_replace('\\', '', $v);
 		}
 	
@@ -1074,7 +1019,7 @@ class CrudBaseHelper {
 		if(!empty($v)){
 		
 			//サニタイズされた改行コードを「&#13;」に置換
-			$v = str_replace('\\r\\n', '&#13;', h($v));
+			$v = str_replace('\\r\\n', '&#13;', htmlspecialchars($v));
 			$v = str_replace('\\', '', $v);
 		
 		}
@@ -1252,9 +1197,8 @@ class CrudBaseHelper {
 	 * @param $onclick 編集フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
 	public function rowEditBtn($id,$css_class=null,$onclick=null){
-
 		if(empty($css_class)){
-			$css_class='row_edit_btn btn btn-primary btn-xs';
+			$css_class='row_edit_btn btn btn-primary btn-sm ';//
 		}
 		
 		if(empty($onclick)){
@@ -1277,7 +1221,7 @@ class CrudBaseHelper {
 	public function rowCopyBtn($id,$css_class=null,$onclick=null){
 		
 		if(empty($css_class)){
-			$css_class='row_copy_btn btn btn-primary btn-xs';
+			$css_class='btn btn-primary btn-sm row_copy_btn';
 		}
 		
 		if(empty($onclick)){
@@ -1295,9 +1239,9 @@ class CrudBaseHelper {
 	 * @param string $css_class CSSスタイル（省略可）
 	 * @param $onclick 削除フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
-	public function rowDeleteBtn(&$ent,$option=array()){
+	public function rowDeleteBtn(&$ent,$option=[]){
 		
-		$css_class = 'row_delete_btn btn btn-warning btn-xs';
+		$css_class = 'row_delete_btn btn btn-warning btn-sm';
 		if(isset($option['css_class'])) $css_class = $option['css_class'];
 		
 		$onclick="deleteAction(this);";
@@ -1320,9 +1264,9 @@ class CrudBaseHelper {
 	 * @param string $css_class CSSスタイル（省略可）
 	 * @param $onclick 有効フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
-	public function rowEnabledBtn(&$ent,$option=array()){
+	public function rowEnabledBtn(&$ent,$option=[]){
 		
-		$css_class = 'row_enabled_btn btn btn-success btn-xs';
+		$css_class = 'row_enabled_btn btn btn-success btn-sm';
 		if(isset($option['css_class'])) $css_class = $option['css_class'];
 		
 		$onclick="enabledAction(this);";
@@ -1351,11 +1295,11 @@ class CrudBaseHelper {
 	 *  - css_class CSSスタイル（省略可）
 	 *  - onclick 抹消フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
-	public function rowEliminateBtn(&$ent,$option=array()){
+	public function rowEliminateBtn(&$ent,$option=[]){
 		
 
 		
-		$css_class = 'row_eliminate_btn btn btn-danger btn-xs';
+		$css_class = 'row_eliminate_btn btn btn-danger btn-sm';
 		if(isset($option['css_class'])) $css_class = $option['css_class'];
 		
 		$onclick="eliminateShow(this);";
@@ -1396,7 +1340,7 @@ class CrudBaseHelper {
 	}
 	private function _updateInfoTr($ent,$field,$fieldName){
 		
-		$ary = array();
+		$ary = [];
 		if (!is_array($field)){
 			$ary[] = $field;
 		}else{
@@ -1438,7 +1382,7 @@ class CrudBaseHelper {
 		$d9 = $this->getBeginningYearDate($d1);//今年元旦を取得する
 		$d10 = date('Y-m-d', strtotime("-365 day"));//365日前
 			
-		$list= array(
+		$list= [
 				$d1=>'本日',
 				$d2=>'今週（日曜日から～）',
 				$d3=>'10日以内',
@@ -1449,7 +1393,7 @@ class CrudBaseHelper {
 				$d8=>'半年以内（180日以内）',
 				$d9=>'今年（今年の元旦から～）',
 				$d10=>'1年以内（365日以内）',
-		);
+		];
 		
 		$this->_dateTimeList = $list;
 	
@@ -1510,21 +1454,12 @@ class CrudBaseHelper {
 	}
 	
 	
-	
-	private function _check1(){
-		if(empty($this->_mdl)){
-			throw new Exception('setModelNameの呼出しが事前に必要です。');
-		}
-	}
-	
-	
 	/**
 	 * td要素出力を列並モードに対応させる
-	 * @param array $field_data フィールドデータ
+	 * @param array $fieldData フィールドデータ
 	 */
-	public function startClmSortMode($field_data){
+	public function startClmSortMode(){
 		$this->_clmSortMode = 1; // 列並モード ON
-		$this->_field_data = $field_data; // フィールドデータをセット
 		
 	}
 	
@@ -1534,7 +1469,7 @@ class CrudBaseHelper {
 	 */
 	public function tdsEchoForClmSort(){
 
-		foreach($this->_field_data as $f_ent){
+		foreach($this->_fieldData as $f_ent){
 			$field = $f_ent['id'];
 			if(!empty($this->_clmSortTds[$field])){
 				echo $this->_clmSortTds[$field];
@@ -1542,7 +1477,7 @@ class CrudBaseHelper {
 		}
 		
 		// クリア
-		$this->_clmSortTds = array();
+		$this->_clmSortTds = [];
 		
 	}
 	
@@ -1798,8 +1733,8 @@ class CrudBaseHelper {
 	public function makeCsvBtns($csv_dl_url){
 		
 		$html = "
-		<a href='{$csv_dl_url}' class='btn btn-default btn-secondary btn-sm'>CSVエクスポート</a>
-		<input type='button' value='CSVインポート' class='btn btn-default btn-secondary btn-sm' onclick='jQuery(\"#csv_fu_div\").toggle(300);' style='display:none' />
+		<a href='{$csv_dl_url}' class='btn btn-secondary btn-sm'>CSVエクスポート</a>
+		<input type='button' value='CSVインポート' class='btn btn-secondary btn-sm' onclick='jQuery(\"#csv_fu_div\").toggle(300);' style='display:none' />
 		<div id='csv_fu_div' style='display:none'><input type='file' id='csv_fu' /></div>
 		";
 		
@@ -1816,11 +1751,19 @@ class CrudBaseHelper {
 	 */
 	public function hiddenX($field,$value){
 		
-		echo $this->input($this->_mdl.$field, array(
-			'id' => $field,
-			'value' => $value,
-			'type' => 'hidden',
-		));
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		$value = htmlspecialchars($value); // XSSサニタイズ
+		
+		$html = "
+			<input type='hidden'
+				name='data[{$model_name_c}][{$field}]'
+				id='{$field}'
+				value='{$value}'
+				data-field='{$field}'
+				class='kj_wrap kjs_inp'>
+		";
+		
+		echo $html;
 		
 	}
 	
@@ -1942,7 +1885,7 @@ class CrudBaseHelper {
 				<div>新バージョン：{$this_page_version}</div>
 				<div class='text-danger'>当画面は新しいバージョンに変更されています。
 				セッションクリアボタンを押してください。</div>
-				<input type='button' class='btn btn-danger btn-xs' value='セッションクリア' onclick='sessionClear()' >
+				<input type='button' class='btn btn-danger btn-sm' value='セッションクリア' onclick='sessionClear()' >
 			</div>
 		";
 		echo $html;
@@ -1956,7 +1899,7 @@ class CrudBaseHelper {
 		
 		$html = "
 			<div id='csh_div' style='display:inline-block'>
-				<input type='button' value='列表示切替' class='btn btn-default btn-secondary btn-sm' onclick=\"jQuery('#clm_cbs_detail').toggle(300)\" />
+				<input type='button' value='列表示切替' class='btn btn-secondary btn-sm' onclick=\"jQuery('#clm_cbs_detail').toggle(300)\" />
 				<div id='clm_cbs_detail' style='display:none;margin-top:5px'>
 					<div id='clm_cbs_rap'>
 						<p>列表示切替</p>
