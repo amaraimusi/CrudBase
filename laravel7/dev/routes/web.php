@@ -19,7 +19,9 @@ Route::get('/', function () {
 
 	Route::get('neko/bark', 'NekoController@bark');
 	Route::get('neko', 'NekoController@index');
+	Route::post('neko/ajax_reg', 'NekoController@ajax_reg');
 	Route::get('neko2', 'NekoController@index2');
+	Route::post('neko/test_ajax_be', 'NekoController@testAjax');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

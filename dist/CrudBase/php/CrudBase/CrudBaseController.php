@@ -266,6 +266,8 @@ class CrudBaseController {
 
 		$paths = $this->getPaths();
 		
+		$csrf_token = $this->strategy->getCsrfToken(); // CSRFトークン ※Ajaxのセキュリティ
+		
 		$crudBaseData = [
 				'model_name_c'=> $this->main_model_name, // モデル名（キャメル記法）
 				'model_name_s'=> $this->main_model_name_s, // モデル名（スネーク記法）
@@ -292,38 +294,8 @@ class CrudBaseController {
 				'crud_base_path' => $this->param['crud_base_path'], // CrudBaseライブラリへのパス
 				'crud_base_js' => $this->param['crud_base_js'], // CrudBase.min.jsのパス
 				'crud_base_css' => $this->param['crud_base_css'], // CrudBase.min.cssのパス
+				'csrf_token' => $csrf_token, // CSRFトークン ※Ajaxのセキュリティ
 		];
-		
-		// ■■■□□□■■■□□□
-// 		$crudBaseData = [
-// 				'model_name_c'=> $this->main_model_name, // モデル名（キャメル記法）
-// 				'model_name_s'=> $this->main_model_name_s, // モデル名（スネーク記法）
-// 				'fieldData'=>$active, 		// アクティブフィールドデータ
-// 				'kjs'=>$kjs, 				// 検索条件情報
-// 				'kjs_json'=>$kjs_json, 		// 検索条件JSON
-// 				'def_kjs_json'=>$def_kjs_json, // デフォルト検索情報JSON
-// 				'errMsg'=>$errMsg, 			// エラーメッセージ
-// 				'errTypes' => $errTypes, 	// エラータイプ
-// 				'err_types_json' => $err_types_json, // エラータイプJSON
-// 				'version'=>$this->version, 	// CrudBaseのバージョン
-// 				'userInfo'=>$userInfo, 		// ユーザー情報
-// 				'new_version_chg'=>$new_version_chg, // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
-// 				'new_version_flg' => $new_version_chg, // 当ページの新バージョンフラグ   0:バージョン変更なし  1:新バージョン
-// 				'debug_mode'=>$debug_mode, 	// デバッグモード	CakePHPのデバッグモードと同じもの
-// 				'csh_ary'=>$csh_ary, 		// 列表示配列	列表示切替機能用
-// 				'csh_json'=>$csh_json, 		// 列表示配列JSON	 列表示切替機能用
-// 				'bigDataFlg'=>$bigDataFlg, 	// 巨大データフラグ	画面に表示する行数が制限数（$big_data_limit）を超えるとONになる。
-// 				'big_data_fields'=>$big_data_fields, // 巨大データ用のフィールド情報 (高速化のため列の種類は少なめ）
-// 				'pages'=>$pages, 			// ページネーションパラメータ
-// 				'act_flg'=>$act_flg, 		// アクティブフラグ	null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
-// 				'sql_dump_flg'=>$sql_dump_flg, // SQLダンプフラグ
-// 				'header' => 'header', // header.ctpの埋め込み
-// 				'this_page_version' => $this->this_page_version, // 当ページのバージョン
-// 				'paths' => $paths, // ホーム相対パス
-// 				'crud_base_path' => $this->param['crud_base_path'], // CrudBaseライブラリへのパス
-// 				'crud_base_js' => $this->param['crud_base_js'], // CrudBase.min.jsのパス
-// 				'crud_base_css' => $this->param['crud_base_css'], // CrudBase.min.cssのパス
-// 		];
 		
 		
 		return $crudBaseData;

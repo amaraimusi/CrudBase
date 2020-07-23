@@ -192,6 +192,12 @@ class CrudBase{
 		if(param == null){
 			param = {};
 		}
+		
+		if(param['csrf_token'] == null){
+			let csrf_token = jQuery('#csrf_token').val();
+			if(csrf_token == null) throw new Error('csrf_token is empty!');
+			param['csrf_token'] = csrf_token;
+		}
 
 		// 画面コード（スネーク記法）
 		if(param['src_code'] == null){
@@ -956,7 +962,11 @@ class CrudBase{
 		
 		var regParam = {}; // 登録パラメータ
 		
-		// WordPressの場合
+		// トークンの取得(Laravelなど）
+		let token = this.param.csrf_token;
+		fd.append( "_token", token );
+		
+		// WordPressの場合■■■□□□■■■□□□後日でwp_nonceをcsrf_tokenに変更する
 		if(option['wp_action']){
 			regParam['action'] = option['wp_action'];
 			if(option['wp_nonce']) regParam['nonce'] = option['wp_nonce'];
@@ -972,7 +982,6 @@ class CrudBase{
 
 		// 諸パラメータから追加行インデックスを決定する
 		var add_row_index = this._decAddRowIndex(form,form_type,option);
-
 
 		jQuery.ajax({
 			type: "post",
@@ -1082,6 +1091,10 @@ class CrudBase{
 		
 		var json = JSON.stringify(ent);//データをJSON文字列にする。
 		fd.append( "key1", json );
+		
+		// トークンの取得(Laravelなど）
+		let token = this.param.csrf_token;
+		fd.append( "_token", token );
 
 		// WordPressの場合
 		if(option['wp_action']){
@@ -1514,8 +1527,10 @@ class CrudBase{
 
 		var json = JSON.stringify(ent);//データをJSON文字列にする。
 		fd.append( "key1", json );
-
-
+		
+		// トークンの取得(Laravelなど）
+		let token = this.param.csrf_token;
+		fd.append( "_token", token );
 
 		
 		jQuery.ajax({

@@ -145,7 +145,6 @@ function newInpShow(btnElm, ni_tr_place){
  * @param btnElm ボタン要素
  */
 function editShow(btnElm){
-	console.log('A0001');//■■■□□□■■■□□□)
 	var option = {};
 	crudBase.editShow(btnElm,option);
 }
@@ -309,4 +308,57 @@ function searchKjs(){
 function calendarViewKShow(){
 	// カレンダービューを生成 
 	crudBase.calendarViewCreate('neko_date');
+}
+
+/**
+ * ■■■□□□■■■□□□
+ * @returns
+ */
+function test_ajax(){
+
+	console.log('test_ajax');
+	let fd = new FormData(); // 送信フォームデータ
+	let data = {id:123, name:'古いねこ', age:15}; // バックエンド側に送信するデータ
+	let json = JSON.stringify(data);
+	fd.append( "key1", json );
+	
+	// CSRFトークンを送信フォームデータにセットする。
+	let token = jQuery('#csrf_token').val();
+	fd.append( "_token", token );
+
+	
+	jQuery.ajax({
+		type: "post",
+		url: 'neko/test_ajax_be',
+		data: fd,
+		cache: false,
+		dataType: "text",
+		processData: false,
+		contentType: false,
+
+	}).done((str_json, type) => {
+
+		console.log('レスポンスOK');
+		let data = null;
+		try{
+			data =jQuery.parseJSON(str_json);//パース
+			console.log(data);
+		}catch(e){
+			alert('データのエラー:' + str_json);
+			console.log(str_json);
+			return;
+		}
+		
+		let res = '';
+		for(let field in data){
+			res += field + ' = ' + data[field] + '<br>';
+		}
+		jQuery('#test_ajax_res').html(res);
+
+
+	}).fail((jqXHR, statusText, errorThrown) => {
+		alert(statusText);
+		console.log('通信エラー');
+		jQuery('#test_ajax_res').html(jqXHR.responseText);
+	});
 }

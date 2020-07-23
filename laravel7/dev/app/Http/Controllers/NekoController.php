@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use App\Models\Neko;
 use Illuminate¥Support¥Facades¥DB;
 
-//class NekoController extends Controller■■■□□□■■■□□□
 class NekoController
 {
 	
@@ -81,6 +80,68 @@ class NekoController
 		//\Session::put('neko_key', '野良猫にエサをあげる大臣');
 		return view('neko.index', compact('data'));
 	}
+	
+	
+	/**
+	 * DB登録
+	 *
+	 * @note
+	 * Ajaxによる登録。
+	 * 編集登録と新規入力登録の両方に対応している。
+	 */
+	public function ajax_reg(){
+		//debug('test ajax_reg');//■■■□□□■■■□□□)
+// 		App::uses('Sanitize', 'Utility');
+// 		$this->autoRender = false;//ビュー(ctp)を使わない。
+// 		$errs = array(); // エラーリスト
+		
+// 		if($this->login_flg == 1 && empty($this->Auth->user())){
+// 			return 'Error:login is needed.';// 認証中でなければエラー
+// 		}
+		
+// 		// 未ログインかつローカルでないなら、エラーアラートを返す。
+// 		if(empty($this->Auth->user()) && $_SERVER['SERVER_NAME']!='localhost'){
+// 			return '一般公開モードでは編集登録はできません。';
+// 		}
+		
+// 		// JSON文字列をパースしてエンティティを取得する
+// 		$json=$_POST['key1'];
+// 		$ent = json_decode($json,true);
+		
+// 		// 登録パラメータ
+// 		$reg_param_json = $_POST['reg_param_json'];
+// 		$regParam = json_decode($reg_param_json,true);
+// 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
+		
+// 		// CBBXS-1024
+// 		$ent['img_fn'] = $this->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
+// 		// CBBXE
+		
+// 		// 更新ユーザーなど共通フィールドをセットする。
+// 		$ent = $this->setCommonToEntity($ent);
+		
+// 		// エンティティをDB保存
+// 		$this->Neko->begin();
+// 		$ent = $this->Neko->saveEntity($ent,$regParam);
+// 		$this->Neko->commit();//コミット
+		
+// 		// CBBXS-1025
+// 		// ファイルアップロードの一括作業
+// 		App::uses('FileUploadK','Vendor/CrudBase/FileUploadK');
+// 		$fileUploadK = new FileUploadK();
+// 		$res = $fileUploadK->putFile1($_FILES, 'img_fn', $ent['img_fn']);
+// 		// CBBXE
+		
+// 		if(!empty($res['err_msg'])) $errs[] = $res['err_msg'];
+		
+// 		if($errs) $ent['err'] = implode("','",$errs); // フォームに表示するエラー文字列をセット
+		
+// 		$json_data=json_encode($ent,true);//JSONに変換
+		
+// 		return $json_data;
+		return 'おろかもーの';
+	}
+	
 	
 	/**
 	 * CrudBase用の初期化処理
@@ -354,12 +415,26 @@ class NekoController
 	
 	
 	// ■■■□□□■■■□□□
-    public function bark() {
-        
-        $data = ['neko'=>'猫', 'yagi'=>'山羊'];
-        
-        return view('neko.bark', compact('data'));
-    }
+	public function bark() {
+		
+		$data = ['neko'=>'猫', 'yagi'=>'山羊'];
+		
+		return view('neko.bark', compact('data'));
+	}
+
+	// ■■■□□□■■■□□□
+	public function testAjax(){
+		
+		$json=$_POST['key1'];
+		$data = json_decode($json,true);
+ 		$data['name'] = '新しい猫';
+ 		$data['age'] = 1;
+ 		$data['date'] = '2020-7-23';
+		
+ 		$json = json_encode($data, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
+
+		return $json;
+	}
 }
 
 

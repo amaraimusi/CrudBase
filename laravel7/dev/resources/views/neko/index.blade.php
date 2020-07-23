@@ -122,6 +122,10 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	</div><!-- sub_tools -->
 </div><!-- detail_div -->
 
+<input type="button" value="test_ajax" onclick="test_ajax()" /><!-- ■■■□□□■■■□□□ -->
+<input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
+<div id="test_ajax_res"></div>
+
 
 <div id="new_inp_form_point"></div><!-- 新規入力フォーム表示地点 -->
 

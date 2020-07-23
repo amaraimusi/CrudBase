@@ -184,4 +184,13 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 		// ■■■□□□■■■□□□
 		return '';
 	}
+	
+	/**
+	 * CSRFトークンを取得する ※Ajaxのセキュリティ
+	 * @return mixid CSRFトークン
+	 */
+	public function getCsrfToken(){
+		return csrf_token(); // ← Laravelの関数
+	}
+	
 }
