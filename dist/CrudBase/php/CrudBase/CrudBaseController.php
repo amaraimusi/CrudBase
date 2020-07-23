@@ -1445,12 +1445,16 @@ class CrudBaseController {
 
 	}
 
-	// 更新ユーザーなど共通フィールドをセットする。
-	protected function setCommonToEntity($ent){
+	/**
+	 * 更新ユーザーなど共通フィールドをエンティティにセットする。
+	 * @param [] $ent エンティティ
+	 * @return [] エンティティ
+	 */
+	public function setCommonToEntity($ent){
 
 		// 更新ユーザーの取得とセット
-		$update_user = $this->Auth->user('username');
-		$ent['update_user'] = $update_user;
+		$userInfo = $this->getUserInfo();
+		$ent['update_user'] = $userInfo['update_user'];
 
 		// ユーザーエージェントの取得とセット
 		$user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -1808,6 +1812,28 @@ class CrudBaseController {
 		
 		return $fp;
 	
+	}
+	
+	
+	/**
+	 * トランザクション・スタート
+	 */
+	public function begin(){
+		$this->strategy->begin();
+	}
+	
+	/**
+	 * トランザクション・ロールバック
+	 */
+	public function rollback(){
+		$this->strategy->rollback();
+	}
+	
+	/**
+	 * トランザクション・コミット
+	 */
+	public function commit(){
+		$this->strategy->commit();
 	}
 	
 	

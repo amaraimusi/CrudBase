@@ -90,40 +90,38 @@ class NekoController
 	 * 編集登録と新規入力登録の両方に対応している。
 	 */
 	public function ajax_reg(){
-		//debug('test ajax_reg');//■■■□□□■■■□□□)
-// 		App::uses('Sanitize', 'Utility');
-// 		$this->autoRender = false;//ビュー(ctp)を使わない。
-// 		$errs = array(); // エラーリスト
 		
-// 		if($this->login_flg == 1 && empty($this->Auth->user())){
-// 			return 'Error:login is needed.';// 認証中でなければエラー
-// 		}
+		$this->cb = $this->initCrudBase();
+		$this->md = $this->factoryModel(); // モデルを生成する
 		
-// 		// 未ログインかつローカルでないなら、エラーアラートを返す。
-// 		if(empty($this->Auth->user()) && $_SERVER['SERVER_NAME']!='localhost'){
-// 			return '一般公開モードでは編集登録はできません。';
-// 		}
+		$errs = []; // エラーリスト
 		
-// 		// JSON文字列をパースしてエンティティを取得する
-// 		$json=$_POST['key1'];
-// 		$ent = json_decode($json,true);
+		if(\Auth::id() == null){
+			return 'Error:ログイン認証が必要です。 Login is needed';
+		}
 		
-// 		// 登録パラメータ
-// 		$reg_param_json = $_POST['reg_param_json'];
-// 		$regParam = json_decode($reg_param_json,true);
-// 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
+		
+		// JSON文字列をパースしてエンティティを取得する
+		$json=$_POST['key1'];
+		$ent = json_decode($json, true);
+		
+		// 登録パラメータ
+		$reg_param_json = $_POST['reg_param_json'];
+		$regParam = json_decode($reg_param_json,true);
+		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
 		
 // 		// CBBXS-1024
+// ■■■□□□■■■□□□
 // 		$ent['img_fn'] = $this->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
 // 		// CBBXE
 		
-// 		// 更新ユーザーなど共通フィールドをセットする。
-// 		$ent = $this->setCommonToEntity($ent);
+		// 更新ユーザーなど共通フィールドをセットする。
+		$ent = $this->cb->setCommonToEntity($ent);
 		
-// 		// エンティティをDB保存
-// 		$this->Neko->begin();
+		// エンティティをDB保存
+		$this->md->begin();
 // 		$ent = $this->Neko->saveEntity($ent,$regParam);
-// 		$this->Neko->commit();//コミット
+		$this->md->commit();//コミット
 		
 // 		// CBBXS-1025
 // 		// ファイルアップロードの一括作業
@@ -434,6 +432,19 @@ class NekoController
  		$json = json_encode($data, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
 		return $json;
+	}
+	
+	
+	/**
+	 * モデルクラスを生成する
+	 */
+	public function factoryModel(){
+		if($this->cb == null) throw new Error('CrudBaseContollerのインスタンスが必要です。');
+		$model_path = app_path() . '/Models';
+		require_once $model_path . '/Neko.php';
+		$model = new Neko($this->cb);
+		return $model;
+		
 	}
 }
 

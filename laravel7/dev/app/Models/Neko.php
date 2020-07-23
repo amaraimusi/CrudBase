@@ -196,6 +196,28 @@ class Neko extends Model
 	}
 	
 	
+	/**
+	 * トランザクション・スタート
+	 */
+	public function begin(){
+		$this->cb->begin();
+	}
+	
+	/**
+	 * トランザクション・ロールバック
+	 */
+	public function rollback(){
+		$this->cb->rollback();
+	}
+	
+	/**
+	 * トランザクション・コミット
+	 */
+	public function commit(){
+		$this->cb->commit();
+	}
+	
+	
 	// CBBXS-1021
 	
 	/**
