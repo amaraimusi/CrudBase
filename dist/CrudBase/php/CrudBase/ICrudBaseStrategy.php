@@ -3,6 +3,9 @@ interface ICrudBaseStrategy{
 	public function setCtrl($ctrl); // クライアントコントローラのセッター
 	public function setModel($model); // クライアントモデルのセッター
 	public function sqlExe($sql);
+	public function selectValue($sql); // SQLを実行して単一の値を取得する
+	public function selectEntity($sql); // SQLを実行してエンティティを取得する
+	public function selectData($sql); // SQLを実行してデータを取得する
 	public function begin();
 	public function rollback();
 	public function commit();

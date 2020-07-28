@@ -1913,5 +1913,34 @@ class CrudBaseController {
 		}
 	}
 	
+	
+	/**
+	 * SELECT SQLを実行して単一の値を取得する
+	 * @param string $sql
+	 * @return mixed 単一の値
+	 */
+	public function selectValue($sql){
+		return $this->strategy->selectValue($sql);
+	}
+	
+	/**
+	* SQLを実行してエンティティを取得する
+	* @param string $sql
+	* @return [] エンティティ
+	*/
+	public function selectEntity($sql){
+		return $this->strategy->selectEntity($sql);
+	}
+	
+	
+	/**
+	 * SQLを実行してデータを取得する
+	 * @param string $sql
+	 * @return [] データ（エンティティの配列）
+	 */
+	public function selectData($sql){
+		return $this->strategy->selectData($sql);
+	}
+	
 
 }

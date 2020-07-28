@@ -11,7 +11,6 @@ class NekoController
 	private $cb; // CrudBase制御クラス
 	private $md; // モデル
 
-
 	/**
 	 * ネコCRUDページ
 	 */
@@ -20,7 +19,8 @@ class NekoController
 		$this->cb = $this->initCrudBase();
 		$data = [];
 		
-		$this->md = new Neko($this->cb);
+		$this->md = new Neko();
+		$this->md->setCrudBaseController($this->cb);
 
  		// CrudBase共通処理（前）
  		$crudBaseData = $this->cb->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
@@ -51,7 +51,10 @@ class NekoController
 // 				'data'=> $data,
 // 		));
 		
-		
+// 		//■■■□□□■■■□□□テスト
+// 		$res = $this->cb->selectData('select * from nekos where id = 41646541');
+// 		debug($res);//■■■□□□■■■□□□)
+// 		debug('test');//■■■□□□■■■□□□)
 		
 // 		echo '<br>';
 // 		echo $_SERVER['DOCUMENT_ROOT'];
@@ -92,7 +95,7 @@ class NekoController
 	public function ajax_reg(){
 		
 		$this->cb = $this->initCrudBase();
-		$this->md = $this->factoryModel(); // モデルを生成する
+		//$this->md = $this->factoryModel(); // モデルを生成する
 		
 		$errs = []; // エラーリスト
 		
@@ -111,33 +114,16 @@ class NekoController
 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
 		
 // 		// CBBXS-1024
-// ■■■□□□■■■□□□
 // 		$ent['img_fn'] = $this->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
 // 		// CBBXE
 		
-		// 更新ユーザーなど共通フィールドをセットする。
-		$ent = $this->cb->setCommonToEntity($ent);
+		$neko = new \App\Models\Neko();
+		$neko->saveEntity($ent, $regParam);
 		
-		// エンティティをDB保存
-		$this->md->begin();
-// 		$ent = $this->Neko->saveEntity($ent,$regParam);
-		$this->md->commit();//コミット
+		$json_str = json_encode($ent, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS); // JSONに変換
 		
-// 		// CBBXS-1025
-// 		// ファイルアップロードの一括作業
-// 		App::uses('FileUploadK','Vendor/CrudBase/FileUploadK');
-// 		$fileUploadK = new FileUploadK();
-// 		$res = $fileUploadK->putFile1($_FILES, 'img_fn', $ent['img_fn']);
-// 		// CBBXE
+		return $json_str;
 		
-// 		if(!empty($res['err_msg'])) $errs[] = $res['err_msg'];
-		
-// 		if($errs) $ent['err'] = implode("','",$errs); // フォームに表示するエラー文字列をセット
-		
-// 		$json_data=json_encode($ent,true);//JSONに変換
-		
-// 		return $json_data;
-		return 'おろかもーの';
 	}
 	
 	

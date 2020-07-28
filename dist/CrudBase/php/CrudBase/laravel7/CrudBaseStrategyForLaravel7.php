@@ -193,4 +193,59 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 		return csrf_token(); // ← Laravelの関数
 	}
 	
+	
+	/**
+	 * SQLを実行して単一の値を取得する
+	 * @param string $sql
+	 * @return mixied 単一の値
+	 */
+	public function selectValue($sql){
+		$res = \DB::select($sql);
+		
+		$value = null;
+		if(!empty($res)){
+			$ent = current($res);
+			$value = current($ent);
+		}
+		
+		return $value;
+	}
+	
+	
+	/**
+	 * SQLを実行してエンティティを取得する
+	 * @param string $sql
+	 * @return [] エンティティ
+	 */
+	public function selectEntity($sql){
+		$res = \DB::select($sql);
+		
+		$ent = [];
+		if(!empty($res)){
+			$ent = current($res);
+			$ent = (array)$ent;
+		}
+		
+		return $ent;
+	}
+	
+	
+	/**
+	 * SQLを実行してデータを取得する
+	 * @param string $sql
+	 * @return [] データ（エンティティの配列）
+	 */
+	public function selectData($sql){
+		$data = \DB::select($sql);
+		
+		$data2 = [];
+		if(!empty($data)){
+			foreach($data as $ent){
+				$data2[] = (array)$ent;
+			}
+		}
+		
+		return $data2;
+	}
+	
 }

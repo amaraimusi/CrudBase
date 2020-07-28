@@ -6,17 +6,49 @@ use Illuminate\Database\Eloquent\Model;
 
 class Neko extends Model
 {
-	protected $table = 'nekos'; // 紐づけるテーブル名
-	protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。
-	public $timestamps = false; // タイムスタンプ。 trueならcreated_atフィールド、updated_atフィールドに適用される。（それ以外のフィールドを設定で指定可）
+	//protected $table = 'nekos'; // 紐づけるテーブル名
+	//protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。
+	
+	// ホワイトリスト（DB保存時にこのホワイトリストでフィルタリングが施される）
+	public $fillable = [
+			"id",
+			"neko_val",
+			"neko_name",
+			"neko_date",
+			"neko_group",
+			"neko_dt",
+			"neko_flg",
+			"img_fn",
+			"note",
+			"sort_no",
+			"delete_flg",
+			"update_user",
+			"ip_addr",
+			"created",
+			"modified"
+			
+	];
+	
+	const CREATED_AT = 'created';
+	const UPDATED_AT = 'modified';
+	//public $timestamps = false; // タイムスタンプ。 trueならcreated_atフィールド、updated_atフィールドに適用される。（それ以外のフィールドを設定で指定可）
 	
 	
 	private $cb; // CrudBase制御クラス
 	
-	public function __construct($cb){
-		$this->cb = $cb;
+	
+	
+	public function __construct(){
+		
 	}
 	
+	/**
+	 * CrudBase制御クラスのセッター
+	 * @param CrudBaseController $cb
+	 */
+	public function setCrudBaseController($cb){
+		$this->cb = $cb;
+	}
 	
 	/**
 	 * 検索条件とページ情報を元にDBからデータを取得する
@@ -248,7 +280,77 @@ class Neko extends Model
 	
 	
 	
+	/**
+	 * エンティティのDB保存
+	 * @param [] $ent エンティティ
+	 * @return [] エンティティ(insertされた場合、新idがセットされている）
+	 */
+	public function saveEntity(&$ent, &$regParam){
+		
+		if(empty($ent['id'])){
+			
+			// ▽ idが空であればINSERTをする。
+			$ent['sort_no'] = $this->getSortNo($regParam);
+			$ent = array_intersect_key($ent, array_flip($this->fillable)); // ホワイトリストによるフィルタリング
+			$id = $this->insertGetId($ent); // INSERT
+			$ent['id'] = $id;
+		}else{
+			
+			// ▽ idが空でなければUPDATEする。
+			$ent = array_intersect_key($ent, array_flip($this->fillable)); // ホワイトリストによるフィルタリング
+			$this->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
+		}
+
+		return $ent;
+	}
 	
+	
+	private function getSortNo($regParam){
+		$sort_no = $this->sort_no;
+		if(empty($regParam['ni_tr_place'])){
+			$ent['sort_no'] = $this->CrudBase->getLastSortNo($this); // 末尾順番を取得する
+		}else{
+			$ent['sort_no'] = $this->CrudBase->getFirstSortNo($this); // 先頭順番を取得する
+		}
+	}
+	
+	
+	
+	/**
+	 * データのDB保存
+	 * @param [] $data データ（エンティティの配列）
+	 * @return [] データ(insertされた場合、新idがセットされている）
+	 */
+	public function saveAll(&$data){
+		
+		$data2 = [];
+		foreach($data as &$ent){
+			$data2[] = $this->saveEntity($ent);
+			
+		}
+		unset($ent);
+		return $data2;
+	}
+	
+	
+	/**
+	 * 複数レコードのINSERT
+	 * @param [] $data データ（エンティティの配列）
+	 */
+	public function insertAll($data){
+		
+		if(empty($data)) return;
+		
+		foreach($data as &$ent){
+			$ent = array_intersect_key($ent, array_flip($this->fillable));
+			unset($ent['id']);
+		}
+		unset($ent);
+
+		$this->insert($data);
+		
+		
+	}
 	
 	
 	
