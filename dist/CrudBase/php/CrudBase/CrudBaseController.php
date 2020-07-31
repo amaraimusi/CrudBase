@@ -63,7 +63,7 @@ class CrudBaseController {
 	private $main_model_name_s=null;//モデル名のスネーク記法番(例→animal_x)
 	
 	
-	private $param;
+	private $param; // CrudBaseパラメータ
 	private $posts = []; // POSTデータ
 	private $gets = []; // GETデータ
 	private $strategy = null; // ICrudBaseStrategy.php フレームワーク・ストラテジー
@@ -72,90 +72,116 @@ class CrudBaseController {
 	
 	/**
 	 * 初期化
-	 * @param array $param
+	 * 
+	 * @param object $clientCtrl クライアントコントローラ
+	 * @param object $clientModel クライアントモデル
+	 * @param array $crudBaseData
 	 *  - fw_type フレームワークタイプ    plain:プレーン(デフォルト), cake:cakephp2.x, wp:wordpress, laravel7:Laravel7
+	 *  - model_name_c クライアントモデル名（キャメル記法）
 	 *  - crud_base_path CrudBaseライブラリへのパス
-	 *  - ctrl クライアントコントローラのオブジェクト
-	 *  - model クライアントモデルのオブジェクト
 	 *  - kensakuJoken array 検索条件情報
 	 *  - kjs_validate array 検索条件バリデーション
 	 *  - fieldData array フィールドデータ
 	 *  - debug デバッグモード 0:OFF 1:OFF
+	 *  - func_csv_export CSVエクスポート機能 0:OFF ,1:ON(デフォルト)
+	 *  - sql_dump_flg SQLダンプフラグ   true:SQLダンプを表示（デバッグモードである場合。デフォルト） , false:デバッグモードであってもSQLダンプを表示しない。
+	 *  - func_file_upload ファイルアップロード機能 0:OFF , 1:ON(デフォルト)
 	 */
-	public function __construct($param = []){
+	public function __construct(&$clientCtrl, &$clientModel, &$crudBaseData){
 		
-		$this->kensakuJoken = $param['kensakuJoken']; // 検索条件情報
-		$this->kjs_validate = $param['kjs_validate']; // 検索条件バリデーション
-		$this->fieldData = $param['fieldData']; // フィールドデータ
-		$this->MainModel = $param['model'];
+		$model_name = $crudBaseData['model_name_c'];
+		$model_name_s= $this->snakize($model_name);
 		
-		// フレームワークタイプを取得
-		$fw_type = 'plain';
-		if(!empty($param['fw_type'])) $fw_type = $param['fw_type'];
+		$crudBaseData['main_model_name'] = $model_name;
+		$crudBaseData['main_model_name_s'] = $model_name_s;
+		$crudBaseData['model_name_s'] = $model_name_s;
+		$crudBaseData['tbl_name'] = $model_name_s . 's';
+
+		if (empty($crudBaseData['func_csv_export'])) $crudBaseData['func_csv_export'] = 1;
+		if (empty($crudBaseData['sql_dump_flg'])) $crudBaseData['sql_dump_flg'] = true;
+		if (empty($crudBaseData['func_file_upload'])) $crudBaseData['func_file_upload'] = 1;
+
+		if(empty($crudBaseData['debug'])) $crudBaseData['debug'] = 0; // デバッグモード
+		$crudBaseData['fields'] = array_keys($crudBaseData['fieldData']['def']); // フィールドリスト
 		
-		if(empty($param['debug'])) $param['debug'] = 0; // デバッグモード
+		$this->kensakuJoken = $crudBaseData['kensakuJoken']; // 検索条件情報
+		$this->kjs_validate = $crudBaseData['kjs_validate']; // 検索条件バリデーション
+		$this->fieldData = $crudBaseData['fieldData']; // フィールドデータ
+		$this->MainModel = $clientModel;
+		
+		$fw_type =$fw_type = $crudBaseData['fw_type']; // フレームワークタイプを取得
 		
 		// フレームワーク・ストラテジーの生成
+		$this->strategy = $this->factoryStrategy($fw_type, $clientCtrl, $clientModel);
+
+		// CrudBaseモデルクラスの生成
+		$this->crudBaseModel = new CrudBaseModel(['strategy' => $this->strategy,]); 
+		
+		$this->main_model_name = $model_name;
+		$this->main_model_name_s = $model_name_s;
+		$this->crudBaseData = $crudBaseData;
+		
+		$this->crudBaseData['paths'] = $this->getPaths(); // パス情報
+		$this->crudBaseData['csrf_token'] = $this->strategy->getCsrfToken(); // CSRFトークン ※Ajaxのセキュリティ 
+		
+	}
+	
+	/**
+	 * CrudBaseパラメータのGetter
+	 * @return array
+	 */
+	public function getCrudBaseData(){
+		return $this->crudBaseData;
+	}
+	
+	
+	/**
+	 * ストラテジー・ファクトリー
+	 * @param string $fw_type フレームワークタイプ
+	 * @param object $clientCtrl クライアントコントローラ・オブジェクト
+	 * @param object $clientModel クライアントモデル・オブジェクト
+	 * @throws Exception
+	 * @return NULL|CrudBaseStrategyForCake|CrudBaseStrategyForLaravel7
+	 */
+	public function factoryStrategy($fw_type, &$clientCtrl, &$clientModel){
+		$strategy = null;
 		if($fw_type == 'cake'){
 			require_once 'cakephp/CrudBaseStrategyForCake.php';
-			$this->strategy = new CrudBaseStrategyForCake();
-			if(isset($param['ctrl'])) $this->strategy->setCtrl($param['ctrl']); // クライアントコントローラのセット
-			$this->strategy->setModel($this->MainModel); // クライアントモデルのセット
-				
+			$strategy = new CrudBaseStrategyForCake();
+			if(isset($clientCtrl)) $strategy->setCtrl($clientCtrl); // クライアントコントローラのセット
+			$strategy->setModel($clientModel); // クライアントモデルのセット
+			
 		}else if($fw_type == 'laravel7' || $fw_type == 'laravel'){
 			require_once 'laravel7/CrudBaseStrategyForLaravel7.php';
-			$this->strategy = new CrudBaseStrategyForLaravel7();
-			if(isset($param['ctrl'])) $this->strategy->setCtrl($param['ctrl']); // クライアントコントローラのセット
-			$this->strategy->setModel($this->MainModel); // クライアントモデルのセット
+			$strategy= new CrudBaseStrategyForLaravel7();
+			if(isset($clientCtrl)) $strategy->setCtrl($clientCtrl); // クライアントコントローラのセット
+			$strategy->setModel($clientModel); // クライアントモデルのセット
 			
+		}else{
+			throw new Exception('$fw_type is empty!');
 		}
-		
-		// CrudBaseモデルクラスの生成
-		$this->crudBaseModel = new CrudBaseModel([
-			'strategy' => $this->strategy,
-		]); 
-		
-		$this->param = $param;
-		
+		return $strategy;
 	}
 	
 	
 	
+	
 	/**
-	 * indexアクションの共通処理
+	 * CrudBaseのindexアクション共通処理
 	 *
-	 * 検索条件情報の取得、入力エラー、ページネーションなどの情報を取得します。
-	 * このメソッドはindexアクションの冒頭部分で呼び出されます。
-	 * @param string $name 	対応するモデル名（キャメル記法）
-	 * @param array $option
-	 *  - request 	HTTPリクエスト
-	 *  - func_csv_export CSVエクスポート機能 0:OFF ,1:ON(デフォルト)
-	 *  - func_file_upload ファイルアップロード機能 0:OFF , 1:ON(デフォルト)
-	 *  - sql_dump_flg SQLダンプフラグ   true:SQLダンプを表示（デバッグモードである場合。デフォルト） , false:デバッグモードであってもSQLダンプを表示しない。
-	 * @return array
-	 * - kjs <array> 検索条件情報
-	 * - errMsg <string> 検索条件入力のエラーメッセージ
-	 * - pages <array> ページネーション情報
-	 * - bigDataFlg <bool> true:一覧データ件数が500件を超える,false:500件以下。500件の制限はオーバーライドで変更可能。
+	 * @return [] crudBasedata
 	 *
 	 */
-	public function indexBefore($name,$option = []){
-		
+	public function indexBefore(){
+
 		// ▼ HTTPリクエストを取得
 		$this->posts = $_POST;
 		$this->gets = $_GET;
 
-		// ▼ オプションの初期化
-		if(empty($option['func_new_version'])) $option['func_new_version'] = 0;
-		if(!isset($option['func_csv_export'])) $option['func_csv_export'] = 1;
-		if(!isset($option['sql_dump_flg'])) $option['sql_dump_flg'] = true;
-		if(!isset($option['func_file_upload'])) $option['func_file_upload'] = 1;
-		
-		
-		// ▼ 画面に関連づいているモデル名関連を取得
-		$this->main_model_name=$name;
-		$this->main_model_name_s=$this->snakize($name);
 
+		
+
+		$name = $this->crudBaseData['model_name_c']; // ■■■□□□■■■□□□
 		// ▼検索POSTデータを取得
 		$searchPosts = [];
 		if(isset($this->posts[$name])){
@@ -163,7 +189,7 @@ class CrudBaseController {
 		}
 
 		// アクションを判定してアクション種別を取得する（0:初期表示、1:検索ボタン、2:ページネーション、3:ソート）
-		$actionType = $this->judgActionType();
+		$action_type = $this->judgActionType();
 
  		// 新バージョンであるかチェック。新バージョンである場合セッションクリアを行う。２回目のリクエスト（画面表示）から新バージョンではなくなる。
 		$new_version_chg = 0; // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
@@ -221,6 +247,7 @@ class CrudBaseController {
 			
 		}
 		
+		
 		$bigDataFlg=$this->checkBigDataFlg($kjs);//巨大データ判定
 
 		//巨大データフィールドデータを取得
@@ -236,11 +263,10 @@ class CrudBaseController {
 
 		$defKjs = $this->getDefKjsForReset();// 検索条件情報からデフォルト検索情報データを取得する
 
-		$debug_mode=$this->param['debug'];//デバッグモードを取得
 		
 
 		//アクティブフィールドデータを取得
-		$active = array();
+		$active = [];
 		if(!empty($this->fieldData['active'])){
 			$active = $this->fieldData['active'];
 		}
@@ -259,46 +285,58 @@ class CrudBaseController {
 			$this->strategy->sessionWrite($this->main_model_name_s.'_kjs',$kjs);
 		}
 		
-		$sql_dump_flg = $option['sql_dump_flg']; // SQLダンプフラグ   true:SQLダンプを表示（デバッグモードである場合） , false:デバッグモードであってもSQLダンプを表示しない。
-
 		// エラータイプJSON
 		$err_types_json = json_encode($errTypes,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
-		$paths = $this->getPaths();
+		$this->crudBaseData['fieldData'] = $active; // アクティブフィールドデータ
+		$this->crudBaseData['kjs'] = $kjs; // 検索条件情報
+		$this->crudBaseData['defKjs'] = $defKjs; // デフォルト検索情報データ
+		$this->crudBaseData['errMsg'] = $errMsg; // エラーメッセージ
+		$this->crudBaseData['errTypes'] = $errTypes; // エラータイプ
+		$this->crudBaseData['version'] = $this->version; // CrudBaseのバージョン
+		$this->crudBaseData['userInfo'] = $userInfo; // ユーザー情報
+		$this->crudBaseData['new_version_chg'] = $new_version_chg; // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
+		$this->crudBaseData['new_version_flg'] = $new_version_chg; // 当ページの新バージョンフラグ   0:バージョン変更なし  1:新バージョン
+		$this->crudBaseData['csh_ary'] = $csh_ary; // 列表示配列	列表示切替機能用
+		$this->crudBaseData['csh_json'] = $csh_json; // 列表示配列JSON	 列表示切替機能用
+		$this->crudBaseData['action_type'] = $action_type; // アクション種別（0:初期表示、1:検索ボタン、2:ページネーション、3:ソート）
+		$this->crudBaseData['bigDataFlg'] = $bigDataFlg; // 巨大データフラグ	画面に表示する行数が制限数（$big_data_limit）を超えるとONになる。
+		$this->crudBaseData['big_data_fields'] = $big_data_fields; //  巨大データ用のフィールド情報 (高速化のため列の種類は少なめ）
+		$this->crudBaseData['pages'] = $pages; // ページネーションパラメータ
+		$this->crudBaseData['act_flg'] = $act_flg; // アクティブフラグ	null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
+		$this->crudBaseData['header'] = 'header'; //  header.ctpの埋め込み
+		$this->crudBaseData['this_page_version'] = $this->this_page_version; // 当ページのバージョン
+
+		// ■■■□□□■■■□□□
+// 		$crudBaseData = [
+// 				'fieldData'=>$active, 		// アクティブフィールドデータ
+// 				'kjs'=>$kjs, 				// 検索条件情報
+// 				'defKjs'=>$defKjs, // デフォルト検索情報データ
+// 				'errMsg'=>$errMsg, 			// エラーメッセージ
+// 				'errTypes' => $errTypes, 	// エラータイプ
+// 				'version'=>$this->version, 	// CrudBaseのバージョン
+// 				'userInfo'=>$userInfo, 		// ユーザー情報
+// 				'new_version_chg'=>$new_version_chg, // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
+// 				'new_version_flg' => $new_version_chg, // 当ページの新バージョンフラグ   0:バージョン変更なし  1:新バージョン
+// 				'debug_mode'=>$debug_mode, 	// デバッグモード	CakePHPのデバッグモードと同じもの
+// 				'csh_ary'=>$csh_ary, 		// 列表示配列	列表示切替機能用
+// 				'csh_json'=>$csh_json, 		// 列表示配列JSON	 列表示切替機能用
+// 				'bigDataFlg'=>$bigDataFlg, 	// 巨大データフラグ	画面に表示する行数が制限数（$big_data_limit）を超えるとONになる。
+// 				'big_data_fields'=>$big_data_fields, // 巨大データ用のフィールド情報 (高速化のため列の種類は少なめ）
+// 				'pages'=>$pages, 			// ページネーションパラメータ
+// 				'act_flg'=>$act_flg, 		// アクティブフラグ	null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
+// 				'sql_dump_flg'=>$sql_dump_flg, // SQLダンプフラグ
+// 				'header' => 'header', // header.ctpの埋め込み
+// 				'this_page_version' => $this->this_page_version, // 当ページのバージョン
+// 				'paths' => $paths, // ホーム相対パス
+// 				'crud_base_path' => $this->crudBaseData['crud_base_path'], // CrudBaseライブラリへのパス
+// 				'crud_base_js' => $this->crudBaseData['crud_base_js'], // CrudBase.min.jsのパス
+// 				'crud_base_css' => $this->crudBaseData['crud_base_css'], // CrudBase.min.cssのパス
+// 				'csrf_token' => $csrf_token, // CSRFトークン ※Ajaxのセキュリティ
+// 		];
 		
-		$csrf_token = $this->strategy->getCsrfToken(); // CSRFトークン ※Ajaxのセキュリティ
 		
-		$crudBaseData = [
-				'model_name_c'=> $this->main_model_name, // モデル名（キャメル記法）
-				'model_name_s'=> $this->main_model_name_s, // モデル名（スネーク記法）
-				'fieldData'=>$active, 		// アクティブフィールドデータ
-				'kjs'=>$kjs, 				// 検索条件情報
-				'defKjs'=>$defKjs, // デフォルト検索情報データ
-				'errMsg'=>$errMsg, 			// エラーメッセージ
-				'errTypes' => $errTypes, 	// エラータイプ
-				'version'=>$this->version, 	// CrudBaseのバージョン
-				'userInfo'=>$userInfo, 		// ユーザー情報
-				'new_version_chg'=>$new_version_chg, // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
-				'new_version_flg' => $new_version_chg, // 当ページの新バージョンフラグ   0:バージョン変更なし  1:新バージョン
-				'debug_mode'=>$debug_mode, 	// デバッグモード	CakePHPのデバッグモードと同じもの
-				'csh_ary'=>$csh_ary, 		// 列表示配列	列表示切替機能用
-				'csh_json'=>$csh_json, 		// 列表示配列JSON	 列表示切替機能用
-				'bigDataFlg'=>$bigDataFlg, 	// 巨大データフラグ	画面に表示する行数が制限数（$big_data_limit）を超えるとONになる。
-				'big_data_fields'=>$big_data_fields, // 巨大データ用のフィールド情報 (高速化のため列の種類は少なめ）
-				'pages'=>$pages, 			// ページネーションパラメータ
-				'act_flg'=>$act_flg, 		// アクティブフラグ	null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
-				'sql_dump_flg'=>$sql_dump_flg, // SQLダンプフラグ
-				'header' => 'header', // header.ctpの埋め込み
-				'this_page_version' => $this->this_page_version, // 当ページのバージョン
-				'paths' => $paths, // ホーム相対パス
-				'crud_base_path' => $this->param['crud_base_path'], // CrudBaseライブラリへのパス
-				'crud_base_js' => $this->param['crud_base_js'], // CrudBase.min.jsのパス
-				'crud_base_css' => $this->param['crud_base_css'], // CrudBase.min.cssのパス
-				'csrf_token' => $csrf_token, // CSRFトークン ※Ajaxのセキュリティ
-		];
-		
-		
-		return $crudBaseData;
+		return $this->crudBaseData;
 	}
 	
 	
@@ -1941,6 +1979,39 @@ class CrudBaseController {
 	public function selectData($sql){
 		return $this->strategy->selectData($sql);
 	}
+	
+	
+	/**
+	* エンティティのDB保存
+	* @param [] $ent エンティティ
+	* @param [] DB保存パラメータ
+	*  - form_type フォーム種別  new_inp:新規入力 edit:編集 delete:削除
+	*  - ni_tr_place 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
+	*  - tbl_name DBテーブル名
+	* @return [] エンティティ(insertされた場合、新idがセットされている）
+	*/
+	public function saveEntity(&$ent, &$regParam){
+		
+		$whiteList = $this->crudBaseData['fields'];
+		
+		debug($this->crudBaseData);//■■■□□□■■■□□□)
+		//unset($whiteList['id']);
+// 		$tbl_name = $regParam['tbl_name'];
+// 		$ni_tr_place = $regParam['ni_tr_place'];
+// 		$ent['sort_no'] = $this->crudBaseModel->getSortNo($tbl_name, $ni_tr_place); // 順番を取得する
+		
+		return $this->crudBaseModel->saveEntity($ent, $whiteList); // エンティティをDB保存
+	}
+	
+	// ■■■□□□■■■□□□
+// 	/**
+// 	 * 順番を取得する
+// 	 * @param int $ni_tr_place 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
+// 	 * @return int 順番
+// 	 */
+// 	public function getSortNo($ni_tr_place){
+// 		return $this->crudBaseModel->getSortNo($ni_tr_place);
+// 	}
 	
 
 }

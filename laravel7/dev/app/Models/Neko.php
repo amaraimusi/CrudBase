@@ -11,22 +11,21 @@ class Neko extends Model
 	
 	// ホワイトリスト（DB保存時にこのホワイトリストでフィルタリングが施される）
 	public $fillable = [
-			"id",
-			"neko_val",
-			"neko_name",
-			"neko_date",
-			"neko_group",
-			"neko_dt",
-			"neko_flg",
-			"img_fn",
-			"note",
-			"sort_no",
-			"delete_flg",
-			"update_user",
-			"ip_addr",
-			"created",
-			"modified"
-			
+			'id',
+			'neko_val',
+			'neko_name',
+			'neko_date',
+			'neko_group',
+			'neko_dt',
+			'neko_flg',
+			'img_fn',
+			'note',
+			'sort_no',
+			'delete_flg',
+			'update_user',
+			'ip_addr',
+			'created',
+			'modified',
 	];
 	
 	const CREATED_AT = 'created';
@@ -37,17 +36,22 @@ class Neko extends Model
 	private $cb; // CrudBase制御クラス
 	
 	
-	
 	public function __construct(){
 		
 	}
 	
+	
 	/**
-	 * CrudBase制御クラスのセッター
+	 * 初期化
 	 * @param CrudBaseController $cb
 	 */
-	public function setCrudBaseController($cb){
+	public function init($cb){
 		$this->cb = $cb;
+		
+		// ホワイトリストをセット
+		$cbParam = $this->cb->getCrudBaseData();
+		$fields = $cbParam['fields'];
+		$this->fillable = $fields;
 	}
 	
 	/**
@@ -283,36 +287,28 @@ class Neko extends Model
 	/**
 	 * エンティティのDB保存
 	 * @param [] $ent エンティティ
+	 * @param [] DB保存パラメータ
+	 *  - form_type フォーム種別  new_inp:新規入力 edit:編集 delete:削除
+	 *  - ni_tr_place 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
+	 *  - tbl_name DBテーブル名
 	 * @return [] エンティティ(insertされた場合、新idがセットされている）
 	 */
 	public function saveEntity(&$ent, &$regParam){
 		
-		if(empty($ent['id'])){
-			
-			// ▽ idが空であればINSERTをする。
-			$ent['sort_no'] = $this->getSortNo($regParam);
-			$ent = array_intersect_key($ent, array_flip($this->fillable)); // ホワイトリストによるフィルタリング
-			$id = $this->insertGetId($ent); // INSERT
-			$ent['id'] = $id;
-		}else{
-			
-			// ▽ idが空でなければUPDATEする。
-			$ent = array_intersect_key($ent, array_flip($this->fillable)); // ホワイトリストによるフィルタリング
-			$this->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
-		}
+		return $this->cb->saveEntity($ent, $regParam);
+		
 
-		return $ent;
 	}
 	
-	
-	private function getSortNo($regParam){
-		$sort_no = $this->sort_no;
-		if(empty($regParam['ni_tr_place'])){
-			$ent['sort_no'] = $this->CrudBase->getLastSortNo($this); // 末尾順番を取得する
-		}else{
-			$ent['sort_no'] = $this->CrudBase->getFirstSortNo($this); // 先頭順番を取得する
-		}
-	}
+	// ■■■□□□■■■□□□
+// 	private function getSortNo($regParam){
+// 		$sort_no = $this->sort_no;
+// 		if(empty($regParam['ni_tr_place'])){
+// 			$ent['sort_no'] = $this->CrudBase->getLastSortNo($this); // 末尾順番を取得する
+// 		}else{
+// 			$ent['sort_no'] = $this->CrudBase->getFirstSortNo($this); // 先頭順番を取得する
+// 		}
+// 	}
 	
 	
 	

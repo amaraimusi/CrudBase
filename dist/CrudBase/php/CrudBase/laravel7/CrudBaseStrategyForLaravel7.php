@@ -248,4 +248,37 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 		return $data2;
 	}
 	
+	
+	/**
+	 * エンティティのDB保存
+	 * @param [] $ent エンティティ
+	 * @param [] $whiteList ホワイトリスト
+	 * @return [] エンティティ(insertされた場合、新idがセットされている）
+	 */
+	public function saveEntity(&$ent, &$whiteList=[]){
+		
+		if(!empty($whiteList)){
+			$ent = array_intersect_key($ent, array_flip($whiteList)); // ホワイトリストによるフィルタリング
+		}
+// 		//debug($ent);//■■■□□□■■■□□□)
+// 		//unset($ent['id']);
+// 		unset($this->model->fillable[0]);
+// 		debug($this->model->fillable);//■■■□□□■■■□□□)
+		
+		if(empty($ent['id'])){
+			
+			// ▽ idが空であればINSERTをする。
+			$id = $this->model->insertGetId($ent); // INSERT
+			$ent['id'] = $id;
+		}else{
+			
+			// ▽ idが空でなければUPDATEする。
+			//debug($ent['id']);//■■■□□□■■■□□□)
+			
+			$this->model->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
+		}
+		
+		return $ent;
+	}
+	
 }

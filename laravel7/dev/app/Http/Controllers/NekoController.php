@@ -16,14 +16,11 @@ class NekoController
 	 */
 	public function index(){
 
-		$this->cb = $this->initCrudBase();
-		$data = [];
-		
-		$this->md = new Neko();
-		$this->md->setCrudBaseController($this->cb);
+		$this->init();
+
 
  		// CrudBase共通処理（前）
- 		$crudBaseData = $this->cb->indexBefore('Neko');//indexアクションの共通先処理(CrudBaseController)
+ 		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
 
 // 		// CBBXS-1019
 		
@@ -94,8 +91,7 @@ class NekoController
 	 */
 	public function ajax_reg(){
 		
-		$this->cb = $this->initCrudBase();
-		//$this->md = $this->factoryModel(); // モデルを生成する
+		$this->init();
 		
 		$errs = []; // エラーリスト
 		
@@ -117,8 +113,8 @@ class NekoController
 // 		$ent['img_fn'] = $this->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
 // 		// CBBXE
 		
-		$neko = new \App\Models\Neko();
-		$neko->saveEntity($ent, $regParam);
+		//$neko = new \App\Models\Neko();
+		$this->md->saveEntity($ent, $regParam);
 		
 		$json_str = json_encode($ent, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS); // JSONに変換
 		
@@ -133,10 +129,8 @@ class NekoController
 	 * @note
 	 * フィールド関連の定義をする。
 	 *
-	 * @return CrudBaseController
-	 *
 	 */
-	private function initCrudBase(){
+	private function init(){
 		
 		
 		// CBBXS-3001
@@ -146,7 +140,7 @@ class NekoController
 		
 		
 		/// 検索条件情報の定義
-		$kensakuJoken=array(
+		$kensakuJoken=[
 				
 				array('name'=>'kj_main','def'=>null),
 				// CBBXS-1000
@@ -172,7 +166,7 @@ class NekoController
 				
 				array('name'=>'row_limit','def'=>50),
 				
-		);
+		];
 		
 		
 		
@@ -379,20 +373,28 @@ class NekoController
 		$crud_base_css = config('const.CRUD_BASE_CSS');
 		require_once $crud_base_path . 'CrudBaseController.php';
 		
-		$crudBaseCon = new \CrudBaseController([
+		$model = new Neko(); // モデルクラス
+		
+		$crudBaseData = [
 				'fw_type' => 'laravel7',
-				'ctrl' => $this,
-				'model' => $this->md,
+				'model_name_c' => 'Neko',
 				'kensakuJoken' => $kensakuJoken, //検索条件情報
 				'kjs_validate' => $kjs_validate, //検索条件バリデーション
 				'fieldData' => $fieldData, //フィールドデータ
 				'crud_base_path' => $crud_base_path,
 				'crud_base_js' => $crud_base_js,
 				'crud_base_css' => $crud_base_css,
-		]);
+		];
 		
+		$crudBaseCon = new \CrudBaseController($this, $model, $crudBaseData);
 		
-		return $crudBaseCon;
+		$model->init($crudBaseCon);
+		
+		$this->md = $model;
+		$this->cb =$crudBaseCon;
+		
+		$crudBaseData = $crudBaseCon->getCrudBaseData();
+		return $crudBaseData;
 		
 	}
 	
@@ -420,18 +422,18 @@ class NekoController
 		return $json;
 	}
 	
-	
-	/**
-	 * モデルクラスを生成する
-	 */
-	public function factoryModel(){
-		if($this->cb == null) throw new Error('CrudBaseContollerのインスタンスが必要です。');
-		$model_path = app_path() . '/Models';
-		require_once $model_path . '/Neko.php';
-		$model = new Neko($this->cb);
-		return $model;
+	// ■■■□□□■■■□□□
+// 	/**
+// 	 * モデルクラスを生成する
+// 	 */
+// 	public function factoryModel(){
+// 		if($this->cb == null) throw new Error('CrudBaseContollerのインスタンスが必要です。');
+// 		$model_path = app_path() . '/Models';
+// 		require_once $model_path . '/Neko.php';
+// 		$model = new Neko($this->cb);
+// 		return $model;
 		
-	}
+// 	}
 }
 
 
