@@ -63,14 +63,6 @@ class Neko extends Model
 	 */
 	public function getData($crudBaseData){
 		
-		//■■■□□□■■■□□□
-// 		$query = \DB::table('nekos AS Neko')->
-// 		select('id', 'neko_name as cat', 'neko_val', 'neko_date');
-// 		dump($query->toSql()); // →"select `id`, `neko_name` as `cat`, `neko_val`, `neko_date` from `nekos` as `Neko`"
-		
-// 		$data = $query->get();
-// 		dump($data);
-		
 		
 		$kjs = $crudBaseData['kjs'];//検索条件情報
 		$pages = $crudBaseData['pages'];//ページネーション情報
@@ -91,8 +83,8 @@ class Neko extends Model
 		$order = $sort_field;
 		if(empty($order)) $order='sort_no';
 		
-		$order_option = 'ASC';
-		if(!empty($sort_desc)) $order_option = ' DESC';
+		$order_option = 'asc';
+		if(!empty($sort_desc)) $order_option = 'desc';
 		
 		$query = \DB::table('nekos as Neko')->
 			selectRaw('SQL_CALC_FOUND_ROWS *')->
@@ -100,7 +92,6 @@ class Neko extends Model
 			offset($offset)->
 			limit($row_limit)->
 			orderBy($order, $order_option);
-		
 		$data = $query->get();
 		
 		// LIMIT制限なし・データ件数

@@ -235,9 +235,9 @@ class CrudBaseController {
 		//検索ボタンが押された場合
 		$pages=[];
 		if(!empty($request['search'])){
-			
 			//ページネーションパラメータを取得
 			$pages = $this->getPageParamForSubmit($kjs,$searchPosts);
+			
 
 		}else{
 			//ページネーション用パラメータを取得
@@ -246,8 +246,7 @@ class CrudBaseController {
 			
 			
 		}
-		
-		
+
 		$bigDataFlg=$this->checkBigDataFlg($kjs);//巨大データ判定
 
 		//巨大データフィールドデータを取得
@@ -561,14 +560,15 @@ class CrudBaseController {
 		$home_r_path = $paths['home_r_path'];
 		
 		//ページネーション情報を取得する
-		$base_url = $home_r_path . $this->main_model_name_s . $method_url; // 基本ＵＲＬ
+		$base_url=parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+		//debug($base_url);//■■■□□□■■■□□□)
+		//$base_url = $home_r_path . $this->main_model_name_s . $method_url; // 基本ＵＲＬ
 		$pages = $crudBaseData['pages'];
-		
+
 		$pagenation_param = null;
 		if(isset($option['pagenation_param'])) $pagenation_param = $option['pagenation_param'];
 		$this->PagenationForCake = new PagenationForCake();
 		$pages = $this->PagenationForCake->createPagenationData($pages,$data_count,$base_url , $pagenation_param,$this->table_fields,$kjs);
-		
 		$kjs_json = json_encode($kjs,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
 		// 行入替機能フラグを取得する

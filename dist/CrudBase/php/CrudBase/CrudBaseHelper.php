@@ -169,7 +169,7 @@ class CrudBaseHelper {
 		if($title===null) $title = $wamei."で検索";
 		
 		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
-		$maxlength=0;
+		$maxlength=1000;
 		if(empty($option['maxlength'])){
 			$maxlength = $this->getMaxlenIfCommonField($field,$maxlength);
 		}else{
@@ -229,7 +229,7 @@ class CrudBaseHelper {
 		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
 		
 		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
-		$maxlength=0;
+		$maxlength=1000;
 		if(empty($option['maxlength'])){
 			$maxlength = $this->getMaxlenIfCommonField($field,$maxlength);
 		}else{
@@ -389,10 +389,8 @@ class CrudBaseHelper {
 		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
 		
 		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
-		$maxlength=0;
-		if(empty($option['maxlength'])){
-			$maxlength = 255;
-		}else{
+		$maxlength = 255;
+		if(!empty($option['maxlength'])){
 			$maxlength=$option['maxlength'];
 		}
 		

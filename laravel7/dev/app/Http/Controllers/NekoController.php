@@ -18,7 +18,6 @@ class NekoController
 
 		$this->init();
 
-
  		// CrudBase共通処理（前）
  		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
 
@@ -35,36 +34,13 @@ class NekoController
 		$crudBaseData = $this->cb->indexAfter($crudBaseData, ['non_limit_count'=>$non_limit_count]);
 		
 		$masters = []; // マスターリスト群
+		
 		// CBBXS-1020
 		$nekoGroupList = $this->md->getNekoGroupList();
 		$masters['nekoGroupList'] = $nekoGroupList;
 		// CBBXE
 		
 		$crudBaseData['masters'] = $masters;
-		
-// 		$this->set($crudBaseData);
-// 		$this->set(array(
-// 				'title_for_layout'=>'ネコ',
-// 				'data'=> $data,
-// 		));
-		
-// 		//■■■□□□■■■□□□テスト
-// 		$res = $this->cb->selectData('select * from nekos where id = 41646541');
-// 		debug($res);//■■■□□□■■■□□□)
-// 		debug('test');//■■■□□□■■■□□□)
-		
-// 		echo '<br>';
-// 		echo $_SERVER['DOCUMENT_ROOT'];
-// 		echo '<br>';
-// 		$data = ['neko'=>'猫', 'yagi'=>'山羊'];
-		
-// 		echo '<pre>';
-// 		echo config('const.TEST_PATH');
-// 		echo '<br>';
-// 		var_dump(config('const.TEST_LIST'));
-// 		echo '</pre>';
-		
-// 		echo config('const.CRUD_BASE_PATH');
 
 		$crud_base_json = json_encode($crudBaseData,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 		return view('neko.index', compact('data', 'crudBaseData', 'crud_base_json'));

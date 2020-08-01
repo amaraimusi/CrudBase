@@ -51,7 +51,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 		$this->CrudBase->inputKjSelect('kj_neko_group','ネコ種別', $masters['nekoGroupList']); 
 		$this->CrudBase->inputKjText('kj_neko_dt','ネコ日時',150);
 		$this->CrudBase->inputKjFlg('kj_neko_flg','ネコフラグ');
-		$this->CrudBase->inputKjText('kj_img_fn','ネコ名前',200);
+		$this->CrudBase->inputKjText('kj_img_fn','画像ファイル名',200);
 		$this->CrudBase->inputKjText('kj_note','備考',200,'部分一致検索');
 		$this->CrudBase->inputKjId(); 
 		$this->CrudBase->inputKjHidden('kj_sort_no');
