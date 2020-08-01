@@ -15,7 +15,7 @@ require_once 'HashCustom.php';
 class CrudBaseModel{
 
 	private $strategy = null; // ICrudBaseStrategy.php フレームワーク・ストラテジー
-	private $active_sort_no; // 現在の順番
+	private $active_sort_no =0; // 現在の順番
 	
 	/**
 	 * コンストラクタ
@@ -808,30 +808,31 @@ class CrudBaseModel{
 	 * @return int 順番
 	 */
 	public function getSortNo($tbl_name, $ni_tr_place){
-		//private $active_sort_no; // 現在の順番
+		
 		$sort_no = 0; // 順番
 		if(empty($ni_tr_place) && empty($this->active_sort_no)){
-			// 		DBから末尾順番をソート番号として取得する
-			// 		ソート番号をインクリメント
+			// 	DBから末尾順番をソート番号として取得する
+			$sort_no = $this->getLastSortNo($tbl_name);
+			$sort_no++;
 			
 		}
 // 		ni_tr_place無	アクティブソート番号有り
-		else if(empty($ni_tr_place) && !empty($this->$active_sort_no)){
-// 		アクティブソート番号からソート番号を取得する
-// 		ソート番号をインクリメント
+		else if(empty($ni_tr_place) && !empty($this->active_sort_no)){
+			$sort_no = $this->active_sort_no;
+			$sort_no++;
 		}
 // 		ni_tr_place有	アクティブソート番号無
-		else if(!empty($ni_tr_place) && empty($this->$active_sort_no)){
-// 		DBから先頭順番をソート番号として取得する
-// 		ソート番号をデプリメント
+		else if(!empty($ni_tr_place) && empty($this->active_sort_no)){
+			$sort_no = $this->getFirstSortNo($tbl_name);
+			$sort_no--;
 		}
 // 		ni_tr_place有	アクティブソート番号有り
-		else if(!empty($ni_tr_place) && !empty($this->$active_sort_no)){
-// 		ソート番号をデプリメント
-// 		アクティブソート番号にソート番号をセットする
+		else if(!empty($ni_tr_place) && !empty($this->active_sort_no)){
+			$sort_no = $this->active_sort_no;
+			$sort_no--;
 		}
 		
-		$this->$active_sort_no = $sort_no;
+		$this->active_sort_no = $sort_no;
 		return $sort_no;
 	}
 	
@@ -839,32 +840,25 @@ class CrudBaseModel{
 	
 	/**
 	 * 末尾順番を取得する
-	 * @param Model $model モデル
+	 * @param string $tbl_name DBテーブル名
 	 * @return int 末尾順番
 	 */
-	public function getLastSortNo(&$model){
-		$tbl_name = $model->useTable;
+	public function getLastSortNo($tbl_name){
 		$sql = "SELECT MAX(sort_no) as max_sort_no FROM {$tbl_name} WHERE delete_flg=0";
-		$data = $model->query($sql);
-		$max_sort_no = 0;
-		if(!empty($data[0][0]['max_sort_no'])) $max_sort_no = $data[0][0]['max_sort_no'];
-		$last_sort_no = $max_sort_no + 1;
+		$last_sort_no = $this->strategy->selectValue($sql);
+
 		return $last_sort_no;
 	}
 	
 	/**
 	 * 先頭順番を取得する
-	 * @param Model $model モデル
+	 * @param string $tbl_name DBテーブル名
 	 * @return int 先頭順番
 	 */
-	public function getFirstSortNo(&$model){
-		$tbl_name = $model->useTable;
+	public function getFirstSortNo($tbl_name){
 		$sql = "SELECT MIN(sort_no) as min_sort_no FROM {$tbl_name} WHERE delete_flg=0";
-		$data = $model->query($sql);
-		$min_sort_no = 0;
-		if(!empty($data[0][0]['min_sort_no'])) $min_sort_no = $data[0][0]['min_sort_no'];
-		$first_sort_no = $min_sort_no - 1;
-		return $first_sort_no;
+		$min_sort_no = $this->strategy->selectValue($sql);
+		return $min_sort_no;
 	}
 	
 		

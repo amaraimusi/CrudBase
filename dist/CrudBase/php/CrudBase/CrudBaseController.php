@@ -1994,11 +1994,14 @@ class CrudBaseController {
 		
 		$whiteList = $this->crudBaseData['fields'];
 		
-		debug($this->crudBaseData);//■■■□□□■■■□□□)
-		//unset($whiteList['id']);
-// 		$tbl_name = $regParam['tbl_name'];
-// 		$ni_tr_place = $regParam['ni_tr_place'];
-// 		$ent['sort_no'] = $this->crudBaseModel->getSortNo($tbl_name, $ni_tr_place); // 順番を取得する
+		$tbl_name = $this->crudBaseData['tbl_name'];
+		$form_type = $regParam['form_type'];
+		
+		// idが空、つまり新規入力時のみ順番を取得してセットする。
+		if($form_type == 'new_inp'){
+			$ni_tr_place = $regParam['ni_tr_place'];
+			$ent['sort_no'] = $this->crudBaseModel->getSortNo($tbl_name, $ni_tr_place); // 順番を取得する
+		}
 		
 		return $this->crudBaseModel->saveEntity($ent, $whiteList); // エンティティをDB保存
 	}

@@ -108,12 +108,11 @@ class NekoController
 		$reg_param_json = $_POST['reg_param_json'];
 		$regParam = json_decode($reg_param_json,true);
 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
-		
+
 // 		// CBBXS-1024
 // 		$ent['img_fn'] = $this->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
 // 		// CBBXE
 		
-		//$neko = new \App\Models\Neko();
 		$this->md->saveEntity($ent, $regParam);
 		
 		$json_str = json_encode($ent, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS); // JSONに変換
