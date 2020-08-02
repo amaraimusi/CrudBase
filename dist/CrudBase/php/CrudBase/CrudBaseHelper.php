@@ -622,20 +622,33 @@ class CrudBaseHelper {
 	 * 検索用の表示件数セレクトを作成
 	 */	
 	public function inputKjLimit(){
-		
+
 		$model_name_c = $this->crudBaseData['model_name_c'];
+		
+		$list = [
+				'5' =>"5件表示",
+				'10' =>"10件表示",
+				'20' =>"20件表示",
+				'50' =>"50件表示",
+				'100' =>"100件表示",
+				'200' =>"200件表示",
+				'500' =>"500件表示",
+				];
+		
+		// SELECT選択肢の組み立て
+		$exist_value = $this->crudBaseData['pages']['row_limit'];
+		$option_html = '';
+		foreach($list as $key => $value){
+			$selected = '';
+			if($key == $exist_value) $selected = " selected='selected'";
+			$option_html .= "<option value='{$key}' {$selected}>{$value}</option>";
+		}
 		
 		$html = "
 			<div class='kj_div kj_wrap' data-field='row_limit'>
 				<div class='input select'>
 					<select name='data[{$model_name_c}][row_limit]' id='row_limit' style='height:27px' class='kjs_inp'>
-						<option value='5'>5件表示</option>
-						<option value='10'>10件表示</option>
-						<option value='20'>20件表示</option>
-						<option value='50' selected='selected'>50件表示</option>
-						<option value='100'>100件表示</option>
-						<option value='200'>200件表示</option>
-						<option value='500'>500件表示</option>
+						{$option_html}
 					</select>
 				</div>
 			</div>
