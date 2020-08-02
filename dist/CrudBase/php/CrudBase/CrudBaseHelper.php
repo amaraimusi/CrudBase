@@ -8,8 +8,8 @@
  * 検索条件入力フォームや、一覧テーブルのプロパティのラッパーを提供する
  * 2.0.0よりCakeからの依存から離脱
  * 
- * @version 2.0.0
- * @since 2016-7-27 | 2020-7-18
+ * @version 2.0.1
+ * @since 2016-7-27 | 2020-8-3
  * @author k-uehara
  * @license MIT
  */
@@ -705,6 +705,11 @@ class CrudBaseHelper {
 	 */
 	public function inputKjNumRange($field, $wamei, $option=[]){
 		
+		$kj_field1 = "kj_{$field}1";
+		$kj_field2 = "kj_{$field}2";
+		$value1 = $this->kjs[$kj_field1];
+		$value2 = $this->kjs[$kj_field2];
+		
 		// テキストの幅を自動指定する
 		$str_len = mb_strlen($wamei);
 		$str_len += 3;
@@ -714,13 +719,13 @@ class CrudBaseHelper {
 		echo "
 			<div class='kj_div'>
 				<div class='input number' style='display:inline-block'>
-					<input name='data[Neko][kj_{$field}1]' id='kj_{$field}1' value='' 
+					<input name='data[Neko][kj_{$field}1]' id='kj_{$field}1' value='{$value1}' 
 						class='kjs_inp' placeholder='{$wamei}～' title='{$wamei}～' 
 						type='number' style='width:{$width}'>
 				</div>
 				<span>～</span>
 				<div class='input number' style='display:inline-block'>
-					<input name='data[Neko][kj_{$field}2]' id='kj_{$field}2' value='' 
+					<input name='data[Neko][kj_{$field}2]' id='kj_{$field}2' value='{$value2}' 
 						class='kjs_inp' placeholder='～{$wamei}' title='～{$wamei}' 
 						type='number' style='width:{$width}'>
 				</div>
