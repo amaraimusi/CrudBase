@@ -250,8 +250,10 @@ class CrudBaseModel{
 	 */
 	public function guessDatetimeInfo($str,$option=array()){
 	    
-	    require_once 'DatetimeGuess.php';
-	    if(empty($this->DatetimeGuess)) $this->DatetimeGuess = new DatetimeGuess();
+		if(empty($this->DatetimeGuess)){
+			require_once 'DatetimeGuess.php';
+	    	$this->DatetimeGuess = new DatetimeGuess();
+	    }
 	    
 	    $info = $this->DatetimeGuess->guessDatetimeInfo($str,$option);
 	    return $info;

@@ -23,7 +23,7 @@ class CrudBaseHelper {
 	private $_clmSortTds = []; // 列並用TD要素群
 	private $_clmSortMode = 0;		// 列並モード 0:OFF, 1:ON
 	private $_fieldData;			// フィールドデータ
-	
+	private $kjs; // 検索条件情報
 	
 	
 	/**
@@ -33,6 +33,7 @@ class CrudBaseHelper {
 	public function __construct(&$crudBaseData){
 		$this->crudBaseData = $crudBaseData;
 		$this->_fieldData = $crudBaseData['fieldData'];
+		$this->kjs = $this->crudBaseData['kjs'];
 	}
 	
 	/**
@@ -136,7 +137,7 @@ class CrudBaseHelper {
 					<input 
 						name='data[{$model_name_c}][{$field}]' 
 						id='{$field}' 
-						value='' 
+						value='{$this->kjs[$field]}' 
 						placeholder='{$placeholder}' 
 						style='width:{$width}px' 
 						class='kjs_inp' 
@@ -195,7 +196,8 @@ class CrudBaseHelper {
 					<input 
 						name='data[{$model_name_c}][{$field}]' 
 						id='{$field}' 
-						value='' placeholder='{$placeholder}' 
+						value='{$this->kjs[$field]}'
+						 placeholder='{$placeholder}' 
 						style='width:{$width}px; ' 
 						class='kjs_inp' 
 						title='{$title}' maxlength='{$maxlength}' type='search' />
@@ -250,7 +252,7 @@ class CrudBaseHelper {
 					<input 
 						name='data[{$model_name_c}][{$field}]' 
 						id='{$field}' 
-						value='' 
+						value='{$this->kjs[$field]}' 
 						placeholder='{$placeholder}' 
 						class='kjs_inp' 
 						style='width:{$width}px; '
@@ -297,7 +299,7 @@ class CrudBaseHelper {
 			<input type='hidden' 
 				name='data[{$model_name_c}][{$field}]' 
 				id='{$field}' 
-				value='' 
+				value='{$this->kjs[$field]}' 
 				data-field='{$field}' 
 				class='kj_wrap kjs_inp'>
 		";
@@ -335,9 +337,13 @@ class CrudBaseHelper {
 		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
 		
 		$options_str = ''; // option要素群文字列
+		
+		$value = $this->kjs[$field];
 		foreach($list as $id => $name){
+			$selected = '';
+			if($id == $value) $selected = 'selected';
 			$name = htmlspecialchars($name); // XSSサニタイズ
-			$options_str .= "<option value='{$id}'>{$name}</option>";
+			$options_str .= "<option value='{$id}' {$selected}>{$name}</option>";
 		}
 		
 		
@@ -408,7 +414,7 @@ class CrudBaseHelper {
 					<input
 						name='data[{$model_name_c}][{$field}]'
 						id='{$field}'
-						value=''
+						value='{$this->kjs[$field]}'
 						placeholder='{$placeholder}'
 						class='kjs_inp'
 						style='width:{$width}px; '
@@ -464,12 +470,25 @@ class CrudBaseHelper {
 		
 		if(empty($list)) $list = $this->getDateTimeList();
 		
+		$d1 = $this->kjs[$field];
+		$u1 = strtotime($d1);
+
 		// option要素群
 		$options_str = ''; // option要素群文字列
-		foreach($list as $id => $name){
+		foreach($list as $d2 => $name){
+			
+			$selected = '';
+			$u2 = strtotime($d2);
+			if(!empty($u1)){
+				if($u1 == $u2) $selected = 'selected';
+			}
+			
 			$name = htmlspecialchars($name); // XSSサニタイズ
-			$options_str .= "<option value='{$id}'>{$name}</option>";
+			$options_str .= "<option value='{$d2}' $selected>{$name}</option>";
 		}
+		
+		$sub_info_str = '';
+		if(!empty($d1)) $sub_info_str = "<div class='text-danger'>検索対象 ～{$d1}</div>";
 		
 		$html = "
 			<div class='kj_div kj_wrap' data-field='{$field}'>
@@ -479,6 +498,7 @@ class CrudBaseHelper {
 						{$options_str}
 					</select>
 				</div>
+				{$sub_info_str}
 			</div>
 		";
 		

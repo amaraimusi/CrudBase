@@ -67,7 +67,7 @@ class CrudBaseController {
 	private $posts = []; // POSTデータ
 	private $gets = []; // GETデータ
 	private $strategy = null; // ICrudBaseStrategy.php フレームワーク・ストラテジー
-	private $crudBaseModel; // CrudBaseModelクラス
+	public $crudBaseModel; // CrudBaseModelクラス
 	private $MainModel; // クライアントモデル
 	
 	/**

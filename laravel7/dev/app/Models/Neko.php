@@ -159,7 +159,7 @@ class Neko extends Model
 		
 		if(!empty($kjs['kj_neko_dt'])){
 			$kj_neko_dt = $kjs['kj_neko_dt'];
-			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_neko_dt);
+			$dtInfo = $this->cb->crudBaseModel->guessDatetimeInfo($kj_neko_dt);
 			$cnds[]="DATE_FORMAT(Neko.neko_dt,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
 		}
 		
