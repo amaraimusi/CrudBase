@@ -532,14 +532,27 @@ class CrudBaseHelper {
 		$width_style='';
 		if(!empty($width)) $width_style="width:{$width}px;";
 		
+		$list = [
+				'-1' => 'すべて表示',
+				'0' => '有効',
+				'1' => '削除',
+		];
+		
+		// SELECT選択肢の組み立て
+		$exist_value = $this->kjs[$field];
+		$option_html = '';
+		foreach($list as $key => $value){
+			$selected = '';
+			if($key == $exist_value) $selected = " selected='selected'";
+			$option_html .= "<option value='{$key}' {$selected}>{$value}</option>";
+		}
+		
 		$html = "
 			<div class='kj_div kj_wrap' data-field='{$field}'>
 				<span>有効/削除</span>
 				<div class='input select' style='display:inline-block'>
 					<select name='data[{$model_name_c}][{$field}]' id='{$field}' class='kjs_inp' title='{$title}' style='{$width_style}'>
-						<option value='-1'>すべて表示</option>
-						<option value='0' selected='selected'>有効</option>
-						<option value='1'>削除</option>
+						{$option_html}
 					</select>
 				</div>
 			</div>
@@ -571,13 +584,27 @@ class CrudBaseHelper {
 		$model_name_c = $this->crudBaseData['model_name_c'];
 		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
 		
+		
+		$list = [
+				'-1' =>"-- {$wamei} --",
+				'0' => 'OFF',
+				'1' => 'ON',
+		];
+		
+		// SELECT選択肢の組み立て
+		$exist_value = $this->kjs[$field];
+		$option_html = '';
+		foreach($list as $key => $value){
+			$selected = '';
+			if($key == $exist_value) $selected = " selected='selected'";
+			$option_html .= "<option value='{$key}' {$selected}>{$value}</option>";
+		}
+		
 		$html = "
 			<div class='kj_div kj_wrap' data-field='{$field}'>
 				<div class='input select'>
-					<select name='data[{$model_name_c}][{$field}]' id='{$field}' class='kjs_inp'>
-						<option value='-1'>-- ネコフラグ --</option>
-						<option value='0'>OFF</option>
-						<option value='1'>ON</option>
+					<select name='data[{$model_name_c}][{$field}]' id='{$field}' class='kjs_inp' title='{$wamei}'>
+						{$option_html}
 					</select>
 				</div>
 			</div>

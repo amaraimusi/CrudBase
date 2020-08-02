@@ -86,13 +86,23 @@ class Neko extends Model
 		$order_option = 'asc';
 		if(!empty($sort_desc)) $order_option = 'desc';
 		
-		$query = \DB::table('nekos as Neko')->
-			selectRaw('SQL_CALC_FOUND_ROWS *')->
-			whereRaw($conditions)->
-			offset($offset)->
-			limit($row_limit)->
-			orderBy($order, $order_option);
+		// ■■■□□□■■■□□□
+// 		$query = \DB::table('nekos as Neko')->
+// 			selectRaw('SQL_CALC_FOUND_ROWS *')->
+// 			whereRaw($conditions)->
+// 			offset($offset)->
+// 			limit($row_limit)->
+// 			orderBy($order, $order_option);
+// 		$data = $query->get();
+
+		$query = \DB::table('nekos as Neko');
+		$query->selectRaw('SQL_CALC_FOUND_ROWS *');
+		if(!empty($conditions)) $query->whereRaw($conditions);
+		if(!empty($offset)) $query->offset($offset);
+		if(!empty($row_limit)) $query->limit($row_limit);
+		if(!empty($order)) $query->orderBy($order, $order_option);
 		$data = $query->get();
+		
 		
 		// LIMIT制限なし・データ件数
 		$non_limit_count = 0;
