@@ -2174,8 +2174,7 @@ class CrudBase{
 		if(xss_flg == 1){
 			ent = this._xssSanitaizeEncode(ent);
 		}
-		
-		
+
 		this.entToBinds(tr,ent,'class',option);// エンティティをclass属性バインド要素群へセットする
 		this.entToBinds(tr,ent,'name',option);// エンティティをname属性バインド要素群へセットする
 
@@ -2616,7 +2615,6 @@ class CrudBase{
 		// バインド要素リストにエンティティをセットする
 		for(var i in this.fieldData){
 			var field = this.fieldData[i].field;
-
 			if(ent[field] === undefined) continue;
 
 			var elms = bindElms[field];
@@ -2773,7 +2771,7 @@ class CrudBase{
 			}
 
 			else{
-				
+
 				// カスタム型のセット
 				this._setForCustumType(elm,field,val1,ent,option);
 
@@ -2932,28 +2930,20 @@ class CrudBase{
 		
 		switch (filEnt.fil_type) {
 		case 'select':
-
-
 			res.val1 = this.disFilSelect(val1,field,filEnt.option);// 表示フィルター・SELECTリスト
-			
-
 			break;
 			
 		case 'delete_flg':
-
 			res.val1 = this.disFilDeleteFlg(val1,field,filEnt.option);// 表示フィルター・削除フラグ
 			res.xss = 0;
 			break;
 			
 		case 'flg':
-
 			res.val1 = this.disFilFlg(val1,field,filEnt.option);// 表示フィルター・フラグ
 			res.xss = 0;
-
 			break;
 			
 		case 'money':
-
 			res.val1 = this.disFilMoney(val1,field,filEnt.option);// 表示フィルター・金額
 			res.xss =0;
 			break;
@@ -2990,7 +2980,7 @@ class CrudBase{
 				list = option['list'];
 			}
 		}
-		
+
 		var display_value = ""; // 表示する値
 		if(list[val1] != null){
 			display_value = list[val1];
