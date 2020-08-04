@@ -296,6 +296,7 @@ class Neko extends Model
 	 */
 	public function saveEntity(&$ent, &$regParam){
 		
+		
 		return $this->cb->saveEntity($ent, $regParam);
 		
 

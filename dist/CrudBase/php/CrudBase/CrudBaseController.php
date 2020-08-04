@@ -2003,6 +2003,8 @@ class CrudBaseController {
 			$ent['sort_no'] = $this->crudBaseModel->getSortNo($tbl_name, $ni_tr_place); // 順番を取得する
 		}
 		
+		
+		
 		return $this->crudBaseModel->saveEntity($ent, $whiteList); // エンティティをDB保存
 	}
 	

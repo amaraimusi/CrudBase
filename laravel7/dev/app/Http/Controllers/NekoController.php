@@ -85,16 +85,35 @@ class NekoController
 		$regParam = json_decode($reg_param_json,true);
 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
 
-// 		// CBBXS-1024
-// 		$ent['img_fn'] = $this->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
-// 		// CBBXE
+		// CBBXS-1024
+		$ent['img_fn'] = $this->cb->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
+		// CBBXE
+		
+
 		
 		$this->md->saveEntity($ent, $regParam);
+		
+		// CBBXS-1025
+		// ファイルアップロードの一括作業
+		$fileUploadK = $this->factoryFileUploadK();
+		$res = $fileUploadK->putFile1($_FILES, 'img_fn', $ent['img_fn']);
+		// CBBXE
 		
 		$json_str = json_encode($ent, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS); // JSONに変換
 		
 		return $json_str;
 		
+	}
+	
+	/**
+	 * ファイルアップロードクラスのファクトリーメソッド
+	 * @return \App\Http\Controllers\FileUploadK
+	 */
+	private function factoryFileUploadK(){
+		$crud_base_path = config('const.CRUD_BASE_PATH');
+		require_once $crud_base_path . 'FileUploadK/FileUploadK.php';
+		$fileUploadK = new \FileUploadK();
+		return $fileUploadK;
 	}
 	
 	

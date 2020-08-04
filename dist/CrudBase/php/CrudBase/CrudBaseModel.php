@@ -790,6 +790,7 @@ class CrudBaseModel{
 	 * @return [] エンティティ
 	 */
 	public function selectEntity($sql){
+		
 		return $this->strategy->selectEntity($sql);
 	}
 	
@@ -871,6 +872,10 @@ class CrudBaseModel{
 	* @return [] エンティティ(insertされた場合、新idがセットされている）
 	*/
 	public function saveEntity(&$ent, &$whiteList){
+		
+		// 更新ユーザーなど共通フィールドをセットする。
+		$ent = $this->setCommonToEntity($ent);
+		
 		return $this->strategy->saveEntity($ent, $whiteList);
 
 	}
