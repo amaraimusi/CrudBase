@@ -1,6 +1,6 @@
 
 
-$(function() {
+jQuery(()=> {
 	init();//初期化
 	
 	$('#neko_tbl').show();// 高速表示のためテーブルは最後に表示する
@@ -24,10 +24,16 @@ var pwms; // ProcessWithMultiSelection.js | 一覧のチェックボックス複
  * @author k-uehara
  */
 function init(){
+	let csrf_token = jQuery('#csrf_token').val(); // CSRFトークンを取得（Ajaxで必要）
+
+	// CakePHPによるAjax認証
+	let alwc = new AjaxLoginWithCake({csrf_token:csrf_token});
+	let alwcParam = {'btn_type':0,'form_slt':'#ajax_login_with_cake'}
+	alwc.loginCheckEx(alwcParam);
 	
 	let crud_base_json = jQuery('#crud_base_json').val();
 	let crudBaseData = jQuery.parseJSON(crud_base_json);
-
+	crudBaseData['csrf_token'] = csrf_token;
 	
 	// ■■■□□□■■■□□□一時的
 //	// CakePHPによるAjax認証
@@ -127,7 +133,6 @@ function init(){
 			'ta_placeholder':"Excelからコピーしたネコ名、ネコ数値を貼り付けてください。（タブ区切りテキスト）\n(例)\nネコ名A\t100\nネコ名B\t101\n",
 		}
 	);
-	
 	
 	crudBase.newVersionReload(); // 新バージョンリロード
 }

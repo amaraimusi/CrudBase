@@ -16,12 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-	Route::get('neko/bark', 'NekoController@bark');
+	
+	Route::post('ajax_login_with_cake/login_check', 'AjaxLoginWithCakeController@login_check');
 	Route::get('neko', 'NekoController@index');
+	Route::get('neko/bark', 'NekoController@bark');// ■■■□□□■■■□□□
 	Route::post('neko/ajax_reg', 'NekoController@ajax_reg');
-	Route::get('neko2', 'NekoController@index2');
-	Route::post('neko/test_ajax_be', 'NekoController@testAjax');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

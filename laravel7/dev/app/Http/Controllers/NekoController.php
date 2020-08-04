@@ -397,6 +397,7 @@ class NekoController
 	// ■■■□□□■■■□□□
 	public function bark() {
 		
+		return redirect('neko');
 		$data = ['neko'=>'猫', 'yagi'=>'山羊'];
 		
 		return view('neko.bark', compact('data'));

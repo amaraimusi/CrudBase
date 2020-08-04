@@ -30,7 +30,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 
 
 <div class="cb_func_line">
-
+	<div id="ajax_login_with_cake"></div><!-- ログイン or ログアウト 　AjaxLoginWithCake.js　-->
 	<div class="cb_kj_main">
 	<!-- 検索条件入力フォーム -->
 	<form action="" class="form_kjs" id="{{$model_name_c}}IndexForm" method="post" accept-charset="utf-8">
