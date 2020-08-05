@@ -25,11 +25,17 @@ var pwms; // ProcessWithMultiSelection.js | 一覧のチェックボックス複
  */
 function init(){
 	let csrf_token = jQuery('#csrf_token').val(); // CSRFトークンを取得（Ajaxで必要）
-
-	// CakePHPによるAjax認証
-	let alwc = new AjaxLoginWithCake({csrf_token:csrf_token});
-	let alwcParam = {'btn_type':0,'form_slt':'#ajax_login_with_cake'}
-	alwc.loginCheckEx(alwcParam);
+	
+//	// CakePHPによるAjax認証
+//	let alwcParam = {
+//			btn_type:0,
+//			form_slt:'#ajax_login_with_cake',
+//			csrf_token:csrf_token,
+//			login_url:'login',
+//			logout_url:'logout',
+//	};
+//	let alwc = new AjaxLoginWithCake(alwcParam);
+//	alwc.loginCheckEx();
 	
 	let crud_base_json = jQuery('#crud_base_json').val();
 	let crudBaseData = jQuery.parseJSON(crud_base_json);

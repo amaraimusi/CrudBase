@@ -16,9 +16,13 @@ class AjaxLoginWithCakeController{
 	 */
 	public function login_check() {
 
-		// 遷移元をセッションにセットする。
-		$referer=$_SERVER["HTTP_REFERER"] ?? '';
-		Session::put('ajax_login_with_cake_ses_key', $referer);
+// 		// 遷移元をセッションにセットする。
+// 		$referer=$_SERVER["HTTP_REFERER"] ?? '';
+// 		Session::put('ajax_login_with_cake_ses_key', $referer);
+		
+		// 「戻り」用のURLをセットする。
+		$url = $_SERVER["REQUEST_URI"];
+		Session::put('ajax_login_with_cake_ses_key', $url);
 		
 		// 認証状態を取得する
 		$auth_flg = 0;

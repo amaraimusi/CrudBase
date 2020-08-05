@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Laravel</title>
-
+		<script src="{{ asset('/js/app.js') }}" defer></script>
+		<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+	
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
@@ -83,8 +85,10 @@
                 <div class="title m-b-md">
                     Laravel
                 </div>
-					いろは
-                <div class="links">
+                <div style="width:100%;height:300px;text-align:center">
+                	<a href="neko" class="btn btn-success btn-lg">サンプルシステム</a>
+				</div>
+                <div class="links" >
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
                     <a href="https://laravel-news.com">News</a>

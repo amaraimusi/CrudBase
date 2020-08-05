@@ -26,8 +26,23 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	
 </head>
 <body><div class="container">
-		
 
+	<div style="margin:4px;">
+			<!-- ログインメニュー -->
+			@if (Route::has('login'))
+				<div class="top-right links">
+					@auth
+						<a href="{{ url('/home') }}" class="btn btn-info btn-sm">Home</a>
+					@else
+						<a href="{{ route('login') }}" class="btn btn-info btn-sm">ログイン</a>
+
+						@if (Route::has('register'))
+							<a href="{{ route('register') }}" class="btn btn-info btn-sm">登録</a>
+						@endif
+					@endauth
+				</div>
+			@endif
+	</div>
 
 <div class="cb_func_line">
 	<div id="ajax_login_with_cake"></div><!-- ログイン or ログアウト 　AjaxLoginWithCake.js　-->
