@@ -143,11 +143,11 @@ class Neko extends Model
 			$cnds[]="Neko.id = {$kjs['kj_id']}";
 		}
 		
-		if(!empty($kjs['kj_neko_val1'])){
+		if(!empty($kjs['kj_neko_val1']) || $kjs['kj_neko_val1'] === '0' || $kjs['kj_neko_val1'] === 0){
 			$cnds[]="Neko.neko_val >= {$kjs['kj_neko_val1']}";
 		}
 		
-		if(!empty($kjs['kj_neko_val2'])){
+		if(!empty($kjs['kj_neko_val2']) || $kjs['kj_neko_val2'] === '0' || $kjs['kj_neko_val2'] === 0){
 			$cnds[]="Neko.neko_val <= {$kjs['kj_neko_val2']}";
 		}
 		

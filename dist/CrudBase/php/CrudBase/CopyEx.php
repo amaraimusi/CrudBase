@@ -19,7 +19,7 @@
 class CopyEx{
 
 	public  function __construct(){
-		var_dump('XXX');//■■■□□□■■■□□□)
+		
 	}
 
 	/**

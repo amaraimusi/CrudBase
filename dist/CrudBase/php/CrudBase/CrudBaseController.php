@@ -306,35 +306,6 @@ class CrudBaseController {
 		$this->crudBaseData['header'] = 'header'; //  header.ctpの埋め込み
 		$this->crudBaseData['this_page_version'] = $this->this_page_version; // 当ページのバージョン
 
-		// ■■■□□□■■■□□□
-// 		$crudBaseData = [
-// 				'fieldData'=>$active, 		// アクティブフィールドデータ
-// 				'kjs'=>$kjs, 				// 検索条件情報
-// 				'defKjs'=>$defKjs, // デフォルト検索情報データ
-// 				'errMsg'=>$errMsg, 			// エラーメッセージ
-// 				'errTypes' => $errTypes, 	// エラータイプ
-// 				'version'=>$this->version, 	// CrudBaseのバージョン
-// 				'userInfo'=>$userInfo, 		// ユーザー情報
-// 				'new_version_chg'=>$new_version_chg, // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
-// 				'new_version_flg' => $new_version_chg, // 当ページの新バージョンフラグ   0:バージョン変更なし  1:新バージョン
-// 				'debug_mode'=>$debug_mode, 	// デバッグモード	CakePHPのデバッグモードと同じもの
-// 				'csh_ary'=>$csh_ary, 		// 列表示配列	列表示切替機能用
-// 				'csh_json'=>$csh_json, 		// 列表示配列JSON	 列表示切替機能用
-// 				'bigDataFlg'=>$bigDataFlg, 	// 巨大データフラグ	画面に表示する行数が制限数（$big_data_limit）を超えるとONになる。
-// 				'big_data_fields'=>$big_data_fields, // 巨大データ用のフィールド情報 (高速化のため列の種類は少なめ）
-// 				'pages'=>$pages, 			// ページネーションパラメータ
-// 				'act_flg'=>$act_flg, 		// アクティブフラグ	null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
-// 				'sql_dump_flg'=>$sql_dump_flg, // SQLダンプフラグ
-// 				'header' => 'header', // header.ctpの埋め込み
-// 				'this_page_version' => $this->this_page_version, // 当ページのバージョン
-// 				'paths' => $paths, // ホーム相対パス
-// 				'crud_base_path' => $this->crudBaseData['crud_base_path'], // CrudBaseライブラリへのパス
-// 				'crud_base_js' => $this->crudBaseData['crud_base_js'], // CrudBase.min.jsのパス
-// 				'crud_base_css' => $this->crudBaseData['crud_base_css'], // CrudBase.min.cssのパス
-// 				'csrf_token' => $csrf_token, // CSRFトークン ※Ajaxのセキュリティ
-// 		];
-		
-		
 		return $this->crudBaseData;
 	}
 	
@@ -561,8 +532,6 @@ class CrudBaseController {
 		
 		//ページネーション情報を取得する
 		$base_url=parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-		//debug($base_url);//■■■□□□■■■□□□)
-		//$base_url = $home_r_path . $this->main_model_name_s . $method_url; // 基本ＵＲＬ
 		$pages = $crudBaseData['pages'];
 
 		$pagenation_param = null;
@@ -807,7 +776,6 @@ class CrudBaseController {
 	 *
 	 */
 	protected function reg_before($name){
-		//$this->MainModel=ClassRegistry::init($name);//■■■□□□■■■□□□
 		$this->main_model_name=$name;
 		$this->main_model_name_s=$this->snakize($name);
 
@@ -820,8 +788,6 @@ class CrudBaseController {
 		if ($this->ReloadCheck->check()!=1){//1以外はリロードと判定し、一覧画面へリダイレクトする。
 			return $this->redirect(array('controller' => $this->main_model_name_s, 'action' => 'index'));
 		}
-
-		//App::uses('Sanitize', 'Utility');//インクルード■■■□□□■■■□□□
 
 		$ent=$this->getEntityFromPost();
 
@@ -1319,25 +1285,6 @@ class CrudBaseController {
 
 	////////// 編集画面用 ///////////////////////
 
-
-	// ■■■□□□■■■□□□
-// 	/**
-// 	 * POSTからデータを取得
-// 	 *
-// 	 * @note
-// 	 * SQLインジェクションのサニタイズも行われます。
-// 	 * 編集画面の内部処理用です。
-// 	 */
-// 	protected function getGet($key){
-// 		$v=null;
-// 		if(isset($this->params['url'][$key])){
-// 			$v=$this->params['url'][$key];
-// 			$v=SanitizeCustom::escape($v);//SQLインジェクションのサニタイズ
-
-// 		}
-
-// 		return $v;
-// 	}
 
 	/**
 	 * デフォルトエンティティを取得
@@ -2008,15 +1955,6 @@ class CrudBaseController {
 		return $this->crudBaseModel->saveEntity($ent, $whiteList); // エンティティをDB保存
 	}
 	
-	// ■■■□□□■■■□□□
-// 	/**
-// 	 * 順番を取得する
-// 	 * @param int $ni_tr_place 新規入力追加場所フラグ 0:末尾(デフォルト） , 1:先頭
-// 	 * @return int 順番
-// 	 */
-// 	public function getSortNo($ni_tr_place){
-// 		return $this->crudBaseModel->getSortNo($ni_tr_place);
-// 	}
 	
 
 }
