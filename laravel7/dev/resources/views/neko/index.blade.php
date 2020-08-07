@@ -520,7 +520,7 @@ foreach($data as $i=>&$ent){
 
 
 <!-- 抹消フォーム -->
-<div id="ajax_crud_eliminate_form" class="panel panel-danger" style="display:none">
+<div id="ajax_crud_eliminate_form" class="crud_base_form" style="display:none">
 
 	<div class="panel-heading">
 		<div class="pnl_head1">抹消</div>

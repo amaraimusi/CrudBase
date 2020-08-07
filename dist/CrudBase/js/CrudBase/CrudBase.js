@@ -86,7 +86,7 @@ class CrudBase{
 		this.rowExchange = this._factoryCrudBaseRowExchange();
 		
 		// CrudBase設定・コンポーネント
-		this.crudBaseConfig = this._factoryCrudBaseConfig(this.param.configData);
+		this.crudBaseConfig = this._factoryCrudBaseConfig(this.param);
 
 		// ボタンサイズ変更コンポーネント
 		this.cbBtnSizeChanger = this.crudBaseConfig.cbBtnSizeChanger;
@@ -330,14 +330,14 @@ class CrudBase{
 
 	/**
 	 * CrudBase設定
-	 * @param object configData 設定データ
+	 * @param {} crudBaseData
 	 * @return CrudBaseConfig CrudBase設定・コンポーネント
 	 */
-	_factoryCrudBaseConfig(configData){
+	_factoryCrudBaseConfig(crudBaseData){
 
 		// 自動保存機能の初期化
 		let crudBaseConfig = new CrudBaseConfig();
-		crudBaseConfig.init(null, configData);
+		crudBaseConfig.init(null, crudBaseData);
 		
 		return crudBaseConfig;
 		
@@ -1415,7 +1415,7 @@ class CrudBase{
 	 * 削除登録
 	 * 
 	 * @param option オプション
-	 *  - caller_type 呼び出し元タイプ 0:削除フォールから呼び出し（デフォ） , 1:直接呼出し , 
+	 *  - caller_type 呼び出し元タイプ 0:削除フォームから呼び出し（デフォ） , 1:直接呼出し , 
 	 *  - wp_action :WPアクション	WordPressでは必須
 	 *  - wp_nonce  :WPノンス	WordPressのトークン的なもの（なくても動くがセキュリティが下がる）
 	 *  - cbBeforeReg(ent) 削除登録前に実行するコールバック
@@ -1531,7 +1531,6 @@ class CrudBase{
 		// トークンの取得(Laravelなど）
 		let token = this.param.csrf_token;
 		fd.append( "_token", token );
-
 		
 		jQuery.ajax({
 			type: "post",

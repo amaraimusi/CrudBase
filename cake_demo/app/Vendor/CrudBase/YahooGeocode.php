@@ -19,8 +19,9 @@ class YahooGeocode{
 	 * @return array 緯度,経度
 	 */
 	public function getLatLngFromAddress($address, $api_key){
-		
-		$base_url = "https://map.yahooapis.jp/geocode/V1/geoCoder?output=xml&appid={$api_key}";
+		//■■■□□□■■■□□□
+		//$base_url = "https://map.yahooapis.jp/geocode/V1/geoCoder?output=xml&appid={$api_key}";
+		$base_url = "https://map.yahooapis.jp/geocode/cont/V1/contentsGeoCoder?output=xml&appid={$api_key}";
 		$param = '&query=' . $address;
 		
 		$curl = curl_init();
@@ -29,6 +30,7 @@ class YahooGeocode{
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$xml_str = curl_exec($curl);
+		
 		
 		$geoData =$this->xml2arr($xml_str);
 		

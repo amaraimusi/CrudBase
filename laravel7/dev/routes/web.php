@@ -22,6 +22,7 @@ Route::get('/', function () {
 	Route::get('neko', 'NekoController@index');
 	Route::get('neko/bark', 'NekoController@bark');// ■■■□□□■■■□□□
 	Route::post('neko/ajax_reg', 'NekoController@ajax_reg');
+	Route::post('neko/ajax_delete', 'NekoController@ajax_delete');
 	
 Auth::routes();
 

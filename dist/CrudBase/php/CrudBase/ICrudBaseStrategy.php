@@ -16,6 +16,7 @@ interface ICrudBaseStrategy{
 	public function getPath(); // パス情報を取得する
 	public function saveAll($data, $option); // データをDB保存
 	public function save($ent, $option); // エンティティをDB保存
+	public function delete($id); // idに紐づくレコードをDB削除
 	public function validForKj($data,$validate); // 検索条件のバリデーション
 	public function getCsrfToken(); // CSRFトークン ※Ajaxのセキュリティ
 }

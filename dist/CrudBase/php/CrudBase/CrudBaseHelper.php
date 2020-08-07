@@ -1297,10 +1297,10 @@ class CrudBaseHelper {
 		if(isset($option['onclick'])) $css_class = $option['onclick'];
 
 		// 検索条件データの削除フラグが0(有効)でなければ削除ボタンを表示しない。
-		$style='';
-		if($ent['delete_flg'] == 1) $style = "style='display:none'";
+		$display_none = '';
+		if($ent['delete_flg'] == 1) $display_none = 'display:none;';
 		
-		echo "<input type='button' value='削除'  class='{$css_class}' onclick='{$onclick}' {$style} />";	
+		echo "<input type='button' value='削除'  class='{$css_class}' onclick='{$onclick}' style='{$display_none}' />";	
 
 	}
 	

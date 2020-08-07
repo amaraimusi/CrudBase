@@ -171,6 +171,15 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	}
 	
 	/**
+	 * idに紐づくレコードをDB削除
+	 * @param int $id
+	 */
+	public function delete($id){
+		$rs=$this->model->destroy($id); // idに紐づくレコードをDB削除
+		return $rs;
+	}
+	
+	/**
 	 * 検索条件のバリデーション
 	 *
 	 * 引数のデータを、バリデーション情報を元にエラーチェックを行います。

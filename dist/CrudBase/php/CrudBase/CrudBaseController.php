@@ -115,7 +115,10 @@ class CrudBaseController {
 		$this->strategy = $this->factoryStrategy($fw_type, $clientCtrl, $clientModel);
 
 		// CrudBaseモデルクラスの生成
-		$this->crudBaseModel = new CrudBaseModel(['strategy' => $this->strategy,]); 
+		$this->crudBaseModel = new CrudBaseModel([
+				'strategy' => $this->strategy,
+				'crudBaseData' => $crudBaseData,
+		]); 
 		
 		$this->main_model_name = $model_name;
 		$this->main_model_name_s = $model_name_s;
@@ -1953,6 +1956,50 @@ class CrudBaseController {
 		
 		
 		return $this->crudBaseModel->saveEntity($ent, $whiteList); // エンティティをDB保存
+	}
+	
+	/**
+	 * idに紐づくレコードをDB削除
+	 * @param int $id
+	 */
+	public function delete($id){
+		return $this->crudBaseModel->delete($id);
+	}
+	
+	
+	/**
+	 * 削除用のエンティティを取得する
+	 * @param int $id ID
+	 */
+	public function getEntForDelete($id){
+		if(empty($id)){
+			throw new Exception('IDが空です。');
+		}
+		
+		$ent2 = array(
+				'id'=>$id,
+				'delete_flg'=>1,
+		);
+		
+		// 更新ユーザーなど共通フィールドをセットする。
+		$ent2 = $this->setCommonToEntity($ent2);
+		
+		return $ent2;
+	}
+	
+	
+	/**
+	 * アップロードファイルの抹消処理
+	 *
+	 * @note
+	 * 他のレコードが保持しているファイルは抹消対象外
+	 *
+	 * @param int $id
+	 * @param string $fn_field_strs ファイルフィールド群文字列（複数ある場合はコンマで連結）
+	 * @param array $ent エンティティ
+	 */
+	public function eliminateFiles($id, $fn_field_strs, &$ent){
+		return $this->crudBaseModel->eliminateFiles($id, $fn_field_strs, $ent);
 	}
 	
 	

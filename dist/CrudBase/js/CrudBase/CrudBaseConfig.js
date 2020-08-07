@@ -10,17 +10,18 @@ class CrudBaseConfig{
 	 * 
 	 * @param param
 	 * - div_xid 当機能埋込先区分のid属性
-	 * - data 設定データ
+	 * - crudBaseData 
 	 *  - delete_alert_flg 削除アラートフラグ    1:一覧行の削除ボタンを押したときアラートを表示する
 	 */
-	init(param, data){
+	init(param, crudBaseData){
 		
 		this.param = this._setParamIfEmpty(param);
 		this.tDiv = jQuery('#' + this.param.div_xid); //  This division
+		this.crudBaseData = crudBaseData;
 		
-
+		
 		// 設定データをローカルストレージや定義から取得
-		this.data = this._getData(data);
+		this.data = this._getData(crudBaseData.configData);
 
 		// 当機能のHTMLを作成および埋込
 		let html = this._createHtml(); 
@@ -40,7 +41,7 @@ class CrudBaseConfig{
 		
 		
 		// ボタンサイズ変更コンポーネント
-		this.cbBtnSizeChanger = new CbBtnSizeChanger();
+		this.cbBtnSizeChanger = new CbBtnSizeChanger(crudBaseData);
 		
 		// UIに設定データを反映する。
 		this.setDataToUi(this.data);

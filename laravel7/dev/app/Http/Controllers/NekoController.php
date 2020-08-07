@@ -75,7 +75,6 @@ class NekoController
 			return 'Error:ログイン認証が必要です。 Login is needed';
 		}
 		
-		
 		// JSON文字列をパースしてエンティティを取得する
 		$json=$_POST['key1'];
 		$ent = json_decode($json, true);
@@ -90,7 +89,6 @@ class NekoController
 		// CBBXE
 		
 
-		
 		$this->md->saveEntity($ent, $regParam);
 		
 		// CBBXS-1025
@@ -104,6 +102,54 @@ class NekoController
 		return $json_str;
 		
 	}
+	
+	
+	/**
+	 * 削除登録
+	 *
+	 * @note
+	 * Ajaxによる削除登録。
+	 * 削除更新でだけでなく有効化に対応している。
+	 * また、DBから実際に削除する抹消にも対応している。
+	 */
+	public function ajax_delete(){
+
+		$this->init();
+
+		if(\Auth::id() == null){
+			return 'Error:ログイン認証が必要です。 Login is needed';
+		}
+		
+		// JSON文字列をパースしてエンティティを取得する
+		$json=$_POST['key1'];
+		$ent0 = json_decode($json,true);
+		
+		
+		// 登録パラメータ
+		$reg_param_json = $_POST['reg_param_json'];
+		$regParam = json_decode($reg_param_json,true);
+		
+		// 抹消フラグ
+		$eliminate_flg = 0;
+		if(isset($regParam['eliminate_flg'])) $eliminate_flg = $regParam['eliminate_flg'];
+		
+		// 削除用のエンティティを取得する
+		$ent = $this->cb->getEntForDelete($ent0['id']);
+		$ent['delete_flg'] = $ent0['delete_flg'];
+		
+		// エンティティをDB保存
+		if($eliminate_flg == 0){
+			$ent = $this->md->saveEntity($ent,$regParam); // 更新
+		}else{
+ 			$this->cb->eliminateFiles($ent['id'], 'img_fn', $ent); // ファイル抹消（他のレコードが保持しているファイルは抹消対象外）
+ 			$this->cb->delete($ent['id']); // idに紐づくレコードをDB削除
+		}
+		
+		$json_str =json_encode($ent);//JSONに変換
+		
+ 		return $json_str;
+	}
+	
 	
 	/**
 	 * ファイルアップロードクラスのファクトリーメソッド
@@ -151,7 +197,7 @@ class NekoController
 				array('name'=>'kj_img_fn','def'=>null),
 				array('name'=>'kj_note','def'=>null),
 				array('name'=>'kj_sort_no','def'=>null),
-				array('name'=>'kj_delete_flg','def'=>-1),
+				array('name'=>'kj_delete_flg','def'=>0),
 				array('name'=>'kj_update_user','def'=>null),
 				array('name'=>'kj_ip_addr','def'=>null),
 				array('name'=>'kj_created','def'=>null),

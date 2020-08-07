@@ -1,20 +1,23 @@
 /**
  * ボタンサイズ変更【CrudBase用】
- * @version 1.1.5
- * @date 2018-10-27 | 2019-10-13 ボタン表示切替に対応
+ * @version 1.2.0
+ * @date 2018-10-27 | 2020-8-7
  */
 class CbBtnSizeChanger{
 	
 	/**
 	 * コンストラクタ
 	 * 
-	 * @param object cnfData 設定データ（省略可）
-	 * @param object param
-	 * - save_flg 保存フラグ 0:保存しない , 1:保存する（デフォルト）
+	 * @param {} crudBaseData
 	 * - 
 	 */
-	constructor(param, p_cnfData){
-
+	constructor(crudBaseData){
+		
+		this.crudBaseData = crudBaseData;
+		
+		let param = {};
+		let p_cnfData = {};
+		
 		// ローカルストレージキーを作成
 		var url = location.href;
 		var url = url.split(/[?#]/)[0]; // URLからクエリ部分を除去する
@@ -50,6 +53,7 @@ class CbBtnSizeChanger{
 		
 		this.mainForm = mainForm;
 		this.cnfData = cnfData;
+		this.kj_delete_flg = crudBaseData.kjs.kj_delete_flg; // 削除フラグ -1:すべて, 0:有効, 1:削除(無効）
 		
 	}
 	
@@ -380,19 +384,134 @@ class CbBtnSizeChanger{
 	 * @param object cnfEnt 設定エンティティ
 	 */
 	_changeBtnVisible(cnfEnt){
-		
-		var visible = cnfEnt.visible;
+
+		let visible = cnfEnt.visible;
+		let code = cnfEnt.code;
 		
 		jQuery(cnfEnt.slt).each((i,btn) => {
 			
 			btn = jQuery(btn);
-			if(visible == true){
-				btn.show();
-			}else{
-				btn.hide();
+			
+
+			
+//			"row_delete_btn"
+//			"row_eliminate_btn"
+//			"row_enabled_btn"
+			
+			switch (code) {
+				case 'row_enabled_btn':
+					this._changeBtnForEnabledBtn(btn, visible); // ボタン切替・有効ボタン
+					break;
+				case 'row_delete_btn':
+					this._changeBtnForDeleteBtn(btn, visible); // ボタン切替・削除ボタン
+					break;
+				case 'row_eliminate_btn':
+					this._changeBtnForEliminateBtn(btn, visible); // ボタン切替・抹消ボタン
+					break;
+				default:
+					this._changeBtnForOther(btn, visible); // ボタン切替・その他ボタン
+					break;
 			}
+
+
 		});
 
+	}
+	
+	
+	/**
+	 * ボタン切替・有効ボタン
+	 */
+	_changeBtnForEnabledBtn(btn, visible){
+		
+		//	delete_flg==0	設定OFF	⇒非表示
+		//	delete_flg==-1	設定OFF	⇒非表示
+		//	delete_flg==1	設定OFF	⇒非表示
+		//	delete_flg==0	設定ON	⇒非表示
+		//	delete_flg==-1	設定ON	⇒表示
+		//	delete_flg==1	設定ON	⇒表示
+		
+		if(visible == false){
+			btn.hide();
+		}else{
+			switch (this.kj_delete_flg) {
+			case 0:
+				btn.hide();
+			case -1:
+				btn.show();
+			case 1:
+				btn.show();
+			}
+		}
+
+	}
+	
+	
+	/**
+	 * ボタン切替・削除ボタン
+	 */
+	_changeBtnForDeleteBtn(btn, visible){
+		
+		//		delete_flg==0	設定OFF	⇒非表示
+		//		delete_flg==-1	設定OFF	⇒非表示
+		//		delete_flg==1	設定OFF	⇒非表示
+		//		delete_flg==0	設定ON	⇒表示
+		//		delete_flg==-1	設定ON	⇒表示
+		//		delete_flg==1	設定ON	⇒非表示
+		
+		if(visible == false){
+			btn.hide();
+		}else{
+			switch (this.kj_delete_flg) {
+			case 0:
+				btn.show();
+			case -1:
+				btn.show();
+			case 1:
+				btn.hide();
+			}
+		}
+
+	}
+	
+	
+	/**
+	 * ボタン切替・抹消ボタン
+	 */
+	_changeBtnForEliminateBtn(btn, visible){
+		
+		//	delete_flg==0	設定OFF	⇒非表示
+		//	delete_flg==-1	設定OFF	⇒非表示
+		//	delete_flg==1	設定OFF	⇒非表示
+		//	delete_flg==0	設定ON	⇒非表示
+		//	delete_flg==-1	設定ON	⇒非表示
+		//	delete_flg==1	設定ON	⇒表示
+				
+		if(visible == false){
+			btn.hide();
+		}else{
+			switch (this.kj_delete_flg) {
+			case 0:
+				btn.hide();
+			case -1:
+				btn.hide();
+			case 1:
+				btn.show();
+			}
+		}
+
+	}
+	
+	
+	/**
+	 * ボタン切替・その他ボタン
+	 */
+	_changeBtnForOther(btn, visible){
+		if(visible == true){
+			btn.show();
+		}else{
+			btn.hide();
+		}
 	}
 	
 	

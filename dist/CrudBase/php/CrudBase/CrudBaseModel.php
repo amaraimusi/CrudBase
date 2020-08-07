@@ -16,20 +16,23 @@ class CrudBaseModel{
 
 	private $strategy = null; // ICrudBaseStrategy.php フレームワーク・ストラテジー
 	private $active_sort_no =0; // 現在の順番
+	private $crudBaseData;
 	
 	/**
 	 * コンストラクタ
 	 * @param array $param
-	 *  - strategy ICrudBaseStrategy フレームワーク・ストラテジー
+	 *  - ICrudBaseStrategy strategy フレームワーク・ストラテジー
+	 *  - [] crudBaseData
 	 */
 	public function __construct($param=[]){
 		$this->strategy = $param['strategy'];
+		$this->crudBaseData = $param['crudBaseData'];
 	}
 
 	/**
 	 * ユーザー情報を取得する
 	 *
-	 * @return array ユーザー情報
+	 * @return [] ユーザー情報
 	 *  - update_user 更新ユーザー
 	 *  - ip_addr IPアドレス
 	 *  - user_agent ユーザーエージェント
@@ -581,81 +584,6 @@ class CrudBaseModel{
 	
 	
 	/**
-	 * アップロードファイルの抹消処理
-	 *
-	 * @note
-	 * 他のレコードが保持しているファイルは抹消対象外
-	 *
-	 * @param Model $model モデル
-	 * @param int $id
-	 * @param string $fn_field_strs ファイルフィールド群文字列（複数ある場合はコンマで連結）
-	 * @param array $ent エンティティ
-	 */
-	public function eliminateFiles(&$model,$id,$fn_field_strs, &$ent){
-
-		// モデルと紐づいているテーブルからidに紐づくレコードを取得する。
-		$tbl_name = $model->useTable;
-		$sql = "SELECT * FROM {$tbl_name} WHERE id={$id}";
-		$res = $model->query($sql);
-		if(empty($res)) return;
-		if(empty($res[0])) return;
-		$ent = $res[0][$tbl_name];
-		
-		// ▼削除データを作成する
-		$delData = array(); // 削除データ
-		$fnFields = explode(",",$fn_field_strs); // ファイルフィールドリスト
-		foreach($fnFields as $fn_field){
-			
-			// ▼削除データにファイル名をセットする
-			$delEnt = array('fn'=>null,'fps'=>array());
-			if(empty($ent[$fn_field])){
-				$delData[$fn_field] = $delEnt;
-				continue;
-			}
-			$fn = $ent[$fn_field];
-			$delEnt['fn'] = $fn;
-			
-			// ▼削除データにファイルパスリストをセットする。
-			$fps = array();
-
-			// ▼ ファイルパスを組み立てる
-			$fps['orig'] = $ent[$fn_field];
-			$fps['mid'] = str_replace('/orig/', '/mid/', $ent[$fn_field]);
-			$fps['thum'] = str_replace('/orig/', '/thum/', $ent[$fn_field]);
-			$delEnt['fps'] = $fps;
-			
-			// ▼削除するファイル名が他のレコードで使われていないなら抹消フラグをONにする。使われているならfalseにする。
-			$sql2 = "SELECT * FROM {$tbl_name} WHERE {$fn_field}='{$fn}' AND id != {$id} LIMIT 1";
-			$res2 = $model->query($sql2);
-			if(empty($res2)){
-				$delEnt['eliminate_flg'] = true;
-			}else{
-				$delEnt['eliminate_flg'] = false;
-			}
-
-			$delData[$fn_field] = $delEnt;
-			
-		}
-		
-		// ▼削除データをループし、抹消フラグがfalseでないならファイル抹消を行う。
-		foreach($delData as $delEnt){
-			if(empty($delEnt['eliminate_flg'])) continue;
-			
-			// ▼ファイルパスリストをループし、ファイルパスに紐づくファイルを削除する。
-			$fps = $delEnt['fps'];
-			foreach($fps as $fp){
-				if(file_exists($fp)){
-					unlink($fp);
-					
-				}
-			}
-			 
-		}
-
-	}
-	
-	
-	/**
 	 * 更新ユーザーなど共通フィールドをデータにセットする。
 	 * @param [] $data データ（エンティティの配列）
 	 * @param string $update_user 更新ユーザー （省略可）
@@ -878,6 +806,87 @@ class CrudBaseModel{
 		
 		return $this->strategy->saveEntity($ent, $whiteList);
 
+	}
+
+	
+	/**
+	 * idに紐づくレコードをDB削除
+	 * @param int $id
+	 */
+	public function delete($id){
+		return $this->strategy->delete($id);
+	}
+	
+	
+	/**
+	 * アップロードファイルの抹消処理
+	 *
+	 * @note
+	 * 他のレコードが保持しているファイルは抹消対象外
+	 *
+	 * @param int $id
+	 * @param string $fn_field_strs ファイルフィールド群文字列（複数ある場合はコンマで連結）
+	 * @param array $ent エンティティ
+	 */
+	public function eliminateFiles($id, $fn_field_strs, &$ent){
+		
+		// モデルと紐づいているテーブルからidに紐づくレコードを取得する。
+		$tbl_name = $this->crudBaseData['tbl_name'];
+		$sql = "SELECT * FROM {$tbl_name} WHERE id={$id}";
+		$ent = $this->selectEntity($sql);
+		if(empty($ent)) return;
+		
+		// ▼削除データを作成する
+		$delData = []; // 削除データ
+		$fnFields = explode(",", $fn_field_strs); // ファイルフィールドリスト
+		foreach($fnFields as $fn_field){
+			
+			// ▼削除データにファイル名をセットする
+			$delEnt = ['fn'=>null, 'fps'=>[]];
+			if(empty($ent[$fn_field])){
+				$delData[$fn_field] = $delEnt;
+				continue;
+			}
+			$fn = $ent[$fn_field];
+			$delEnt['fn'] = $fn;
+			
+			// ▼削除データにファイルパスリストをセットする。
+			$fps = [];
+			
+			// ▼ ファイルパスを組み立てる
+			$fps['orig'] = $ent[$fn_field];
+			$fps['mid'] = str_replace('/orig/', '/mid/', $ent[$fn_field]);
+			$fps['thum'] = str_replace('/orig/', '/thum/', $ent[$fn_field]);
+			$delEnt['fps'] = $fps;
+			
+			// ▼削除するファイル名が他のレコードで使われていないなら抹消フラグをONにする。使われているならfalseにする。
+			$sql2 = "SELECT * FROM {$tbl_name} WHERE {$fn_field}='{$fn}' AND id != {$id} LIMIT 1";
+			$res2 = $this->selectEntity($sql2);
+			if(empty($res2)){
+				$delEnt['eliminate_flg'] = true;
+			}else{
+				$delEnt['eliminate_flg'] = false;
+			}
+			
+			$delData[$fn_field] = $delEnt;
+			
+		}
+		
+		// ▼削除データをループし、抹消フラグがfalseでないならファイル抹消を行う。
+		foreach($delData as $delEnt){
+			if(empty($delEnt['eliminate_flg'])) continue;
+			
+			// ▼ファイルパスリストをループし、ファイルパスに紐づくファイルを削除する。
+			$fps = $delEnt['fps'];
+			foreach($fps as $fp){
+				if(file_exists($fp)){
+					unlink($fp);
+				}
+			}
+			
+		}
+		
+		return;
 	}
 
 	
