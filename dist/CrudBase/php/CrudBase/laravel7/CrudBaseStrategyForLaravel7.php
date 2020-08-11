@@ -147,14 +147,15 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	/**
 	 * データをDB保存
 	 * @param [] $data データ（エンティティの配列）
-	 * @param [] $option
+	 * @param [] $option ホワイトリスト
 	 */
-	public function saveAll($data, $option = []){
+	public function saveAll(&$data, &$option){
 		
-		if(!isset($option['atomic'])) $option['atomic'] = false;
-		if(!isset($option['validate'])) $option['validate'] = false;
-		$rs=$this->model->saveAll($data, $option);
-		return $rs;
+		foreach($data as &$ent){
+			$this->saveEntity($ent, $option);
+		}
+		unset($ent);
+		
 	}
 	
 	
@@ -163,11 +164,35 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	 * @param [] $ent エンティティ
 	 * @param [] $option
 	 */
-	public function save($ent, $option){
-		if(!isset($option['atomic'])) $option['atomic'] = false;
-		if(!isset($option['validate'])) $option['validate'] = false;
-		$rs=$this->model->save($data, $option);
-		return $rs;
+	public function save(&$ent, &$option){
+		return $this->saveEntity($ent, $option);
+	}
+	
+	
+	/**
+	 * エンティティのDB保存
+	 * @param [] $ent エンティティ
+	 * @param [] $whiteList ホワイトリスト
+	 * @return [] エンティティ(insertされた場合、新idがセットされている）
+	 */
+	public function saveEntity(&$ent, &$whiteList=[]){
+		
+		if(!empty($whiteList)){
+			$ent = array_intersect_key($ent, array_flip($whiteList)); // ホワイトリストによるフィルタリング
+		}
+		
+		if(empty($ent['id'])){
+			
+			// ▽ idが空であればINSERTをする。
+			$id = $this->model->insertGetId($ent); // INSERT
+			$ent['id'] = $id;
+		}else{
+			
+			// ▽ idが空でなければUPDATEする。
+			$this->model->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
+		}
+		
+		return $ent;
 	}
 	
 	/**
@@ -255,33 +280,6 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 		}
 		
 		return $data2;
-	}
-	
-	
-	/**
-	 * エンティティのDB保存
-	 * @param [] $ent エンティティ
-	 * @param [] $whiteList ホワイトリスト
-	 * @return [] エンティティ(insertされた場合、新idがセットされている）
-	 */
-	public function saveEntity(&$ent, &$whiteList=[]){
-		
-		if(!empty($whiteList)){
-			$ent = array_intersect_key($ent, array_flip($whiteList)); // ホワイトリストによるフィルタリング
-		}
-
-		if(empty($ent['id'])){
-			
-			// ▽ idが空であればINSERTをする。
-			$id = $this->model->insertGetId($ent); // INSERT
-			$ent['id'] = $id;
-		}else{
-			
-			// ▽ idが空でなければUPDATEする。
-			$this->model->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
-		}
-		
-		return $ent;
 	}
 	
 }

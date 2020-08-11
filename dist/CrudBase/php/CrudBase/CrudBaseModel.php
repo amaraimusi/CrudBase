@@ -637,7 +637,7 @@ class CrudBaseModel{
 	 * @param string $update_user 更新ユーザー （省略可）
 	 * @return [] 共通フィールドセット後のエンティティ
 	 */
-	public function setCommonToEntity($ent, $update_user=null){
+	public function setCommonToEntity(&$ent, $update_user=null){
 		
 		// 更新ユーザーが空なら取得してセット
 		if($update_user == null){
@@ -808,6 +808,19 @@ class CrudBaseModel{
 
 	}
 
+	
+	/**
+	 * データのDB保存
+	 * @param [] $data データ
+	 * @param [] $whiteList ホワイトリスト
+	 */
+	public function saveAll(&$data, &$whiteList){
+		
+		foreach($data as &$ent){
+			$ent = $this->setCommonToEntity($ent);
+		}
+		unset($ent);
+	}
 	
 	/**
 	 * idに紐づくレコードをDB削除

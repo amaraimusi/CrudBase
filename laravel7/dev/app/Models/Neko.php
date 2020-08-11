@@ -320,14 +320,16 @@ class Neko extends Model
 	 * @return [] データ(insertされた場合、新idがセットされている）
 	 */
 	public function saveAll(&$data){
+		return $this->cb->saveAll($data);
 		
-		$data2 = [];
-		foreach($data as &$ent){
-			$data2[] = $this->saveEntity($ent);
+		// ■■■□□□■■■□□□
+// 		$data2 = [];
+// 		foreach($data as &$ent){
+// 			$data2[] = $this->saveEntity($ent);
 			
-		}
-		unset($ent);
-		return $data2;
+// 		}
+// 		unset($ent);
+// 		return $data2;
 	}
 	
 	

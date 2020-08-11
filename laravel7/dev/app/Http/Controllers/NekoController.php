@@ -152,6 +152,38 @@ class NekoController
 	
 	
 	/**
+	 * Ajax | 自動保存
+	 *
+	 * @note
+	 * バリデーション機能は備えていない
+	 *
+	 */
+	public function auto_save(){
+		
+		$this->init();
+		
+		if(\Auth::id() == null){
+			return 'Error:ログイン認証が必要です。 Login is needed';
+		}
+		
+		$json=$_POST['key1'];
+		
+		$data = json_decode($json,true);//JSON文字を配列に戻す
+		
+		// データ保存
+		$this->cb->begin();
+		$this->cb->saveAll($data); // まとめて保存。内部でSQLサニタイズされる。
+		$this->cb->commit();
+		
+		$res = ['success'];
+		
+		$json_str = json_encode($res);//JSONに変換
+		
+		return $json_str;
+	}
+	
+	
+	/**
 	 * ファイルアップロードクラスのファクトリーメソッド
 	 * @return \App\Http\Controllers\FileUploadK
 	 */

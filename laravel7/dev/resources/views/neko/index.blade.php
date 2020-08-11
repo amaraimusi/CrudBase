@@ -108,7 +108,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 <div style="clear:both"></div>
 
 <div id="detail_div" style="display:none">
-	<div id="main_tools" style="margin-bottom:10px;">
+	<div id="main_tools" style="margin-bottom:10px;margin-top:4px">
 		<?php 
 			// 列表示切替機能
 			$this->CrudBase->divCsh();

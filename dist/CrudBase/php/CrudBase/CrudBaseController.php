@@ -1958,6 +1958,27 @@ class CrudBaseController {
 		return $this->crudBaseModel->saveEntity($ent, $whiteList); // エンティティをDB保存
 	}
 	
+	
+	/**
+	 * データのDB保存
+	 * @param [] $data データ（エンティティの配列）
+	 * @return [] データ(insertされた場合、新idがセットされている）
+	 */
+	public function saveAll(&$data){
+
+		$whiteList = $this->crudBaseData['fields'];
+		
+		// ■■■□□□■■■□□□
+		// 		$data2 = [];
+		// 		foreach($data as &$ent){
+		// 			$data2[] = $this->saveEntity($ent);
+		
+		// 		}
+		// 		unset($ent);
+		// 		return $data2;
+	}
+	
+	
 	/**
 	 * idに紐づくレコードをDB削除
 	 * @param int $id
