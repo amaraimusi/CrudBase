@@ -236,12 +236,12 @@ foreach($data as $i=>&$ent){
 		<div>
 			<div style="color:#3174af;float:left">新規入力</div>
 			<div style="float:left;margin-left:10px">
-				<button type="button"  onclick="newInpReg();" class="btn btn-success btn-xs reg_btn">
-					<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
-				</button>
+				<button type="button"  onclick="newInpReg();" class="btn btn-success btn-sm reg_btn">登録</button>
 			</div>
 			<div style="float:right">
-				<button type="button" class="btn btn-primary btn-xs" onclick="closeForm('new_inp')"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="close" aria-label="閉じる" onclick="closeForm('new_inp')" >
+						<span aria-hidden="true">&times;</span>
+					</button>
 			</div>
 		</div>
 		<div style="clear:both;height:4px"></div>
@@ -324,9 +324,7 @@ foreach($data as $i=>&$ent){
 		
 		<div style="clear:both"></div>
 		<div class="cbf_inp_wrap">
-			<button type="button" onclick="newInpReg();" class="btn btn-success reg_btn">
-				<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
-			</button>
+			<button type="button" onclick="newInpReg();" class="btn btn-success reg_btn">登録</button>
 		</div>
 	</td></tr><!-- new_inp_form -->
 
@@ -339,12 +337,12 @@ foreach($data as $i=>&$ent){
 			<div>
 				<div style="color:#3174af;float:left">編集</div>
 				<div style="float:left;margin-left:10px">
-					<button type="button"  onclick="editReg();" class="btn btn-success btn-xs reg_btn">
-						<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
-					</button>
+					<button type="button"  onclick="editReg();" class="btn btn-success btn-sm reg_btn">登録</button>
 				</div>
 				<div style="float:right">
-					<button type="button" class="btn btn-primary btn-xs" onclick="closeForm('edit')"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="close" aria-label="閉じる" onclick="closeForm('edit')" >
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
 			</div>
 			<div style="clear:both;height:4px"></div>
@@ -440,13 +438,11 @@ foreach($data as $i=>&$ent){
 			
 			<div style="clear:both"></div>
 			<div class="cbf_inp_wrap">
-				<button type="button"  onclick="editReg();" class="btn btn-success reg_btn">
-					<span class="glyphicon glyphicon-ok reg_btn_msg"></span>
-				</button>
+				<button type="button"  onclick="editReg();" class="btn btn-success reg_btn">登録</button>
 			</div>
 			
 			<div class="cbf_inp_wrap" style="padding:5px;">
-				<input type="button" value="更新情報" class="btn btn-default btn-xs" onclick="$('#ajax_crud_edit_form_update').toggle(300)" /><br>
+				<input type="button" value="更新情報" class="btn btn-secondary btn-sm" onclick="$('#ajax_crud_edit_form_update').toggle(300)" /><br>
 				<aside id="ajax_crud_edit_form_update" style="display:none">
 					更新日時: <span class="modified"></span><br>
 					生成日時: <span class="created"></span><br>
