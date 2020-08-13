@@ -1,7 +1,7 @@
 /**
  * ボタンサイズ変更【CrudBase用】
- * @version 1.2.0
- * @date 2018-10-27 | 2020-8-7
+ * @version 1.2.1
+ * @date 2018-10-27 | 2020-8-13
  */
 class CbBtnSizeChanger{
 	
@@ -14,9 +14,12 @@ class CbBtnSizeChanger{
 	constructor(crudBaseData){
 		
 		this.crudBaseData = crudBaseData;
-		
+
 		let param = {};
 		let p_cnfData = {};
+		
+		this.kj_delete_flg = crudBaseData.kjs.kj_delete_flg; // 削除フラグ -1:すべて, 0:有効, 1:削除(無効）
+		if(this._empty(this.kj_delete_flg)) this.kj_delete_flg = 0;
 		
 		// ローカルストレージキーを作成
 		var url = location.href;
@@ -53,7 +56,9 @@ class CbBtnSizeChanger{
 		
 		this.mainForm = mainForm;
 		this.cnfData = cnfData;
-		this.kj_delete_flg = crudBaseData.kjs.kj_delete_flg; // 削除フラグ -1:すべて, 0:有効, 1:削除(無効）
+
+
+
 		
 	}
 	
@@ -387,16 +392,12 @@ class CbBtnSizeChanger{
 
 		let visible = cnfEnt.visible;
 		let code = cnfEnt.code;
+	
+		let row_exc_cond_sort = this._judgeRowExcCondSort(); // 「順番」関連の条件による表示判定
 		
 		jQuery(cnfEnt.slt).each((i,btn) => {
 			
 			btn = jQuery(btn);
-			
-
-			
-//			"row_delete_btn"
-//			"row_eliminate_btn"
-//			"row_enabled_btn"
 			
 			switch (code) {
 				case 'row_enabled_btn':
@@ -408,6 +409,9 @@ class CbBtnSizeChanger{
 				case 'row_eliminate_btn':
 					this._changeBtnForEliminateBtn(btn, visible); // ボタン切替・抹消ボタン
 					break;
+				case 'row_exc_btn':
+					this._changeBtnForRowExc(btn, visible, row_exc_cond_sort); // ボタン切替・行入替ボタン
+					break;
 				default:
 					this._changeBtnForOther(btn, visible); // ボタン切替・その他ボタン
 					break;
@@ -415,6 +419,26 @@ class CbBtnSizeChanger{
 
 
 		});
+
+	}
+	
+	
+	/**
+	 * 「順番」関連の条件による表示判定
+	 * @return bool 行入替ボタンの表示判定 false:非
+	 */
+	_judgeRowExcCondSort(){
+		let main_model_name = this.crudBaseData.main_model_name; // モデル名	例⇒Neko
+		let sort_field = this.crudBaseData.pages.sort_field; // ソートフィールド	例→Neko.sort
+		let sort_desc = this.crudBaseData.pages.sort_desc; // ソート並び順 0:昇順, 1:降順
+
+		if(sort_desc == 1) return false; // ソート並び順が降順ならボタン非表示
+		if(sort_field == 'sort') return true; 
+		if(sort_field == 'sort_no') return true; 
+		if(sort_field == main_model_name + '.sort') return true; 
+		if(sort_field == main_model_name + '.sort_no') return true; 
+		
+		return false;
 
 	}
 	
@@ -437,10 +461,13 @@ class CbBtnSizeChanger{
 			switch (this.kj_delete_flg) {
 			case 0:
 				btn.hide();
+				break;
 			case -1:
 				btn.show();
+				break;
 			case 1:
 				btn.show();
+				break;
 			}
 		}
 
@@ -465,10 +492,13 @@ class CbBtnSizeChanger{
 			switch (this.kj_delete_flg) {
 			case 0:
 				btn.show();
+				break;
 			case -1:
 				btn.show();
+				break;
 			case 1:
 				btn.hide();
+				break;
 			}
 		}
 
@@ -493,13 +523,53 @@ class CbBtnSizeChanger{
 			switch (this.kj_delete_flg) {
 			case 0:
 				btn.hide();
+				break;
 			case -1:
 				btn.hide();
+				break;
 			case 1:
 				btn.show();
+				break;
 			}
 		}
 
+	}
+	
+	
+	/**
+	 * ボタン切替・行入替ボタン
+	 */
+	_changeBtnForRowExc(btn, visible, row_exc_cond_sort){
+		//	delete_flg==0	設定OFF	⇒非表示
+		//	delete_flg==-1	設定OFF	⇒非表示
+		//	delete_flg==1	設定OFF	⇒非表示
+		//	delete_flg==0	設定ON	⇒非表示
+		//	delete_flg==-1	設定ON	⇒非表示
+		//	delete_flg==1	設定ON	⇒さらなる条件
+		
+		if(visible == false){
+
+			btn.hide();
+		}else{
+			switch (this.kj_delete_flg) {
+			case 0:
+				if(row_exc_cond_sort == true){
+					btn.show();
+				}else{
+					btn.hide();
+				}
+				break;
+			case -1:
+				btn.hide();
+				break;
+			case 1:
+				btn.hide();
+				break;
+			default:
+				break;
+			}
+		}
+		
 	}
 	
 	

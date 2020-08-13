@@ -820,6 +820,8 @@ class CrudBaseModel{
 			$ent = $this->setCommonToEntity($ent);
 		}
 		unset($ent);
+		
+		return $this->strategy->saveAll($data, $whiteList);
 	}
 	
 	/**

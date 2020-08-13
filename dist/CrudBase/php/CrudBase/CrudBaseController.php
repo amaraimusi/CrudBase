@@ -1968,14 +1968,8 @@ class CrudBaseController {
 
 		$whiteList = $this->crudBaseData['fields'];
 		
-		// ■■■□□□■■■□□□
-		// 		$data2 = [];
-		// 		foreach($data as &$ent){
-		// 			$data2[] = $this->saveEntity($ent);
+		return $this->crudBaseModel->saveAll($data, $whiteList);
 		
-		// 		}
-		// 		unset($ent);
-		// 		return $data2;
 	}
 	
 	
