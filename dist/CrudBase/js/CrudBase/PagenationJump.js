@@ -8,9 +8,9 @@
  * 下記のような要素をHTMLに埋め込む
  * <div class="pagenation_jump" data-count="1271" data-hina-url="/animal_park/neko?page_no=1&row_limit=50&sort_field=Neko.sort_no&sort_desc=0&act_flg=2&kj_delete_flg=0&row_limit=50" style="display:inline-block"></div>
  * 
- * @date 2019-7-26
+ * @date 2019-7-26 | 2020-8-13
  * @license MIT
- * @version 1.0.0
+ * @version 1.0.1
  */
 class PagenationJump{
 	
@@ -83,7 +83,7 @@ class PagenationJump{
 		// テキストボックス cbpjump_tb、ジャンプボタン cbpjump_btn
 		let html = `
 	<button class="cbpjump_show_btn btn btn-secondary btn-sm" title="ページジャンプ">
-			<span class="glyphicon glyphicon-hand-up"></span>
+			⇒
 	</button>
 	<div style="display:inline-block">
 		<div class="cbpjump_div1" style="margin-right:16px;display:none">
