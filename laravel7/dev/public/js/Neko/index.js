@@ -9,7 +9,7 @@ jQuery(()=> {
 
 
 var crudBase;//AjaxによるCRUD
-var pwms; // ProcessWithMultiSelection.js | 一覧のチェックボックス複数選択による一括処理
+//var pwms; // ProcessWithMultiSelection.js | 一覧のチェックボックス複数選択による一括処理■■■□□□■■■□□□
 
 /**
  *  ネコ画面の初期化
@@ -81,11 +81,12 @@ function init(){
 		localStorage.removeItem('clm_sort_chg_flg');
 	}
 
-	// 一覧のチェックボックス複数選択による一括処理
-	pwms = new ProcessWithMultiSelection({
-		'tbl_slt':'#neko_tbl',
-		'ajax_url':'neko/ajax_pwms',
-			});
+	//■■■□□□■■■□□□
+//	// 一覧のチェックボックス複数選択による一括処理
+//	pwms = new ProcessWithMultiSelection({
+//		'tbl_slt':'#neko_tbl',
+//		'ajax_url':'neko/ajax_pwms',
+//			});
 
 	// 新規入力フォームのinput要素にEnterキー押下イベントを組み込む。
 	$('#ajax_crud_new_inp_form input').keypress(function(e){

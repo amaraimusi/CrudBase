@@ -15,7 +15,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>猫インデックスにゃーん</title>
+	<title>ネコ管理画面</title>
 	
 	<script src="{{ asset('/js/app.js') }}" defer></script>
 	<script src="{{ asset('/js/test.js') }}" defer></script>
@@ -137,7 +137,6 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	</div><!-- sub_tools -->
 </div><!-- detail_div -->
 
-<input type="button" value="test_ajax" onclick="test_ajax()" /><!-- ■■■□□□■■■□□□ -->
 <input type="hidden" id="csrf_token" value="{{ csrf_token() }}" >
 <div id="test_ajax_res"></div>
 

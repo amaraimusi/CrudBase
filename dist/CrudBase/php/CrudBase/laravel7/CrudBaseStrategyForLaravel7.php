@@ -13,6 +13,7 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	
 	private $ctrl; // クライアントコントローラ
 	private $model; // クライアントモデル
+	private $whiteList; // ホワイトリスト
 	
 	/**
 	 * クライアントコントローラのセッター
@@ -30,6 +31,16 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	public function setModel($model){
 		$this->model = $model;
 	}
+	
+	
+	/**
+	 * ホワイトリストのセッター
+	 * @param [] $whiteList ホワイトリスト
+	 */
+	public function setWhiteList(&$whiteList){
+		$this->whiteList = $whiteList;
+	}
+	
 	
 	/**
 	 * SQLを実行する
@@ -149,7 +160,7 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	 * @param [] $data データ（エンティティの配列）
 	 * @param [] $option ホワイトリスト
 	 */
-	public function saveAll(&$data, &$option){
+	public function saveAll(&$data, &$option=[]){
 		
 		foreach($data as &$ent){
 			$this->saveEntity($ent, $option);
@@ -164,7 +175,7 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	 * @param [] $ent エンティティ
 	 * @param [] $option
 	 */
-	public function save(&$ent, &$option){
+	public function save(&$ent, &$option=[]){
 		return $this->saveEntity($ent, $option);
 	}
 	
@@ -175,11 +186,9 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	 * @param [] $whiteList ホワイトリスト
 	 * @return [] エンティティ(insertされた場合、新idがセットされている）
 	 */
-	public function saveEntity(&$ent, &$whiteList=[]){
+	public function saveEntity(&$ent, &$option=[]){
 		
-		if(!empty($whiteList)){
-			$ent = array_intersect_key($ent, array_flip($whiteList)); // ホワイトリストによるフィルタリング
-		}
+		$ent = array_intersect_key($ent, array_flip($this->whiteList)); // ホワイトリストによるフィルタリング
 		
 		if(empty($ent['id'])){
 			

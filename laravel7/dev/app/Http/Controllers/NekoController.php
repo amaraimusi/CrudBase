@@ -469,44 +469,17 @@ class NekoController
 		return $crudBaseData;
 		
 	}
-	
-	
-	
-	// ■■■□□□■■■□□□
-	public function bark() {
-		
-		return redirect('neko');
-		$data = ['neko'=>'猫', 'yagi'=>'山羊'];
-		
-		return view('neko.bark', compact('data'));
-	}
 
-	// ■■■□□□■■■□□□
-	public function testAjax(){
-		
-		$json=$_POST['key1'];
-		$data = json_decode($json,true);
- 		$data['name'] = '新しい猫';
- 		$data['age'] = 1;
- 		$data['date'] = '2020-7-23';
-		
- 		$json = json_encode($data, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
-
-		return $json;
+	/**
+	 * AJAX | 一覧のチェックボックス複数選択による一括処理
+	 * @return string
+	 */
+	public function ajax_pwms(){
+		$this->init();
+		return $this->cb->ajax_pwms();
 	}
 	
-	// ■■■□□□■■■□□□
-// 	/**
-// 	 * モデルクラスを生成する
-// 	 */
-// 	public function factoryModel(){
-// 		if($this->cb == null) throw new Error('CrudBaseContollerのインスタンスが必要です。');
-// 		$model_path = app_path() . '/Models';
-// 		require_once $model_path . '/Neko.php';
-// 		$model = new Neko($this->cb);
-// 		return $model;
-		
-// 	}
+	
 }
 
 

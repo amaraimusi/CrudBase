@@ -111,8 +111,10 @@ class CrudBaseController {
 		
 		$fw_type =$fw_type = $crudBaseData['fw_type']; // フレームワークタイプを取得
 		
+		$whiteList = array_keys($crudBaseData['fieldData']['def']); // ホワイトリストを取得
+
 		// フレームワーク・ストラテジーの生成
-		$this->strategy = $this->factoryStrategy($fw_type, $clientCtrl, $clientModel);
+		$this->strategy = $this->factoryStrategy($fw_type, $clientCtrl, $clientModel, $whiteList);
 
 		// CrudBaseモデルクラスの生成
 		$this->crudBaseModel = new CrudBaseModel([
@@ -143,10 +145,11 @@ class CrudBaseController {
 	 * @param string $fw_type フレームワークタイプ
 	 * @param object $clientCtrl クライアントコントローラ・オブジェクト
 	 * @param object $clientModel クライアントモデル・オブジェクト
+	 * @param [] ホワイトリスト
 	 * @throws Exception
 	 * @return NULL|CrudBaseStrategyForCake|CrudBaseStrategyForLaravel7
 	 */
-	public function factoryStrategy($fw_type, &$clientCtrl, &$clientModel){
+	public function factoryStrategy($fw_type, &$clientCtrl, &$clientModel, $whiteList){
 		$strategy = null;
 		if($fw_type == 'cake'){
 			require_once 'cakephp/CrudBaseStrategyForCake.php';
@@ -157,12 +160,14 @@ class CrudBaseController {
 		}else if($fw_type == 'laravel7' || $fw_type == 'laravel'){
 			require_once 'laravel7/CrudBaseStrategyForLaravel7.php';
 			$strategy= new CrudBaseStrategyForLaravel7();
-			if(isset($clientCtrl)) $strategy->setCtrl($clientCtrl); // クライアントコントローラのセット
-			$strategy->setModel($clientModel); // クライアントモデルのセット
 			
 		}else{
 			throw new Exception('$fw_type is empty!');
 		}
+		if(isset($clientCtrl)) $strategy->setCtrl($clientCtrl); // クライアントコントローラのセット
+		$strategy->setModel($clientModel); // クライアントモデルのセット
+		$strategy->setWhiteList($whiteList); // ホワイトリストのセット
+		
 		return $strategy;
 	}
 	
@@ -1446,7 +1451,7 @@ class CrudBaseController {
 
 		// ユーザーエージェントの取得とセット
 		$user_agent = $_SERVER['HTTP_USER_AGENT'];
-		$user_agent = mb_substr($user_agent,0,255);
+		$user_agent = mb_substr($user_agent, 0, 255);
 		$ent['user_agent'] = $user_agent;
 
 		// IPアドレスの取得とセット
@@ -1629,7 +1634,7 @@ class CrudBaseController {
 				$this->crudBaseModel->switchDeleteFlg($ids, 0, $update_user); // 有効化
 				break;
 			case 11:
-				$this->crudBaseModel->switchDeleteFlg($ids, 1 ,$update_user); // 削除化
+				$this->crudBaseModel->switchDeleteFlg($ids, 1 ,$update_user); // 削除化(無効化）
 				break;
 			default:
 				return "'kind_no' is unknown value";

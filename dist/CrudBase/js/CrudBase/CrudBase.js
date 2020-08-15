@@ -166,6 +166,13 @@ class CrudBase{
 		// 検索関連の入力要素にEnterイベントを組み込む
 		this._addEventForKjsEnter();
 		
+		// 一覧のチェックボックス複数選択による一括処理
+		this.pwms = new ProcessWithMultiSelection({
+				tbl_slt:this.param.tbl_slt,
+				ajax_url:this.param.pwms_ajax_url,
+				csrf_token:this.param.csrf_token,
+		});
+		
 
 
 	}
@@ -323,6 +330,10 @@ class CrudBase{
 		if(param['midway_dp'] == null) param['midway_dp'] = '';
 		
 		if(param['configData'] == null) param['configData'] = {};
+		
+		if(param['pwms_ajax_url'] == null) param['pwms_ajax_url'] = param.main_model_name_s + '/ajax_pwms';
+		
+		
 		
 		return param;
 	}

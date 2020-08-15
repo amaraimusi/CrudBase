@@ -678,15 +678,15 @@ class CrudBaseModel{
 	 * @param int $delete_flg 削除フラグ   0:有効  , 1:削除
 	 * @param string $update_user 更新ユーザー
 	 */
-	public function switchDeleteFlg($ids,$delete_flg, $update_user=null){
+	public function switchDeleteFlg($ids, $delete_flg, $update_user=null){
 		
 		// IDリストと削除フラグからデータを作成する
-		$data = array();
+		$data = [];
 		foreach($ids as $id){
-			$ent = array(
+			$ent = [
 				'id' => $id,
 				'delete_flg' => $delete_flg,
-			);
+			];
 			$data[] = $ent;
 			
 		}
@@ -694,8 +694,10 @@ class CrudBaseModel{
 		// 更新ユーザーなど共通フィールドをデータにセットする。
 		$data = $this->setCommonToData($data, $update_user);
 		
+		$option = [];
+		
 		// データを更新する
-		$rs=$this->strategy->saveAll($data);
+		$rs = $this->saveAll($data, $option);
 		
 		return $rs;
 		
