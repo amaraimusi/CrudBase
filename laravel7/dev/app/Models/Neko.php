@@ -128,7 +128,7 @@ class Neko extends Model
 	 * @return string WHERE情報
 	 */
 	private function createKjConditions($kjs){
-		
+
 		$cnds=null;
 		
 		$kjs = $this->cb->xssSanitizeW($kjs); // SQLサニタイズ
@@ -142,7 +142,7 @@ class Neko extends Model
 		if(!empty($kjs['kj_id'])){
 			$cnds[]="Neko.id = {$kjs['kj_id']}";
 		}
-		
+
 		if(!empty($kjs['kj_neko_val1']) || $kjs['kj_neko_val1'] === '0' || $kjs['kj_neko_val1'] === 0){
 			$cnds[]="Neko.neko_val >= {$kjs['kj_neko_val1']}";
 		}

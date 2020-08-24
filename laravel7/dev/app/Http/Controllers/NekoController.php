@@ -49,15 +49,6 @@ class NekoController
 	}
 	
 	
-	public function index2(){
-		$data = [];
-		
-		\Session::put('neko_key', ['abc'=> '野良猫にエサをあげる大臣', 'value2'=>'白い猫']);
-		//\Session::put('neko_key', '野良猫にエサをあげる大臣');
-		return view('neko.index', compact('data'));
-	}
-	
-	
 	/**
 	 * DB登録
 	 *
@@ -477,6 +468,87 @@ class NekoController
 	public function ajax_pwms(){
 		$this->init();
 		return $this->cb->ajax_pwms();
+	}
+
+	
+	/**
+	 * CSVダウンロード
+	 *
+	 * 一覧画面のCSVダウンロードボタンを押したとき、一覧データをCSVファイルとしてダウンロードします。
+	 */
+	public function csv_download(){
+		$this->init();
+		
+		//ダウンロード用のデータを取得する。
+		$data = $this->getDataForDownload();
+		
+		// ダブルクォートで値を囲む
+		foreach($data as &$ent){
+			unset($ent['xml_text']);
+			foreach($ent as $field => $value){
+				if(mb_strpos($value,'"')!==false){
+					$value = str_replace('"', '""', $value);
+				}
+				$value = '"' . $value . '"';
+				$ent[$field] = $value;
+			}
+		}
+		unset($ent);
+		
+		//列名配列を取得
+		$clms=array_keys($data[0]);
+		
+		//データの先頭行に列名配列を挿入
+		array_unshift($data,$clms);
+		
+		
+		//CSVファイル名を作成
+		$date = new \DateTime();
+		$strDate=$date->format("Y-m-d");
+		$fn='neko'.$strDate.'.csv';
+		
+		
+		//CSVダウンロード
+		$crud_base_path = config('const.CRUD_BASE_PATH');
+		require_once $crud_base_path . 'CsvDownloader.php';
+		$csv= new \CsvDownloader();
+		$csv->output($fn, $data);
+
+	}
+
+	
+	//ダウンロード用のデータを取得する。
+	private function getDataForDownload(){
+		
+		//セッションから検索条件情報を取得
+		$kjs=session('neko_kjs');
+
+		// セッションからページネーション情報を取得
+		$pages = session('neko_pages');
+		
+		$page_no = 0;
+		$row_limit = 100000;
+		$sort_field = $pages['sort_field'];
+		$sort_desc = $pages['sort_desc'];
+		
+		$crudBaseData = [
+				'kjs' => $kjs,
+				'pages' => $pages,
+				'page_no' => $page_no,
+				'row_limit' => $row_limit,
+				'sort_field' => $sort_field,
+				'sort_desc' => $sort_desc,
+		];
+		
+		
+		//DBからデータ取得
+		$res = $this->md->getData($crudBaseData);
+		$data = $res['data'];
+		if(empty($data)){
+			return [];
+		}
+		
+		return $data;
 	}
 	
 	

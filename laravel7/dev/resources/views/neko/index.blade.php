@@ -114,7 +114,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 			$this->CrudBase->divCsh();
 			
 			// CSVエクスポート機能
- 			$csv_dl_url =  'csv_download';
+ 			$csv_dl_url =  'neko/csv_download';
  			$this->CrudBase->makeCsvBtns($csv_dl_url);
 
 		?>

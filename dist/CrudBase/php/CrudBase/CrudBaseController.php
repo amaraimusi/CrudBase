@@ -288,7 +288,7 @@ class CrudBaseController {
 		$kjs_json = json_encode($kjs,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
 		// セッションへセット（CSVエクスポートで利用）
-		if(!empty($option['func_csv_export'])){
+		if(!empty($this->crudBaseData['func_csv_export'])){
 			$this->strategy->sessionWrite($this->main_model_name_s.'_kjs',$kjs);
 		}
 		
