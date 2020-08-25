@@ -114,8 +114,9 @@ function init(){
 //			{'field':'sort_no', 'inp_type':'sort_no', 'def':1}, 
 		],
 		{
-			'ajax_url':'neko/bulk_reg',
-			'ta_placeholder':"Excelからコピーしたネコ名、ネコ数値を貼り付けてください。（タブ区切りテキスト）\n(例)\nネコ名A\t100\nネコ名B\t101\n",
+			ajax_url:'neko/bulk_reg',
+			csrf_token:csrf_token,
+			ta_placeholder:"Excelからコピーしたネコ名、ネコ数値を貼り付けてください。（タブ区切りテキスト）\n(例)\nネコ名A\t100\nネコ名B\t101\n",
 		}
 	);
 	

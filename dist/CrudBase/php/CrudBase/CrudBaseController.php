@@ -186,10 +186,7 @@ class CrudBaseController {
 		$this->posts = $_POST;
 		$this->gets = $_GET;
 
-
-		
-
-		$name = $this->crudBaseData['model_name_c']; // ■■■□□□■■■□□□
+		$name = $this->crudBaseData['model_name_c']; 
 		// ▼検索POSTデータを取得
 		$searchPosts = [];
 		if(isset($this->posts[$name])){
@@ -2022,6 +2019,13 @@ class CrudBaseController {
 		return $this->crudBaseModel->eliminateFiles($id, $fn_field_strs, $ent);
 	}
 	
+	/**
+	 * フレームワーク・ストラテジーのオブジェクトを取得する
+	 * @return ICrudBaseStrategy フレームワーク・ストラテジー
+	 */
+	public function getStrategy(){
+		return $this->strategy;
+	}
 	
 
 }

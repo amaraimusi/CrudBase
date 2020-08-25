@@ -25,6 +25,7 @@ Route::get('/', function () {
 	Route::post('neko/auto_save', 'NekoController@auto_save');
 	Route::post('neko/ajax_pwms', 'NekoController@ajax_pwms');
 	Route::get('neko/csv_download', 'NekoController@csv_download');
+	Route::post('neko/bulk_reg', 'NekoController@bulk_reg');
 	
 Auth::routes();
 

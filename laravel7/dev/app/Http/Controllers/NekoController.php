@@ -552,6 +552,43 @@ class NekoController
 	}
 	
 	
+	/**
+	 * 一括登録 | AJAX
+	 *
+	 * @note
+	 * 一括追加, 一括編集, 一括複製
+	 */
+	public function bulk_reg(){
+		$this->init();
+		
+		$crud_base_path = config('const.CRUD_BASE_PATH');
+		require_once $crud_base_path . 'BulkReg.php';
+		
+		// 更新ユーザーを取得
+		$update_user = 'none';
+		if(\Auth::id()){// idは未ログインである場合、nullになる。
+			$user_id = \Auth::id(); // ユーザーID（番号）
+			$update_user = \Auth::user()->name; // ユーザー名
+		}else{
+			throw new Exception('Login is needed. ログインが必要です。');
+			die();
+		}
+		
+		$json_param=$_POST['key1'];
+		$param = json_decode($json_param,true);//JSON文字を配列に戻す
+		
+		// 一括登録
+		$strategy = $this->cb->getStrategy(); // フレームワークストラテジーを取得する
+		$bulkReg = new \BulkReg($strategy, $update_user);
+		$res = $bulkReg->reg('nekos', $param);
+		
+		//JSONに変換
+		$str_json = json_encode($res,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
+		
+		return $str_json;
+	}
+	
+	
 }
 
 
