@@ -57,6 +57,10 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 			<a href="" class="ini_rtn btn btn-primary btn-sm" title="この画面を最初に表示したときの状態に戻します。（検索状態、列並べの状態を解除）">リセット</a>
 		</div>
 		<div class="cb_kj_detail" style="display:none">
+			<table style="width:100%"><tbody><tr>
+				<td>詳細検索</td>
+				<td style="text-align:right"><button type="button" class="btn btn-secondary btn-sm"  onclick="jQuery('.cb_kj_detail').toggle(300);">閉じる</button></td>
+			</tr></tbody></table>
 		<?php 
 		
 		// --- CBBXS-1004
@@ -107,20 +111,23 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 
 <div style="clear:both"></div>
 
-<div id="detail_div" style="display:none">
+<div id="detail_div" style="background-color:#ebedef;padding:4px;display:none">
+	
 	<div id="main_tools" style="margin-bottom:10px;margin-top:4px">
-		<?php 
-			// 列表示切替機能
-			$this->CrudBase->divCsh();
-			
-			// CSVエクスポート機能
- 			$csv_dl_url =  'neko/csv_download';
- 			$this->CrudBase->makeCsvBtns($csv_dl_url);
-
-		?>
-
-		<button id="crud_base_bulk_add_btn" type="button" class="btn btn-secondary btn-sm" onclick="crudBase.crudBaseBulkAdd.showForm()" >一括追加</button>
-		
+		<div style="display:inline-block;width:75%; ">
+			<?php 
+				// 列表示切替機能
+				$this->CrudBase->divCsh();
+				
+				// CSVエクスポート機能
+	 			$csv_dl_url =  'neko/csv_download';
+	 			$this->CrudBase->makeCsvBtns($csv_dl_url);
+			?>
+			<button id="crud_base_bulk_add_btn" type="button" class="btn btn-secondary btn-sm" onclick="crudBase.crudBaseBulkAdd.showForm()" >一括追加</button>
+		</div>
+		<div style="display:inline-block;text-align:right;width:24%;">
+			<button type="button" class="btn btn-secondary btn-sm" onclick="jQuery('#detail_div').toggle(300);">閉じる</button>
+		</div>
 	</div><!-- main_tools -->
 	
 	<div id="sub_tools">

@@ -1951,7 +1951,12 @@ class CrudBaseHelper {
 				<input type='button' value='列表示切替' class='btn btn-secondary btn-sm' onclick=\"jQuery('#clm_cbs_detail').toggle(300)\" />
 				<div id='clm_cbs_detail' style='display:none;margin-top:5px'>
 					<div id='clm_cbs_rap'>
-						<p>列表示切替</p>
+						<table style='width:100%'><tbody><tr>
+							<td><p>列表示切替</p></td>
+							<td style='text-align:right;'>
+								<button type='button' class='btn btn-primary btn-sm' onclick=\"jQuery('#clm_cbs_detail').toggle(300)\">閉じる</button>
+							</td>
+						</tr></tbody></table>
 						<div id='clm_cbs'></div>
 						<a href='#help_csh' class='livipage btn btn-info btn-sm' title='ヘルプ'>?</a>
 					</div>
