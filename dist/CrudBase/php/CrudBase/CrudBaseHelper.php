@@ -145,6 +145,7 @@ class CrudBaseHelper {
 						maxlength='{$maxlength}' 
 						type='text'>
 				</div>
+				<span id='kj_id_err' class='text-danger'></span>
 			</div>
 		";
 		
@@ -260,6 +261,7 @@ class CrudBaseHelper {
 						maxlength='{$maxlength}' 
 						type='text'>
 				</div>
+				<span id='{$field}_err' class='text-danger'></span>
 			</div>
 		";
 		
@@ -722,12 +724,14 @@ class CrudBaseHelper {
 					<input name='data[Neko][kj_{$field}1]' id='kj_{$field}1' value='{$value1}' 
 						class='kjs_inp' placeholder='{$wamei}～' title='{$wamei}～' 
 						type='number' style='width:{$width}'>
+						<span id='kj_{$field}1_err' class='text-danger'></span>
 				</div>
 				<span>～</span>
 				<div class='input number' style='display:inline-block'>
 					<input name='data[Neko][kj_{$field}2]' id='kj_{$field}2' value='{$value2}' 
 						class='kjs_inp' placeholder='～{$wamei}' title='～{$wamei}' 
 						type='number' style='width:{$width}'>
+					<span id='kj_{$field}2_err' class='text-danger'></span>
 				</div>
 			</div>
 		";

@@ -105,7 +105,7 @@ class CrudBaseController {
 		$crudBaseData['fields'] = array_keys($crudBaseData['fieldData']['def']); // フィールドリスト
 		
 		$this->kensakuJoken = $crudBaseData['kensakuJoken']; // 検索条件情報
-		$this->kjs_validate = $crudBaseData['kjs_validate']; // 検索条件バリデーション
+		//$this->kjs_validate = $crudBaseData['kjs_validate']; // 検索条件バリデーション■■■□□□■■■□□□
 		$this->fieldData = $crudBaseData['fieldData']; // フィールドデータ
 		$this->MainModel = $clientModel;
 		

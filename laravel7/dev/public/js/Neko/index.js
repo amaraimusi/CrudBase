@@ -1,4 +1,6 @@
 
+var nekouta = 128;
+
 
 jQuery(()=> {
 	init();//初期化
@@ -9,7 +11,6 @@ jQuery(()=> {
 
 
 var crudBase;//AjaxによるCRUD
-//var pwms; // ProcessWithMultiSelection.js | 一覧のチェックボックス複数選択による一括処理■■■□□□■■■□□□
 
 /**
  *  ネコ画面の初期化
@@ -25,18 +26,7 @@ var crudBase;//AjaxによるCRUD
  */
 function init(){
 	let csrf_token = jQuery('#csrf_token').val(); // CSRFトークンを取得（Ajaxで必要）
-	
-//	// CakePHPによるAjax認証
-//	let alwcParam = {
-//			btn_type:0,
-//			form_slt:'#ajax_login_with_cake',
-//			csrf_token:csrf_token,
-//			login_url:'login',
-//			logout_url:'logout',
-//	};
-//	let alwc = new AjaxLoginWithCake(alwcParam);
-//	alwc.loginCheckEx();
-	
+
 	let crud_base_json = jQuery('#crud_base_json').val();
 	let crudBaseData = jQuery.parseJSON(crud_base_json);
 	crudBaseData['csrf_token'] = csrf_token;
@@ -46,6 +36,16 @@ function init(){
 	
 	// CRUD基本クラス
 	crudBase = new CrudBase(crudBaseData);
+	
+	// 検索条件バリデーション情報のセッター
+	let validMethods =_getValidMethods();
+	crudBase.setKjsValidationForJq(
+			'#nekoIndexForm',
+			crudBaseData,
+			validMethods,
+	);
+
+	
 	
 
 	// 表示フィルターデータの定義とセット
@@ -122,6 +122,82 @@ function init(){
 	
 	crudBase.newVersionReload(); // 新バージョンリロード
 }
+
+
+/**
+ * 検索条件バリデーション情報のセッター
+ */
+function _getValidMethods(){
+	let methods = {
+			kj_id:(cbv, value)=>{
+				let err = '';
+				// 自然数バリデーション
+				if(!cbv.isNaturalNumber(value)){
+					err = '自然数で入力してください。';
+				}
+				return err;
+			},
+			kj_neko_val1:(cbv, value)=>{
+				let err = '';
+				// 整数バリデーション
+				if(!cbv.isInteger(value)){
+					err = '整数で入力してください。';
+				}
+				return err;
+			},
+			kj_neko_val2:(cbv, value)=>{
+				let err = '';
+				// 整数バリデーション
+				if(!cbv.isInteger(value)){
+					err = '整数で入力してください。';
+				}
+				return err;
+			},
+			kj_neko_name:(cbv, value)=>{
+				let err = '';
+				// 文字数バリデーション
+				if(!cbv.isMaxLength(value, 255)){
+					err = '255文字以内で入力してくだい。';
+				}
+				return err;
+			},
+			kj_img_fn:(cbv, value)=>{
+				let err = '';
+				// 文字数バリデーション
+				if(!cbv.isMaxLength(value, 255)){
+					err = '255文字以内で入力してくだい。';
+				}
+				return err;
+			},
+			kj_note:(cbv, value)=>{
+				let err = '';
+				// 文字数バリデーション
+				if(!cbv.isMaxLength(value, 1000)){
+					err = '1000文字以内で入力してくだい。';
+				}
+				return err;
+			},
+			kj_update_user:(cbv, value)=>{
+				let err = '';
+				// 文字数バリデーション
+				if(!cbv.isMaxLength(value, 50)){
+					err = '50文字以内で入力してくだい。';
+				}
+				return err;
+			},
+			kj_ip_addr:(cbv, value)=>{
+				let err = '';
+				// 文字数バリデーション
+				if(!cbv.isMaxLength(value, 40)){
+					err = '40文字以内で入力してくだい。';
+				}
+				return err;
+			},
+
+	}
+	return methods;
+}
+
 
 /**
  * 新規入力フォームを表示
@@ -301,55 +377,3 @@ function calendarViewKShow(){
 	crudBase.calendarViewCreate('neko_date');
 }
 
-/**
- * ■■■□□□■■■□□□
- * @returns
- */
-function test_ajax(){
-
-	console.log('test_ajax');
-	let fd = new FormData(); // 送信フォームデータ
-	let data = {id:123, name:'古いねこ', age:15}; // バックエンド側に送信するデータ
-	let json = JSON.stringify(data);
-	fd.append( "key1", json );
-	
-	// CSRFトークンを送信フォームデータにセットする。
-	let token = jQuery('#csrf_token').val();
-	fd.append( "_token", token );
-
-	
-	jQuery.ajax({
-		type: "post",
-		url: 'neko/test_ajax_be',
-		data: fd,
-		cache: false,
-		dataType: "text",
-		processData: false,
-		contentType: false,
-
-	}).done((str_json, type) => {
-
-		console.log('レスポンスOK');
-		let data = null;
-		try{
-			data =jQuery.parseJSON(str_json);//パース
-			console.log(data);
-		}catch(e){
-			alert('データのエラー:' + str_json);
-			console.log(str_json);
-			return;
-		}
-		
-		let res = '';
-		for(let field in data){
-			res += field + ' = ' + data[field] + '<br>';
-		}
-		jQuery('#test_ajax_res').html(res);
-
-
-	}).fail((jqXHR, statusText, errorThrown) => {
-		alert(statusText);
-		console.log('通信エラー');
-		jQuery('#test_ajax_res').html(jqXHR.responseText);
-	});
-}

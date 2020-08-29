@@ -205,136 +205,136 @@ class NekoController
 		/// 検索条件情報の定義
 		$kensakuJoken=[
 				
-				array('name'=>'kj_main','def'=>null),
+				['name'=>'kj_main', 'def'=>null],
 				// CBBXS-1000
-				array('name'=>'kj_id','def'=>null),
-				array('name'=>'kj_neko_val1','def'=>null),
-				array('name'=>'kj_neko_val2','def'=>null),
-				array('name'=>'kj_neko_name','def'=>null),
-				array('name'=>'kj_neko_date_ym','def'=>null),
-				array('name'=>'kj_neko_date1','def'=>null),
-				array('name'=>'kj_neko_date2','def'=>null),
-				array('name'=>'kj_neko_group','def'=>null),
-				array('name'=>'kj_neko_dt','def'=>null),
-				array('name'=>'kj_neko_flg','def'=>-1),
-				array('name'=>'kj_img_fn','def'=>null),
-				array('name'=>'kj_note','def'=>null),
-				array('name'=>'kj_sort_no','def'=>null),
-				array('name'=>'kj_delete_flg','def'=>0),
-				array('name'=>'kj_update_user','def'=>null),
-				array('name'=>'kj_ip_addr','def'=>null),
-				array('name'=>'kj_created','def'=>null),
-				array('name'=>'kj_modified','def'=>null),
+				['name'=>'kj_id', 'def'=>null],
+				['name'=>'kj_neko_val1', 'def'=>null, 'field'=>'neko_val'],
+				['name'=>'kj_neko_val2', 'def'=>null, 'field'=>'neko_val'],
+				['name'=>'kj_neko_name', 'def'=>null],
+				['name'=>'kj_neko_date_ym', 'def'=>null],
+				['name'=>'kj_neko_date1', 'def'=>null, 'field'=>'neko_date'],
+				['name'=>'kj_neko_date2', 'def'=>null, 'field'=>'neko_date'],
+				['name'=>'kj_neko_group', 'def'=>null],
+				['name'=>'kj_neko_dt', 'def'=>null],
+				['name'=>'kj_neko_flg', 'def'=>-1],
+				['name'=>'kj_img_fn', 'def'=>null],
+				['name'=>'kj_note', 'def'=>null],
+				['name'=>'kj_sort_no', 'def'=>null],
+				['name'=>'kj_delete_flg', 'def'=>0],
+				['name'=>'kj_update_user', 'def'=>null],
+				['name'=>'kj_ip_addr', 'def'=>null],
+				['name'=>'kj_created', 'def'=>null],
+				['name'=>'kj_modified', 'def'=>null],
 				// CBBXE
 				
-				array('name'=>'row_limit','def'=>50),
+				['name'=>'row_limit', 'def'=>50],
 				
 		];
 		
 		
 		
 		
-		
-		/// 検索条件のバリデーション
-		$kjs_validate=array(
+		// ■■■□□□■■■□□□
+// 		/// 検索条件のバリデーション
+// 		$kjs_validate=array(
 				
-				// CBBXS-1001
+// 				// CBBXS-1001
 				
-				'kj_id' => array(
-						'naturalNumber'=>array(
-								'rule' => array('naturalNumber', true),
-								'message' => 'IDは数値を入力してください',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_id' => array(
+// 						'naturalNumber'=>array(
+// 								'rule' => array('naturalNumber', true),
+// 								'message' => 'IDは数値を入力してください',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_neko_val1' => array(
-						'custom'=>array(
-								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
-								'message' => 'ネコ数値1は整数を入力してください。',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_neko_val1' => array(
+// 						'custom'=>array(
+// 								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
+// 								'message' => 'ネコ数値1は整数を入力してください。',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_neko_val2' => array(
-						'custom'=>array(
-								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
-								'message' => 'ネコ数値2は整数を入力してください。',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_neko_val2' => array(
+// 						'custom'=>array(
+// 								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
+// 								'message' => 'ネコ数値2は整数を入力してください。',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
 				
-				'kj_neko_name'=> array(
-						'maxLength'=>array(
-								'rule' => array('maxLength', 255),
-								'message' => 'ネコ名前は255文字以内で入力してください',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_neko_name'=> array(
+// 						'maxLength'=>array(
+// 								'rule' => array('maxLength', 255),
+// 								'message' => 'ネコ名前は255文字以内で入力してください',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_neko_date1'=> array(
-						'rule' => array( 'date', 'ymd'),
-						'message' => 'ネコ日【範囲1】は日付形式【yyyy-mm-dd】で入力してください。',
-						'allowEmpty' => true
-				),
+// 				'kj_neko_date1'=> array(
+// 						'rule' => array( 'date', 'ymd'),
+// 						'message' => 'ネコ日【範囲1】は日付形式【yyyy-mm-dd】で入力してください。',
+// 						'allowEmpty' => true
+// 				),
 				
-				'kj_neko_date2'=> array(
-						'rule' => array( 'date', 'ymd'),
-						'message' => 'ネコ日【範囲2】は日付形式【yyyy-mm-dd】で入力してください。',
-						'allowEmpty' => true
-				),
+// 				'kj_neko_date2'=> array(
+// 						'rule' => array( 'date', 'ymd'),
+// 						'message' => 'ネコ日【範囲2】は日付形式【yyyy-mm-dd】で入力してください。',
+// 						'allowEmpty' => true
+// 				),
 				
-				'kj_note'=> array(
-						'maxLength'=>array(
-								'rule' => array('maxLength', 255),
-								'message' => '備考は255文字以内で入力してください',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_note'=> array(
+// 						'maxLength'=>array(
+// 								'rule' => array('maxLength', 255),
+// 								'message' => '備考は255文字以内で入力してください',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_sort_no' => array(
-						'custom'=>array(
-								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
-								'message' => '順番は整数を入力してください。',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_sort_no' => array(
+// 						'custom'=>array(
+// 								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
+// 								'message' => '順番は整数を入力してください。',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_update_user'=> array(
-						'maxLength'=>array(
-								'rule' => array('maxLength', 50),
-								'message' => '更新者は50文字以内で入力してください',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_update_user'=> array(
+// 						'maxLength'=>array(
+// 								'rule' => array('maxLength', 50),
+// 								'message' => '更新者は50文字以内で入力してください',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_ip_addr'=> array(
-						'maxLength'=>array(
-								'rule' => array('maxLength', 40),
-								'message' => '更新IPアドレスは40文字以内で入力してください',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_ip_addr'=> array(
+// 						'maxLength'=>array(
+// 								'rule' => array('maxLength', 40),
+// 								'message' => '更新IPアドレスは40文字以内で入力してください',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_created'=> array(
-						'maxLength'=>array(
-								'rule' => array('maxLength', 20),
-								'message' => '生成日時は20文字以内で入力してください',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_created'=> array(
+// 						'maxLength'=>array(
+// 								'rule' => array('maxLength', 20),
+// 								'message' => '生成日時は20文字以内で入力してください',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				'kj_modified'=> array(
-						'maxLength'=>array(
-								'rule' => array('maxLength', 20),
-								'message' => '更新日時は20文字以内で入力してください',
-								'allowEmpty' => true
-						),
-				),
+// 				'kj_modified'=> array(
+// 						'maxLength'=>array(
+// 								'rule' => array('maxLength', 20),
+// 								'message' => '更新日時は20文字以内で入力してください',
+// 								'allowEmpty' => true
+// 						),
+// 				),
 				
-				// CBBXE
-		);
+// 				// CBBXE
+// 		);
 		
 		
 		
@@ -442,7 +442,7 @@ class NekoController
 				'fw_type' => 'laravel7',
 				'model_name_c' => 'Neko',
 				'kensakuJoken' => $kensakuJoken, //検索条件情報
-				'kjs_validate' => $kjs_validate, //検索条件バリデーション
+				//'kjs_validate' => $kjs_validate, //検索条件バリデーション■■■□□□■■■□□□
 				'fieldData' => $fieldData, //フィールドデータ
 				'crud_base_path' => $crud_base_path,
 				'crud_base_js' => $crud_base_js,

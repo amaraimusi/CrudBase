@@ -8,8 +8,8 @@
  * 
  * 
  * @license MIT
- * @date 2016-9-21 | 2020-6-16
- * @version 3.1.0
+ * @date 2016-9-21 | 2020-8-29
+ * @version 3.1.1
  * @histroy
  * 2019-6-28 v2.8.3 CSVフィールドデータ補助クラス | CsvFieldDataSupport.js
  * 2018-10-21 v2.8.0 ボタンサイズ変更機能にボタン表示切替機能を追加
@@ -3410,6 +3410,12 @@ class CrudBase{
 	 * 検索実行
 	 */
 	searchKjs(){
+		
+		// 検索入力のバリデーション
+		if(this.cbValidationJq.checkAll()){
+			alert('検索入力に不備があります。確認してください。');
+			return;
+		}
 
 		// URLからパラメータを取得する
 		var param = this._getUrlQuery();
@@ -4442,6 +4448,18 @@ class CrudBase{
 		
 		this.cbBtnSizeChanger.clearReset();
 	}
+	
+	/**
+	 * 検索条件のバリデーション・jQuery版
+	 * @param string per_xid 親要素のid属性値（親要素のセレクタ）
+	 * @param {} crudBaseData
+	 * @param [function] バリデーションメソッド群
+	 */
+	setKjsValidationForJq(per_xid, crudBaseData, validMethods){
+		this.cbValidationJq = new CrudBaseValidationJQuery(per_xid, crudBaseData, validMethods);
+	}
+	
+	
 	
 	
 }

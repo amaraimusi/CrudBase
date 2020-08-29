@@ -48,7 +48,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	<div id="ajax_login_with_cake"></div><!-- ログイン or ログアウト 　AjaxLoginWithCake.js　-->
 	<div class="cb_kj_main">
 	<!-- 検索条件入力フォーム -->
-	<form action="" class="form_kjs" id="{{$model_name_c}}IndexForm" method="post" accept-charset="utf-8">
+	<form action="" class="form_kjs" id="nekoIndexForm" method="post" accept-charset="utf-8">
 		
 		<?php $this->CrudBase->inputKjMain('kj_main','',null,'ネコ名、備考を検索する');?>
 		<input type='button' value='検索' onclick='searchKjs()' class='search_kjs_btn btn btn-success btn-sm' />
