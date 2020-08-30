@@ -1,11 +1,11 @@
 
-var nekouta = 128;
+var yagiuta = 128;
 
 
 jQuery(()=> {
 	init();//初期化
 	
-	$('#neko_tbl').show();// 高速表示のためテーブルは最後に表示する
+	$('#yagi_tbl').show();// 高速表示のためテーブルは最後に表示する
 	
 });
 
@@ -13,7 +13,7 @@ jQuery(()=> {
 var crudBase;//AjaxによるCRUD
 
 /**
- *  ネコ画面の初期化
+ *  ヤギ画面の初期化
  * 
   * ◇主に以下の処理を行う。
  * - 日付系の検索入力フォームにJQueryカレンダーを組み込む
@@ -40,7 +40,7 @@ function init(){
 	// 検索条件バリデーション情報のセッター
 	let validMethods =_getValidMethods();
 	crudBase.setKjsValidationForJq(
-			'#nekoIndexForm',
+			'#yagiIndexForm',
 			crudBaseData,
 			validMethods,
 	);
@@ -51,25 +51,24 @@ function init(){
 	// 表示フィルターデータの定義とセット
 	var disFilData = {
 			// CBBXS-1008
-			'neko_val':{
-				'fil_type':'money',
-				'option':{'currency':'&yen;'}
-			},
-			'neko_flg':{
-				'fil_type':'select',
+			'yagi_flg':{
+				'fil_type':'flg',
 				'option':{'list':['OFF','ON']}
 			},
 			'delete_flg':{
 				'fil_type':'delete_flg',
 			},
+
 			// CBBXE
 			
 	};
 	
 	// CBBXS-1023
-	// ネコグループリストJSON
-	let nekoGroupList = crudBaseData.masters.nekoGroupList;
-	disFilData['neko_group'] ={'fil_type':'select','option':{'list':nekoGroupList}};
+	// ブタIDリストJSON
+	var buta_id_json = jQuery('#buta_id_json').val();
+	var butaIdList = JSON.parse(buta_id_json);
+	disFilData['buta_id'] ={'fil_type':'select','option':{'list':butaIdList}};
+
 	// CBBXE
 
 	
@@ -100,19 +99,24 @@ function init(){
 	crudBase.crudBaseBulkAdd.init(
 		[
 			// CBBXS-2010
-			{'field':'neko_name', 'inp_type':'textarea'}, 
-			{'field':'neko_val', 'inp_type':'textarea'}, 
+			{'field':'id', 'inp_type':'textarea'}, 
+			{'field':'yagi_age', 'inp_type':'textarea'}, 
+			{'field':'buta_id', 'inp_type':'select', 'list':butaIdList, 'def':0}, 
+			{'field':'yagi_flg', 'inp_type':'textarea'}, 
+			{'field':'sort_no', 'inp_type':'textarea'}, 
+			{'field':'delete_flg', 'inp_type':'textarea'}, 
+
 			// CBBXE
 			
-//			{'field':'neko_group', 'inp_type':'select', 'list':nekoGroupList, 'def':2}, 
-//			{'field':'neko_date', 'inp_type':'date', 'def':today}, 
+//			{'field':'yagi_group', 'inp_type':'select', 'list':yagiGroupList, 'def':2}, 
+//			{'field':'yagi_date', 'inp_type':'date', 'def':today}, 
 //			{'field':'note', 'inp_type':'text', 'def':'TEST'}, 
 //			{'field':'sort_no', 'inp_type':'sort_no', 'def':1}, 
 		],
 		{
-			ajax_url:'neko/bulk_reg',
+			ajax_url:'yagi/bulk_reg',
 			csrf_token:csrf_token,
-			ta_placeholder:"Excelからコピーしたネコ名、ネコ数値を貼り付けてください。（タブ区切りテキスト）\n(例)\nネコ名A\t100\nネコ名B\t101\n",
+			ta_placeholder:"Excelからコピーしたヤギ名、ヤギ数値を貼り付けてください。（タブ区切りテキスト）\n(例)\nヤギ名A\t100\nヤギ名B\t101\n",
 		}
 	);
 	
@@ -134,23 +138,7 @@ function _getValidMethods(){
 				}
 				return err;
 			},
-			kj_neko_val1:(cbv, value)=>{
-				let err = '';
-				// 整数バリデーション
-				if(!cbv.isInteger(value)){
-					err = '整数で入力してください。';
-				}
-				return err;
-			},
-			kj_neko_val2:(cbv, value)=>{
-				let err = '';
-				// 整数バリデーション
-				if(!cbv.isInteger(value)){
-					err = '整数で入力してください。';
-				}
-				return err;
-			},
-			kj_neko_name:(cbv, value)=>{
+			kj_yagi_name:(cbv, value)=>{
 				let err = '';
 				// 文字数バリデーション
 				if(!cbv.isMaxLength(value, 255)){
@@ -161,16 +149,16 @@ function _getValidMethods(){
 			kj_img_fn:(cbv, value)=>{
 				let err = '';
 				// 文字数バリデーション
-				if(!cbv.isMaxLength(value, 255)){
-					err = '255文字以内で入力してくだい。';
+				if(!cbv.isMaxLength(value, 256)){
+					err = '256文字以内で入力してくだい。';
 				}
 				return err;
 			},
 			kj_note:(cbv, value)=>{
 				let err = '';
 				// 文字数バリデーション
-				if(!cbv.isMaxLength(value, 1000)){
-					err = '1000文字以内で入力してくだい。';
+				if(!cbv.isMaxLength(value, ex)){
+					err = 'ex文字以内で入力してくだい。';
 				}
 				return err;
 			},
@@ -190,6 +178,7 @@ function _getValidMethods(){
 				}
 				return err;
 			},
+
 			// CBBXE
 
 	}
@@ -372,6 +361,6 @@ function searchKjs(){
  */
 function calendarViewKShow(){
 	// カレンダービューを生成 
-	crudBase.calendarViewCreate('neko_date');
+	crudBase.calendarViewCreate('yagi_date');
 }
 

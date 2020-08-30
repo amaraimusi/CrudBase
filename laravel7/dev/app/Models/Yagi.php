@@ -4,21 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Neko extends Model
+class Yagi extends Model
 {
-	//protected $table = 'nekos'; // 紐づけるテーブル名
+	//protected $table = 'yagis'; // 紐づけるテーブル名
 	//protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。
 	
 	// ホワイトリスト（DB保存時にこのホワイトリストでフィルタリングが施される）
 	public $fillable = [
 			// CBBXS-2009
 			'id',
-			'neko_val',
-			'neko_name',
-			'neko_date',
-			'neko_group',
-			'neko_dt',
-			'neko_flg',
+			'yagi_age',
+			'yagi_name',
+			'yagi_date',
+			'buta_id',
+			'yagi_dt',
+			'yagi_flg',
 			'img_fn',
 			'note',
 			'sort_no',
@@ -27,6 +27,7 @@ class Neko extends Model
 			'ip_addr',
 			'created',
 			'modified',
+
 			// CBBXE
 	];
 	
@@ -88,7 +89,7 @@ class Neko extends Model
 		$order_option = 'asc';
 		if(!empty($sort_desc)) $order_option = 'desc';
 
-		$query = \DB::table('nekos as Neko');
+		$query = \DB::table('yagis as Yagi');
 		$query->selectRaw('SQL_CALC_FOUND_ROWS *');
 		if(!empty($conditions)) $query->whereRaw($conditions);
 		if(!empty($offset)) $query->offset($offset);
@@ -127,93 +128,72 @@ class Neko extends Model
 		$kjs = $this->cb->xssSanitizeW($kjs); // SQLサニタイズ
 		
 		if(!empty($kjs['kj_main'])){
-			$cnds[]="CONCAT( IFNULL(Neko.neko_name, '') ,IFNULL(Neko.note, '')) LIKE '%{$kjs['kj_main']}%'";
+			$cnds[]="CONCAT( IFNULL(Yagi.yagi_name, '') ,IFNULL(Yagi.note, '')) LIKE '%{$kjs['kj_main']}%'";
 		}
 		
 		// CBBXS-1003
-		
-		if(!empty($kjs['kj_id'])){
-			$cnds[]="Neko.id = {$kjs['kj_id']}";
+		if(!empty($kjs['kj_id']) || $kjs['kj_id'] ==='0' || $kjs['kj_id'] ===0){
+			$cnds[]="Yagi.id = {$kjs['kj_id']}";
 		}
-
-		if(!empty($kjs['kj_neko_val1']) || $kjs['kj_neko_val1'] === '0' || $kjs['kj_neko_val1'] === 0){
-			$cnds[]="Neko.neko_val >= {$kjs['kj_neko_val1']}";
+		if(!empty($kjs['kj_yagi_age1'])){
+			$cnds[]="Yagi.yagi_age >= {$kjs['kj_yagi_age1']}";
 		}
-		
-		if(!empty($kjs['kj_neko_val2']) || $kjs['kj_neko_val2'] === '0' || $kjs['kj_neko_val2'] === 0){
-			$cnds[]="Neko.neko_val <= {$kjs['kj_neko_val2']}";
+		if(!empty($kjs['kj_yagi_age2'])){
+			$cnds[]="Yagi.yagi_age <= {$kjs['kj_yagi_age2']}";
 		}
-		
-		if(!empty($kjs['kj_neko_name'])){
-			$cnds[]="Neko.neko_name LIKE '%{$kjs['kj_neko_name']}%'";
+		if(!empty($kjs['kj_yagi_name'])){
+			$cnds[]="Yagi.yagi_name LIKE '%{$kjs['kj_yagi_name']}%'";
 		}
-		
-		if(!empty($kjs['kj_neko_date1'])){
-			$cnds[]="Neko.neko_date >= '{$kjs['kj_neko_date1']}'";
+		if(!empty($kjs['kj_yagi_date1'])){
+			$cnds[]="Yagi.yagi_date >= '{$kjs['kj_yagi_date1']}'";
 		}
-		
-		if(!empty($kjs['kj_neko_date2'])){
-			$cnds[]="Neko.neko_date <= '{$kjs['kj_neko_date2']}'";
+		if(!empty($kjs['kj_yagi_date2'])){
+			$cnds[]="Yagi.yagi_date <= '{$kjs['kj_yagi_date2']}'";
 		}
-		
-		if(!empty($kjs['kj_neko_group'])){
-			$cnds[]="Neko.neko_group = {$kjs['kj_neko_group']}";
+		if(!empty($kjs['kj_buta_id']) || $kjs['kj_buta_id'] ==='0' || $kjs['kj_buta_id'] ===0){
+			$cnds[]="Yagi.buta_id = {$kjs['kj_buta_id']}";
 		}
-		
-		if(!empty($kjs['kj_neko_dt'])){
-			$kj_neko_dt = $kjs['kj_neko_dt'];
-			$dtInfo = $this->cb->crudBaseModel->guessDatetimeInfo($kj_neko_dt);
-			$cnds[]="DATE_FORMAT(Neko.neko_dt,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
+		if(!empty($kjs['kj_yagi_dt'])){
+			$kj_yagi_dt = $kjs['kj_yagi_dt'];
+			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_yagi_dt);
+			$cnds[]="DATE_FORMAT(Yagi.yagi_dt,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
 		}
-		
-		$kj_neko_flg = $kjs['kj_neko_flg'];
-		if(!empty($kjs['kj_neko_flg']) || $kjs['kj_neko_flg'] ==='0' || $kjs['kj_neko_flg'] ===0){
-			if($kjs['kj_neko_flg'] != -1){
-				$cnds[]="Neko.neko_flg = {$kjs['kj_neko_flg']}";
+		$kj_yagi_flg = $kjs['kj_yagi_flg'];
+		if(!empty($kjs['kj_yagi_flg']) || $kjs['kj_yagi_flg'] ==='0' || $kjs['kj_yagi_flg'] ===0){
+			if($kjs['kj_yagi_flg'] != -1){
+				$cnds[]="Yagi.yagi_flg = {$kjs['kj_yagi_flg']}";
 			}
 		}
-		
 		if(!empty($kjs['kj_img_fn'])){
-			$cnds[]="Neko.img_fn = '{$kjs['kj_img_fn']}'";
+			$cnds[]="Yagi.img_fn LIKE '%{$kjs['kj_img_fn']}%'";
 		}
-		
 		if(!empty($kjs['kj_note'])){
-			$cnds[]="Neko.note LIKE '%{$kjs['kj_note']}%'";
+			$cnds[]="Yagi.note LIKE '%{$kjs['kj_note']}%'";
 		}
-		
 		if(!empty($kjs['kj_sort_no']) || $kjs['kj_sort_no'] ==='0' || $kjs['kj_sort_no'] ===0){
-			$cnds[]="Neko.sort_no = {$kjs['kj_sort_no']}";
+			$cnds[]="Yagi.sort_no = {$kjs['kj_sort_no']}";
 		}
-		
 		$kj_delete_flg = $kjs['kj_delete_flg'];
 		if(!empty($kjs['kj_delete_flg']) || $kjs['kj_delete_flg'] ==='0' || $kjs['kj_delete_flg'] ===0){
 			if($kjs['kj_delete_flg'] != -1){
-				$cnds[]="Neko.delete_flg = {$kjs['kj_delete_flg']}";
+			   $cnds[]="Yagi.delete_flg = {$kjs['kj_delete_flg']}";
 			}
 		}
-		
 		if(!empty($kjs['kj_update_user'])){
-			$cnds[]="Neko.update_user = '{$kjs['kj_update_user']}'";
+			$cnds[]="Yagi.update_user LIKE '%{$kjs['kj_update_user']}%'";
 		}
-		
 		if(!empty($kjs['kj_ip_addr'])){
-			$cnds[]="Neko.ip_addr = '{$kjs['kj_ip_addr']}'";
+			$cnds[]="Yagi.ip_addr LIKE '%{$kjs['kj_ip_addr']}%'";
 		}
-		
-		if(!empty($kjs['kj_user_agent'])){
-			$cnds[]="Neko.user_agent LIKE '%{$kjs['kj_user_agent']}%'";
-		}
-		
 		if(!empty($kjs['kj_created'])){
 			$kj_created=$kjs['kj_created'].' 00:00:00';
-			$cnds[]="Neko.created >= '{$kj_created}'";
+			$cnds[]="Yagi.created >= '{$kj_created}'";
 		}
-		
 		if(!empty($kjs['kj_modified'])){
 			$kj_modified=$kjs['kj_modified'].' 00:00:00';
-			$cnds[]="Neko.modified >= '{$kj_modified}'";
+			$cnds[]="Yagi.modified >= '{$kj_modified}'";
 		}
-		
+
 		// CBBXE
 		
 		$cnd=null;
@@ -249,31 +229,33 @@ class Neko extends Model
 	
 	
 	// CBBXS-1021
-	
 	/**
-	 * 猫種別リストをDBから取得する
+	 * ブタIDリストをDBから取得する
 	 */
-	public function getNekoGroupList(){
-
-		// DBからデータを取得
-		$query = \DB::table('neko_groups')->
-		whereRaw("delete_flg = 0")->
-		orderBy('sort_no', 'ASC');
-		$data = $query->get();
-
-		// リスト変換
-		$list = [];
-		foreach($data as $ent){
-			$ent = (array)$ent;
-			$id = $ent['id'];
-			$name = $ent['neko_group_name'];
-			$list[$id] = $name;
+	public function getButaIdList(){
+		if(empty($this->Buta)){
+			App::uses('Buta','Model');
+			$this->Buta=ClassRegistry::init('Buta');
 		}
+		$fields=array('id','buta_name');//SELECT情報
+		$conditions=array("delete_flg = 0");//WHERE情報
+		$order=array('sort_no');//ORDER情報
+		$option=array(
+				'fields'=>$fields,
+				'conditions'=>$conditions,
+				'order'=>$order,
+		);
 
-		return $list;
+		$data=$this->Buta->find('all',$option); // DBから取得
 		
+		// 構造変換
+		if(!empty($data)){
+			$data = Hash::combine($data, '{n}.Buta.id','{n}.Buta.buta_name');
+		}
+		
+		return $data;
 	}
-	
+
 	// CBBXE
 	
 	
