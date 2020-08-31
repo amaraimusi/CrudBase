@@ -14,45 +14,45 @@ require_once 'PagenationForCake.php';
 class CrudBaseController {
 
 	///バージョン
-	var $version = "2.8.4";
+	public $version = "2.8.5";
 
 	///デフォルトの並び替え対象フィールド
-	var $defSortFeild='Neko.sort_no';
+	public $defSortFeild='sort_no';
 
 	///デフォルトソートタイプ
-	var $defSortType=0;//0:昇順 1:降順
+	public $defSortType=0;//0:昇順 1:降順
 	
-	public $userInfo = array(); // ユーザー情報
+	public $userInfo = []; // ユーザー情報
 
 	///検索条件定義（要,オーバーライド）
-	public $kensakuJoken=array();
+	public $kensakuJoken=[];
 
 	///検索条件のバリデーション（要,オーバーライド）
-	public $kjs_validate = array();
+	public $kjs_validate = [];
 
 	///フィールドデータ（要、オーバーライド）
-	public $fieldData = array();
+	public $fieldData = [];
 
 	///一覧列情報(ソート機能付	 $fieldDataの簡易版）
-	public $table_fields=array();
+	public $table_fields=[];
 
 	///編集エンティティ定義（要,オーバーライド）
-	public $entity_info=array();
+	public $entity_info=[];
 
 	///編集用バリデーション（要,オーバーライド）
-	public $edit_validate = array();
+	public $edit_validate = [];
 
 	///巨大データ判定行数
 	public $big_data_limit=501;
 
 	//巨大データフィールド
-	public $big_data_fields = array();
+	public $big_data_fields = [];
 	
 	// 当ページバージョン（各ページでオーバーライドすること)
 	public $this_page_version = '1.0';
 	
 	// バージョン情報
-	public $verInfo = array();
+	public $verInfo = [];
 	
 	// -- ▽ 内部処理用
 	private $m_kj_keys;//検索条件キーリスト
@@ -105,7 +105,6 @@ class CrudBaseController {
 		$crudBaseData['fields'] = array_keys($crudBaseData['fieldData']['def']); // フィールドリスト
 		
 		$this->kensakuJoken = $crudBaseData['kensakuJoken']; // 検索条件情報
-		//$this->kjs_validate = $crudBaseData['kjs_validate']; // 検索条件バリデーション■■■□□□■■■□□□
 		$this->fieldData = $crudBaseData['fieldData']; // フィールドデータ
 		$this->MainModel = $clientModel;
 		
@@ -122,12 +121,15 @@ class CrudBaseController {
 				'crudBaseData' => $crudBaseData,
 		]); 
 		
+		$this->defSortFeild = $model_name . '.' . $this->defSortFeild; // デフォルト順番フィールドにモデル名を付加
+		
 		$this->main_model_name = $model_name;
 		$this->main_model_name_s = $model_name_s;
 		$this->crudBaseData = $crudBaseData;
 		
 		$this->crudBaseData['paths'] = $this->getPaths(); // パス情報
 		$this->crudBaseData['csrf_token'] = $this->strategy->getCsrfToken(); // CSRFトークン ※Ajaxのセキュリティ 
+		
 		
 	}
 	
@@ -242,8 +244,6 @@ class CrudBaseController {
 		if(!empty($request['search'])){
 			//ページネーションパラメータを取得
 			$pages = $this->getPageParamForSubmit($kjs,$searchPosts);
-			
-
 		}else{
 			//ページネーション用パラメータを取得
 			$overData['row_limit']=$kjs['row_limit'];
@@ -310,6 +310,7 @@ class CrudBaseController {
 		$this->crudBaseData['act_flg'] = $act_flg; // アクティブフラグ	null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
 		$this->crudBaseData['header'] = 'header'; //  header.ctpの埋め込み
 		$this->crudBaseData['this_page_version'] = $this->this_page_version; // 当ページのバージョン
+
 
 		return $this->crudBaseData;
 	}

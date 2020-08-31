@@ -228,32 +228,29 @@ class Yagi extends Model
 	}
 	
 	
-	// CBBXS-1021
+	// CBBXS-2021
 	/**
 	 * ブタIDリストをDBから取得する
 	 */
 	public function getButaIdList(){
-		if(empty($this->Buta)){
-			App::uses('Buta','Model');
-			$this->Buta=ClassRegistry::init('Buta');
-		}
-		$fields=array('id','buta_name');//SELECT情報
-		$conditions=array("delete_flg = 0");//WHERE情報
-		$order=array('sort_no');//ORDER情報
-		$option=array(
-				'fields'=>$fields,
-				'conditions'=>$conditions,
-				'order'=>$order,
-		);
 
-		$data=$this->Buta->find('all',$option); // DBから取得
-		
-		// 構造変換
-		if(!empty($data)){
-			$data = Hash::combine($data, '{n}.Buta.id','{n}.Buta.buta_name');
+		// DBからデータを取得
+		$query = DB::table('buta_id')->
+		whereRaw("delete_flg = 0")->
+		orderBy('sort_no', 'ASC');
+		$data = $query->get();
+
+		// リスト変換
+		$list = [];
+		foreach($data as $ent){
+			$ent = (array)$ent;
+			$id = $ent['id'];
+			$name = $ent['buta_name'];
+			$list[$id] = $name;
 		}
+
+		return $list;
 		
-		return $data;
 	}
 
 	// CBBXE

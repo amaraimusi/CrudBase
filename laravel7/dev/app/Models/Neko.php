@@ -248,7 +248,7 @@ class Neko extends Model
 	}
 	
 	
-	// CBBXS-1021
+	// CBBXS-2021
 	
 	/**
 	 * 猫種別リストをDBから取得する
