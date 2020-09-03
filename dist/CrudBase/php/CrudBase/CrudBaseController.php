@@ -675,7 +675,8 @@ class CrudBaseController {
 	 */
 	public function getUserInfo(){
 
-		$userInfo = $this->strategy->getUserInfo();
+		$userInfo = $this->crudBaseModel->getUserInfo();
+		debug($userInfo);//■■■□□□■■■□□□)
 
 		return $userInfo;
 	}

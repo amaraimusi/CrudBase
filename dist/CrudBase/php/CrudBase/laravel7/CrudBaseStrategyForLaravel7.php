@@ -121,16 +121,18 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 			$user_id = \Auth::id(); // ユーザーID（番号）
 			$user_name = \Auth::user()->name; // ユーザー名
 			$user_email = \Auth::user()->email; // メールアドレス
+			$role = \Auth::user()->role; // 権限
 			
 			$userInfo['update_user'] = $user_name;
 			$userInfo['user_name'] = $user_name;
 			$userInfo['user_id'] = $user_id;
 			$userInfo['user_email'] = $user_email;
+			$userInfo['role'] = $role;
 			
-			// 		// 権限が空であるならオペレータ扱いにする
-			// 		if(empty($userInfo['role'])){
-			// 			$userInfo['role'] = 'oparator';
-			// 		}
+			// 権限が空であるならオペレータ扱いにする
+			if(empty($userInfo['role'])){
+				$userInfo['role'] = 'oparator';
+			}
 			
 		}
 		

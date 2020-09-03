@@ -212,6 +212,7 @@ class YagiController
 				['name'=>'kj_yagi_age1', 'def'=>null, 'field'=>'yagi_age'],
 				['name'=>'kj_yagi_age2', 'def'=>null, 'field'=>'yagi_age'],
 				['name'=>'kj_yagi_name', 'def'=>null],
+				['name'=>'kj_yagi_date_ym', 'def'=>null],
 				['name'=>'kj_yagi_date1', 'def'=>null, 'field'=>'yagi_date'],
 				['name'=>'kj_yagi_date2', 'def'=>null, 'field'=>'yagi_date'],
 				['name'=>'kj_buta_id', 'def'=>null],

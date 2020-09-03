@@ -66,7 +66,7 @@ function init(){
 			
 	};
 	
-	// CBBXS-1023
+	// CBBXS-2023
 	// ネコグループリストJSON
 	let nekoGroupList = crudBaseData.masters.nekoGroupList;
 	disFilData['neko_group'] ={'fil_type':'select','option':{'list':nekoGroupList}};

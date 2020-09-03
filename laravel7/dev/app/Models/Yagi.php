@@ -235,7 +235,7 @@ class Yagi extends Model
 	public function getButaIdList(){
 
 		// DBからデータを取得
-		$query = DB::table('buta_id')->
+		$query = \DB::table('butas')->
 		whereRaw("delete_flg = 0")->
 		orderBy('sort_no', 'ASC');
 		$data = $query->get();
