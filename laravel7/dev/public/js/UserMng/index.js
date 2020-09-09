@@ -1,11 +1,11 @@
 
-var yagiuta = 128;
+var user_mnguta = 128;
 
 
 jQuery(()=> {
 	init();//初期化
 	
-	$('#yagi_tbl').show();// 高速表示のためテーブルは最後に表示する
+	$('#user_mng_tbl').show();// 高速表示のためテーブルは最後に表示する
 	
 });
 
@@ -13,7 +13,7 @@ jQuery(()=> {
 var crudBase;//AjaxによるCRUD
 
 /**
- *  ヤギ画面の初期化
+ *  ユーザー管理画面の初期化
  * 
   * ◇主に以下の処理を行う。
  * - 日付系の検索入力フォームにJQueryカレンダーを組み込む
@@ -40,7 +40,7 @@ function init(){
 	// 検索条件バリデーション情報のセッター
 	let validMethods =_getValidMethods();
 	crudBase.setKjsValidationForJq(
-			'#yagiIndexForm',
+			'#user_mngIndexForm',
 			crudBaseData,
 			validMethods,
 	);
@@ -51,10 +51,6 @@ function init(){
 	// 表示フィルターデータの定義とセット
 	var disFilData = {
 			// CBBXS-1008
-			'yagi_flg':{
-				'fil_type':'flg',
-				'option':{'list':['OFF','ON']}
-			},
 			'delete_flg':{
 				'fil_type':'delete_flg',
 			},
@@ -64,9 +60,9 @@ function init(){
 	};
 	
 	// CBBXS-2023
-	// ブタIDリストJSON
-	let butaIdList = crudBaseData.masters.butaIdList;
-	disFilData['buta_id'] ={'fil_type':'select','option':{'list':butaIdList}};
+	// 権限リストJSON
+	let roleList = crudBaseData.masters.roleList;
+	disFilData['role'] ={'fil_type':'select','option':{'list':roleList}};
 
 	// CBBXE
 
@@ -99,23 +95,21 @@ function init(){
 		[
 			// CBBXS-2010
 			{'field':'id', 'inp_type':'textarea'}, 
-			{'field':'yagi_age', 'inp_type':'textarea'}, 
-			{'field':'buta_id', 'inp_type':'select', 'list':butaIdList, 'def':0}, 
-			{'field':'yagi_flg', 'inp_type':'textarea'}, 
+			{'field':'role', 'inp_type':'select', 'list':roleList, 'def':0}, 
 			{'field':'sort_no', 'inp_type':'textarea'}, 
 			{'field':'delete_flg', 'inp_type':'textarea'}, 
 
 			// CBBXE
 			
-//			{'field':'yagi_group', 'inp_type':'select', 'list':yagiGroupList, 'def':2}, 
-//			{'field':'yagi_date', 'inp_type':'date', 'def':today}, 
+//			{'field':'user_mng_group', 'inp_type':'select', 'list':user_mngGroupList, 'def':2}, 
+//			{'field':'user_mng_date', 'inp_type':'date', 'def':today}, 
 //			{'field':'note', 'inp_type':'text', 'def':'TEST'}, 
 //			{'field':'sort_no', 'inp_type':'sort_no', 'def':1}, 
 		],
 		{
-			ajax_url:'yagi/bulk_reg',
+			ajax_url:'user_mng/bulk_reg',
 			csrf_token:csrf_token,
-			ta_placeholder:"Excelからコピーしたヤギ名、ヤギ数値を貼り付けてください。（タブ区切りテキスト）\n(例)\nヤギ名A\t100\nヤギ名B\t101\n",
+			ta_placeholder:"Excelからコピーしたユーザー管理名、ユーザー管理数値を貼り付けてください。（タブ区切りテキスト）\n(例)\nユーザー管理名A\t100\nユーザー管理名B\t101\n",
 		}
 	);
 	
@@ -137,7 +131,7 @@ function _getValidMethods(){
 				}
 				return err;
 			},
-			kj_yagi_name:(cbv, value)=>{
+			kj_name:(cbv, value)=>{
 				let err = '';
 				// 文字数バリデーション
 				if(!cbv.isMaxLength(value, 255)){
@@ -145,35 +139,11 @@ function _getValidMethods(){
 				}
 				return err;
 			},
-			kj_img_fn:(cbv, value)=>{
+			kj_email:(cbv, value)=>{
 				let err = '';
 				// 文字数バリデーション
-				if(!cbv.isMaxLength(value, 256)){
-					err = '256文字以内で入力してくだい。';
-				}
-				return err;
-			},
-			kj_note:(cbv, value)=>{
-				let err = '';
-				// 文字数バリデーション
-				if(!cbv.isMaxLength(value, ex)){
-					err = 'ex文字以内で入力してくだい。';
-				}
-				return err;
-			},
-			kj_update_user:(cbv, value)=>{
-				let err = '';
-				// 文字数バリデーション
-				if(!cbv.isMaxLength(value, 50)){
-					err = '50文字以内で入力してくだい。';
-				}
-				return err;
-			},
-			kj_ip_addr:(cbv, value)=>{
-				let err = '';
-				// 文字数バリデーション
-				if(!cbv.isMaxLength(value, 40)){
-					err = '40文字以内で入力してくだい。';
+				if(!cbv.isMaxLength(value, 255)){
+					err = '255文字以内で入力してくだい。';
 				}
 				return err;
 			},
@@ -360,6 +330,6 @@ function searchKjs(){
  */
 function calendarViewKShow(){
 	// カレンダービューを生成 
-	crudBase.calendarViewCreate('yagi_date');
+	crudBase.calendarViewCreate('user_mng_date');
 }
 

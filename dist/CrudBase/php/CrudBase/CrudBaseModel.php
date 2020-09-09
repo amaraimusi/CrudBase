@@ -3,8 +3,8 @@ require_once 'HashCustom.php';
 /**
  * CrudBaseのロジッククラス
  * 
- * @version 3.0.0
- * @date 2016-1-21 | 2020-6-16
+ * @version 3.0.1
+ * @date 2016-1-21 | 2020-9-5
  * @history
  * 2020-6-16 CrudBaseからCrudBaseModeに名称変更。CakePHPへの依存をはずす。
  * 2018-10-8 v2.2.0 アップロードファイル関連の大幅修正
@@ -54,13 +54,15 @@ class CrudBaseModel{
 	 * 許可権限リストを作成(扱える下位権限のリスト）
 	 * @return array 許可権限リスト
 	 */
-	private function makePermRoles(){
+	public function makePermRoles(){
 		
 		$userInfo = $this->getUserInfo(); // 現在のログインユーザー情報を取得する
 		$authData = $this->getAuthorityData();// 権限データを取得する
 		
+		if(empty($userInfo['authority'])) return [];
+		
 		// 許可権限リストを権限データをフィルタリングして取得する
-		$permRoles = array(); // 許可権限リスト
+		$permRoles = []; // 許可権限リスト
 		$role = $userInfo['authority']['name']; // 権限名
 		if($role == 'master'){
 			$permRoles = array_keys($authData);
@@ -88,7 +90,7 @@ class CrudBaseModel{
 		// 権限データを取得する
 		$authorityData = $this->getAuthorityData();
 		
-		$authority = array();
+		$authority = [];
 		if(!empty($authorityData[$role])){
 			$authority = $authorityData[$role];
 		}
@@ -101,15 +103,19 @@ class CrudBaseModel{
 	 * 権限リストを取得する
 	 * @return array 権限リスト
 	 */
-	private function getRoleList(){
+	public function getRoleList(){
 		
-		$role = $this->userInfo['authority']['name']; // 現在の権限を取得
+		$userInfo = $this->getUserInfo();
+
+		if(empty($userInfo['authority'])) return [];
+		
+		$role = $userInfo['authority']['name']; // 現在の権限を取得
 		$data = $this->getAuthorityData();
 		$roleList = array(); // 権限リスト
 		if($role == 'master'){
-			$roleList = Hash::combine($data, '{s}.name','{s}.wamei');
+			$roleList = HashCustom::combine($data, '{s}.name','{s}.wamei');
 		}else{
-			$level = $this->userInfo['authority']['level'];
+			$level = $userInfo['authority']['level'];
 			foreach($data as $ent){
 				if($level > $ent['level']){
 					$name = $ent['name'];
@@ -128,34 +134,34 @@ class CrudBaseModel{
 	 * @return array 権限データ
 	 */
 	private function getAuthorityData(){
-		$data=array(
-			'master'=>array(
+		$data=[
+			'master'=>[
 				'name'=>'master',
 				'wamei'=>'マスター',
 				'level'=>41,
-			),
-			'developer'=>array(
+			],
+			'developer'=>[
 				'name'=>'developer',
 				'wamei'=>'開発者',
 				'level'=>40,
-			),
-			'admin'=>array(
+			],
+			'admin'=>[
 				'name'=>'admin',
 				'wamei'=>'管理者',
 				'level'=>30,
-			),
-			'client'=>array(
+			],
+			'client'=>[
 				'name'=>'client',
 				'wamei'=>'クライアント',
 				'level'=>20,
-			),
-			'oparator'=>array(
+			],
+			'oparator'=>[
 				'name'=>'oparator',
 				'wamei'=>'オペレータ',
 				'level'=>10,
-			),
+			],
 			
-		);
+		];
 		
 		return $data;
 	}

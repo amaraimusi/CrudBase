@@ -4,36 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Neko extends Model
+class UserMng extends Model
 {
-	protected $table = 'nekos'; // 紐づけるテーブル名
+	protected $table = 'users'; // 紐づけるテーブル名
 	//protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。
 	
 	// ホワイトリスト（DB保存時にこのホワイトリストでフィルタリングが施される）
 	public $fillable = [
 			// CBBXS-2009
 			'id',
-			'neko_val',
-			'neko_name',
-			'neko_date',
-			'neko_group',
-			'neko_dt',
-			'neko_flg',
-			'img_fn',
-			'note',
+			'name',
+			'email',
+			'role',
 			'sort_no',
 			'delete_flg',
-			'update_user',
-			'ip_addr',
-			'created',
-			'modified',
+
 			// CBBXE
 	];
 	
 	// CBBXS-2012
-	const CREATED_AT = 'created';
-	const UPDATED_AT = 'modified';
-	
+
 	// CBBXE
 	
 	//public $timestamps = false; // タイムスタンプ。 trueならcreated_atフィールド、updated_atフィールドに適用される。（それ以外のフィールドを設定で指定可）
@@ -95,7 +85,7 @@ class Neko extends Model
 		
 		$str_fields = implode(",", $fields);
 
-		$query = \DB::table('nekos as Neko');
+		$query = \DB::table('users as UserMng');
 		$query->selectRaw('SQL_CALC_FOUND_ROWS ' . $str_fields);
 		if(!empty($conditions)) $query->whereRaw($conditions);
 		if(!empty($offset)) $query->offset($offset);
@@ -134,93 +124,38 @@ class Neko extends Model
 		$kjs = $this->cb->xssSanitizeW($kjs); // SQLサニタイズ
 		
 		if(!empty($kjs['kj_main'])){
-			$cnds[]="CONCAT( IFNULL(Neko.neko_name, '') ,IFNULL(Neko.note, '')) LIKE '%{$kjs['kj_main']}%'";
+			$cnds[]="CONCAT( IFNULL(UserMng.user_mng_name, '') ,IFNULL(UserMng.note, '')) LIKE '%{$kjs['kj_main']}%'";
 		}
 		
 		// CBBXS-1003
-		
-		if(!empty($kjs['kj_id'])){
-			$cnds[]="Neko.id = {$kjs['kj_id']}";
+		if(!empty($kjs['kj_id']) || $kjs['kj_id'] ==='0' || $kjs['kj_id'] ===0){
+			$cnds[]="UserMng.id = {$kjs['kj_id']}";
 		}
-
-		if(!empty($kjs['kj_neko_val1']) || $kjs['kj_neko_val1'] === '0' || $kjs['kj_neko_val1'] === 0){
-			$cnds[]="Neko.neko_val >= {$kjs['kj_neko_val1']}";
+		if(!empty($kjs['kj_name'])){
+			$cnds[]="UserMng.name LIKE '%{$kjs['kj_name']}%'";
 		}
-		
-		if(!empty($kjs['kj_neko_val2']) || $kjs['kj_neko_val2'] === '0' || $kjs['kj_neko_val2'] === 0){
-			$cnds[]="Neko.neko_val <= {$kjs['kj_neko_val2']}";
+		if(!empty($kjs['kj_email'])){
+			$cnds[]="UserMng.email LIKE '%{$kjs['kj_email']}%'";
 		}
-		
-		if(!empty($kjs['kj_neko_name'])){
-			$cnds[]="Neko.neko_name LIKE '%{$kjs['kj_neko_name']}%'";
+		if(!empty($kjs['kj_role']) || $kjs['kj_role'] ==='0' || $kjs['kj_role'] ===0){
+			$cnds[]="UserMng.role = {$kjs['kj_role']}";
 		}
-		
-		if(!empty($kjs['kj_neko_date1'])){
-			$cnds[]="Neko.neko_date >= '{$kjs['kj_neko_date1']}'";
+		if(!empty($kjs['permRoles'])){
+			$perm_roles_c = "'" . implode("','", $kjs['permRoles']) . "'";
+			$cnds[]="UserMng.role IN({$perm_roles_c})";
+		}else{
+			$cnds[]="UserMng.role ='empty'";
 		}
-		
-		if(!empty($kjs['kj_neko_date2'])){
-			$cnds[]="Neko.neko_date <= '{$kjs['kj_neko_date2']}'";
-		}
-		
-		if(!empty($kjs['kj_neko_group'])){
-			$cnds[]="Neko.neko_group = {$kjs['kj_neko_group']}";
-		}
-		
-		if(!empty($kjs['kj_neko_dt'])){
-			$kj_neko_dt = $kjs['kj_neko_dt'];
-			$dtInfo = $this->cb->crudBaseModel->guessDatetimeInfo($kj_neko_dt);
-			$cnds[]="DATE_FORMAT(Neko.neko_dt,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
-		}
-		
-		$kj_neko_flg = $kjs['kj_neko_flg'];
-		if(!empty($kjs['kj_neko_flg']) || $kjs['kj_neko_flg'] ==='0' || $kjs['kj_neko_flg'] ===0){
-			if($kjs['kj_neko_flg'] != -1){
-				$cnds[]="Neko.neko_flg = {$kjs['kj_neko_flg']}";
-			}
-		}
-		
-		if(!empty($kjs['kj_img_fn'])){
-			$cnds[]="Neko.img_fn = '{$kjs['kj_img_fn']}'";
-		}
-		
-		if(!empty($kjs['kj_note'])){
-			$cnds[]="Neko.note LIKE '%{$kjs['kj_note']}%'";
-		}
-		
 		if(!empty($kjs['kj_sort_no']) || $kjs['kj_sort_no'] ==='0' || $kjs['kj_sort_no'] ===0){
-			$cnds[]="Neko.sort_no = {$kjs['kj_sort_no']}";
+			$cnds[]="UserMng.sort_no = {$kjs['kj_sort_no']}";
 		}
-		
 		$kj_delete_flg = $kjs['kj_delete_flg'];
 		if(!empty($kjs['kj_delete_flg']) || $kjs['kj_delete_flg'] ==='0' || $kjs['kj_delete_flg'] ===0){
 			if($kjs['kj_delete_flg'] != -1){
-				$cnds[]="Neko.delete_flg = {$kjs['kj_delete_flg']}";
+			   $cnds[]="UserMng.delete_flg = {$kjs['kj_delete_flg']}";
 			}
 		}
-		
-		if(!empty($kjs['kj_update_user'])){
-			$cnds[]="Neko.update_user = '{$kjs['kj_update_user']}'";
-		}
-		
-		if(!empty($kjs['kj_ip_addr'])){
-			$cnds[]="Neko.ip_addr = '{$kjs['kj_ip_addr']}'";
-		}
-		
-		if(!empty($kjs['kj_user_agent'])){
-			$cnds[]="Neko.user_agent LIKE '%{$kjs['kj_user_agent']}%'";
-		}
-		
-		if(!empty($kjs['kj_created'])){
-			$kj_created=$kjs['kj_created'].' 00:00:00';
-			$cnds[]="Neko.created >= '{$kj_created}'";
-		}
-		
-		if(!empty($kjs['kj_modified'])){
-			$kj_modified=$kjs['kj_modified'].' 00:00:00';
-			$cnds[]="Neko.modified >= '{$kj_modified}'";
-		}
-		
+
 		// CBBXE
 		
 		$cnd=null;
@@ -256,14 +191,13 @@ class Neko extends Model
 	
 	
 	// CBBXS-2021
-	
 	/**
-	 * 猫種別リストをDBから取得する
+	 * 権限リストをDBから取得する
 	 */
-	public function getNekoGroupList(){
+	public function getRoleList(){
 
 		// DBからデータを取得
-		$query = \DB::table('neko_groups')->
+		$query = \DB::table('roles')->
 		whereRaw("delete_flg = 0")->
 		orderBy('sort_no', 'ASC');
 		$data = $query->get();
@@ -273,14 +207,14 @@ class Neko extends Model
 		foreach($data as $ent){
 			$ent = (array)$ent;
 			$id = $ent['id'];
-			$name = $ent['neko_group_name'];
+			$name = $ent['role_name'];
 			$list[$id] = $name;
 		}
 
 		return $list;
 		
 	}
-	
+
 	// CBBXE
 	
 	

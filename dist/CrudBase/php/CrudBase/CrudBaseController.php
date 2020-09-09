@@ -95,8 +95,8 @@ class CrudBaseController {
 		$crudBaseData['main_model_name'] = $model_name;
 		$crudBaseData['main_model_name_s'] = $model_name_s;
 		$crudBaseData['model_name_s'] = $model_name_s;
-		$crudBaseData['tbl_name'] = $model_name_s . 's';
-
+		
+		if (empty($crudBaseData['tbl_name'])) $crudBaseData['tbl_name'] = $model_name_s . 's';;
 		if (empty($crudBaseData['func_csv_export'])) $crudBaseData['func_csv_export'] = 1;
 		if (empty($crudBaseData['sql_dump_flg'])) $crudBaseData['sql_dump_flg'] = true;
 		if (empty($crudBaseData['func_file_upload'])) $crudBaseData['func_file_upload'] = 1;
@@ -452,7 +452,7 @@ class CrudBaseController {
 		$fieldData=$this->strategy->sessionRead($fd_ses_key);
 		
 
-		$table_fields=array();//一覧列情報
+		$table_fields=[];//一覧列情報
 
 		//フィールドデータが空である場合
 		if(empty($fieldData)){
@@ -676,7 +676,6 @@ class CrudBaseController {
 	public function getUserInfo(){
 
 		$userInfo = $this->crudBaseModel->getUserInfo();
-		debug($userInfo);//■■■□□□■■■□□□)
 
 		return $userInfo;
 	}
@@ -2027,6 +2026,22 @@ class CrudBaseController {
 	 */
 	public function getStrategy(){
 		return $this->strategy;
+	}
+	
+	/**
+	 * 権限リストを取得する
+	 * @return [] 権限リスト
+	 */
+	public function getRoleList(){
+		return $this->crudBaseModel->getRoleList();
+	}
+	
+	/**
+	 * 許可権限リストを作成(扱える下位権限のリスト）
+	 * @return array 許可権限リスト
+	 */
+	public function makePermRoles(){
+		return $this->crudBaseModel->makePermRoles();
 	}
 	
 

@@ -30,6 +30,15 @@ Route::get('/', function () {
 	Route::get('neko/csv_download', 'NekoController@csv_download');
 	Route::post('neko/bulk_reg', 'NekoController@bulk_reg');
 	
+	// UserMng
+	Route::get('user_mng', 'UserMngController@index');
+	Route::post('user_mng/ajax_reg', 'UserMngController@ajax_reg');
+	Route::post('user_mng/ajax_delete', 'UserMngController@ajax_delete');
+	Route::post('user_mng/auto_save', 'UserMngController@auto_save');
+	Route::post('user_mng/ajax_pwms', 'UserMngController@ajax_pwms');
+	Route::get('user_mng/csv_download', 'UserMngController@csv_download');
+	Route::post('user_mng/bulk_reg', 'UserMngController@bulk_reg');
+	
 	// Yagi
 	Route::get('yagi', 'YagiController@index');
 	Route::post('yagi/ajax_reg', 'YagiController@ajax_reg');

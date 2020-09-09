@@ -190,7 +190,9 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 	 */
 	public function saveEntity(&$ent, &$option=[]){
 		
+
 		$ent = array_intersect_key($ent, array_flip($this->whiteList)); // ホワイトリストによるフィルタリング
+		
 		
 		if(empty($ent['id'])){
 			
@@ -198,7 +200,7 @@ class CrudBaseStrategyForLaravel7  implements ICrudBaseStrategy{
 			$id = $this->model->insertGetId($ent); // INSERT
 			$ent['id'] = $id;
 		}else{
-			
+
 			// ▽ idが空でなければUPDATEする。
 			$this->model->updateOrCreate(['id'=>$ent['id']], $ent); // UPDATE
 		}
