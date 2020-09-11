@@ -48,13 +48,6 @@ Route::get('/', function () {
 	Route::get('yagi/csv_download', 'YagiController@csv_download');
 	Route::post('yagi/bulk_reg', 'YagiController@bulk_reg');
 	
-	// ■■■□□□■■■□□□
-// Auth::routes();
-
-// Route::get('/home', 'HomeController@index')->name('home');
-
-// Auth::routes();
-
-// Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
+	Route::get('/home', 'HomeController@index')->name('welcome');
+	//Route::get('/home', 'HomeController@neko')->name('neko');
+	Auth::routes();

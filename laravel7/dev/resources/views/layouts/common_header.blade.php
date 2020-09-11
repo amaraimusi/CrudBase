@@ -1,4 +1,5 @@
 
+
 <table style="width:100%;margin-top:3px;margin-bottom:3px;"><tr>
 <td>
 	<!-- ログインメニュー -->
@@ -10,26 +11,20 @@
 			$authority_wamei = $crudBaseData['userInfo']['authority']['wamei'];
 		}
 	?>
-	
-	@if (Route::has('login'))
-	<div class="top-right links">
-		@auth
-			<a href="{{ url('/home') }}" class="btn btn-info btn-sm">Home</a>
-			@if ($auth_level >= 30)
-				<a href="user_mng" class="btn btn-info btn-sm">ユーザー管理画面</a>
-			@endif
-		@else
-			<a href="{{ route('login') }}" class="btn btn-info btn-sm">ログイン</a>
+	@auth
+		@if ($auth_level >= 30)
+			<a href="user_mng" class="btn btn-info btn-sm">ユーザー管理画面</a>
+		@endif
+		
+		@if (Route::has('register'))
+			<!-- 未使用 -->
+			<a href="{{ route('register') }}" class="btn btn-info btn-sm">登録</a>
+		@endif
+	@else
+	<a href="{{ url('/home') }}" class="btn btn-info btn-sm">Home</a>
+	<a href="{{ route('login') }}" class="btn btn-info btn-sm">ログイン</a>
+	@endauth
 
-			@if ($auth_level >= 30)
-				@if (Route::has('register'))
-					<!-- 未使用 -->
-					<a href="{{ route('register') }}" class="btn btn-info btn-sm">登録</a>
-				@endif
-			@endif
-		@endauth
-	</div>
-	@endif
 </td>
 <td style="text-align:right">
 	@guest

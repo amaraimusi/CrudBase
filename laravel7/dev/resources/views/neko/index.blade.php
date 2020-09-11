@@ -18,7 +18,6 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	<title>ネコ管理画面</title>
 	
 	<script src="{{ asset('/js/app.js') }}" defer></script>
-	<script src="{{ asset('/js/test.js') }}" defer></script>
 	<script src="{{ $crud_base_js . $ver_str }}" defer></script>
 	<script src="{{ asset('/js/Neko/index.js')  . $ver_str }}" defer></script>
 	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
