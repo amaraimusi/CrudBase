@@ -41,6 +41,7 @@
 		</form>
 	</div>
 	@endguest
+	<a href="static_page/help" class="btn btn-info btn-sm" target="_blank">使い方</a>
 </td>
 </tr></table>
 

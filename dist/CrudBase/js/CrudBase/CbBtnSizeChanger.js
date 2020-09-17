@@ -1,7 +1,7 @@
 /**
  * ボタンサイズ変更【CrudBase用】
- * @version 1.2.1
- * @date 2018-10-27 | 2020-8-13
+ * @version 1.2.2
+ * @date 2018-10-27 | 2020-9-17
  */
 class CbBtnSizeChanger{
 	
@@ -19,6 +19,7 @@ class CbBtnSizeChanger{
 		let p_cnfData = {};
 		
 		this.kj_delete_flg = crudBaseData.kjs.kj_delete_flg; // 削除フラグ -1:すべて, 0:有効, 1:削除(無効）
+		this.kj_delete_flg =  this.kj_delete_flg * 1; // 数値変換
 		if(this._empty(this.kj_delete_flg)) this.kj_delete_flg = 0;
 		
 		// ローカルストレージキーを作成
@@ -83,9 +84,9 @@ class CbBtnSizeChanger{
 			{'slt':'.row_edit_btn','wamei':'編集ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
 			{'slt':'.row_copy_btn','wamei':'複製ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
 			{'slt':'.row_delete_btn','wamei':'削除ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
-			{'slt':'.row_eliminate_btn','wamei':'抹消ボタン','visible':false ,'def_size':'btn-sm','size':'btn-sm'},
+			{'slt':'.row_eliminate_btn','wamei':'抹消ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
 			{'slt':'.row_exc_btn','wamei':'行入替ボタン(↑↓ボタン)','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
-			{'slt':'.row_enabled_btn','wamei':'有効ボタン','visible':false ,'def_size':'btn-sm','size':'btn-sm'},
+			{'slt':'.row_enabled_btn','wamei':'有効ボタン','visible':true ,'def_size':'btn-sm','size':'btn-sm'},
 			
 		];
 		
@@ -392,7 +393,7 @@ class CbBtnSizeChanger{
 
 		let visible = cnfEnt.visible;
 		let code = cnfEnt.code;
-	
+
 		let row_exc_cond_sort = this._judgeRowExcCondSort(); // 「順番」関連の条件による表示判定
 		
 		jQuery(cnfEnt.slt).each((i,btn) => {
@@ -454,7 +455,6 @@ class CbBtnSizeChanger{
 		//	delete_flg==0	設定ON	⇒非表示
 		//	delete_flg==-1	設定ON	⇒表示
 		//	delete_flg==1	設定ON	⇒表示
-		
 		if(visible == false){
 			btn.hide();
 		}else{

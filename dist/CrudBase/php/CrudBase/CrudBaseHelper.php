@@ -8,8 +8,8 @@
  * 検索条件入力フォームや、一覧テーブルのプロパティのラッパーを提供する
  * 2.0.0よりCakeからの依存から離脱
  * 
- * @version 2.0.1
- * @since 2016-7-27 | 2020-8-3
+ * @version 2.0.2
+ * @since 2016-7-27 | 2020-9-17
  * @author k-uehara
  * @license MIT
  */
@@ -1962,7 +1962,6 @@ class CrudBaseHelper {
 							</td>
 						</tr></tbody></table>
 						<div id='clm_cbs'></div>
-						<a href='#help_csh' class='livipage btn btn-info btn-sm' title='ヘルプ'>?</a>
 					</div>
 					<hr class='hr_purple'>
 				</div>

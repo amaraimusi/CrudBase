@@ -556,6 +556,8 @@ foreach($data as $i=>&$ent){
 </div><br>
 
 
+@include('layouts.common_footer')
+
 
 </div></body>
 </html>
