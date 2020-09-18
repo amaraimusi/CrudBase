@@ -1066,7 +1066,7 @@ class CrudBase{
 	 * - wp_nonce  :WPノンス	WordPressのトークン的なもの（なくても動くがセキュリティが下がる）
 	 * 
 	 */
-	editReg(beforeCallBack,afterCallBack,option){
+	editReg(beforeCallBack, afterCallBack, option){
 		// バリデーション
 		var res = this._validationCheckForm('edit');
 		if(res == false) return;
@@ -1166,7 +1166,8 @@ class CrudBase{
 
 				// TR要素にエンティティの値をセットする
 				this._setEntityToEditTr(ent,tr);
-
+				
+				this._offNoteDetail(tr);
 
 				// 登録後にコールバック関数を非同期で実行する
 				if(afterCallBack != null){
@@ -1192,7 +1193,20 @@ class CrudBase{
 		});
 	}
 
-
+	_offNoteDetail(tr){
+		tr.find('.note_detail').each((i,elm)=>{
+			
+			elm = jQuery(elm);
+			let td =elm.parent('td');
+			elm.hide();
+			let field = elm.attr('data-field');
+			td.find('.' + field).show(); // フィールド要素を表示
+			
+			td.find('.note_detail_open_btn').hide(); // 「閉じる」ボタンを隠す
+			
+			
+		});
+	}
 
 	/**
 	 * 行番号を指定して削除登録を行う。
@@ -4156,7 +4170,7 @@ class CrudBase{
 		var noteDetailElm = td.find('.note_detail');
 		if(!noteDetailElm[0]){
 			maked = 0;
-			var note_detail_html = "<div class='note_detail'></div>";
+			var note_detail_html = `<div class='note_detail' data-field='${field}'></div>`;
 			td.append(note_detail_html);
 			noteDetailElm = td.find('.note_detail');
 		}

@@ -1022,7 +1022,7 @@ class CrudBaseHelper {
 		// ノート詳細開きボタンのHTMLを作成
 		$note_detail_open_html = '';
 		if($long_over_flg) {
-			$note_detail_open_html = "<input type='button' class='btn btn-secondary btn-sm' value='...' onclick=\"crudBase.openNoteDetail(this, '{$field}')\" />";
+			$note_detail_open_html = "<input type='button' class='btn btn-secondary btn-sm note_detail_open_btn' value='...' onclick=\"crudBase.openNoteDetail(this, '{$field}')\" />";
 		}
 		
 		$td = "
