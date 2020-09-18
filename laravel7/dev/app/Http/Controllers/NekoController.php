@@ -10,6 +10,8 @@ class NekoController
 	
 	private $cb; // CrudBase制御クラス
 	private $md; // モデル
+	
+	private $login_needed_flg = false; // ログイン必須フラグ（編集系で認証を必須とするか？）
 
 	/**
 	 * ネコCRUDページ
@@ -62,7 +64,7 @@ class NekoController
 		
 		$errs = []; // エラーリスト
 		
-		if(\Auth::id() == null){
+		if(\Auth::id() == null && $this->login_needed_flg == true){
 			return 'Error:ログイン認証が必要です。 Login is needed';
 		}
 		
@@ -107,7 +109,7 @@ class NekoController
 
 		$this->init();
 
-		if(\Auth::id() == null){
+		if(\Auth::id() == null && $this->login_needed_flg == true){
 			return 'Error:ログイン認証が必要です。 Login is needed';
 		}
 		
@@ -157,7 +159,7 @@ class NekoController
 		
 		$this->init();
 		
-		if(\Auth::id() == null){
+		if(\Auth::id() == null && $this->login_needed_flg == true){
 			return 'Error:ログイン認証が必要です。 Login is needed';
 		}
 		
