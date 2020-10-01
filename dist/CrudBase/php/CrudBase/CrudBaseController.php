@@ -14,7 +14,7 @@ require_once 'PagenationForCake.php';
 class CrudBaseController {
 
 	///バージョン
-	public $version = "2.8.5";
+	public $version = "3.0.0";
 
 	///デフォルトの並び替え対象フィールド
 	public $defSortFeild='sort_no';
