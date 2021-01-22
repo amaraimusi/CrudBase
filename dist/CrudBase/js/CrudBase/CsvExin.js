@@ -61,7 +61,7 @@ class CsvExin{
 			<aside>基本的に上書きでDB登録されますが、idが空のレコードもしくはDBに存在しないidのレコードは「新規追加」になります。</aside>
 			<div id="csv_exin_step2" style="display:none">
 				<input id="csv_bulk_reg_btn" type="button" value="一括登録" class="btn btn-danger btn-sm" />
-				<input id="csv_exin_retry_btn" type="button" value="やり直し" class="btn btn-secondary btn-sm" />
+				<input id="csv_exin_retry_btn" type="button" value="やり直し" class="btn btn-default btn-xs" />
 			</div>
 			<div id="csv_exin_err" style="color:red"></div>
 			<div id="csv_exin_success" class="text-success"></div>
@@ -382,7 +382,7 @@ class CsvExin{
 	_addEventStrCodeRadioClick(){
 		this.mainElm.find("input[name='csv_exin_str_code']").click((evt)=>{
 			
-			var btnElm = jQuery(evt.currentTarget);
+			var btnElm = $(evt.currentTarget);
 			this.csvParam['str_code'] = btnElm.val();
 			
 			this.mainElm.find('#csv_exin_file').prop('disabled', false);
@@ -586,7 +586,6 @@ class CsvExin{
 	 * 一括登録処理
 	 */
 	_bulkReg(){
-
 		var csvParam = this.csvParam;
 		var data = this.data;
 		
@@ -644,6 +643,8 @@ class CsvExin{
 		if (typeof data == 'string'){
 			if ( data.indexOf('&') != -1) {
 				return data.replace(/&/g, '%26');
+			}else if(data.indexOf('%') != -1){
+				return data.replace(/%/g, '%25');;
 			}else{
 				return data;
 			}
