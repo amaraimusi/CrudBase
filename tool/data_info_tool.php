@@ -23,11 +23,12 @@
 <p>バージョン 2.0.0</p>
 
 <?php 
+require_once '../dist/CrudBase/php/CrudBase/crud_base_config.php';
 $server_name=$_SERVER['SERVER_NAME'];
 if($server_name != 'localhost') die('ローカル環境 only');
 	
-//$home_dp = dirname(dirname(__DIR__));
-require_once  '../dist/CrudBase/php/CrudBase/PdoDao.php';
+$home_dp = dirname(dirname(__DIR__));
+require_once $home_dp . '/Vendor/CrudBase/PdoDao.php';
 
 $pdoDao = new PdoDao();
 $dao = $pdoDao->getDao();
