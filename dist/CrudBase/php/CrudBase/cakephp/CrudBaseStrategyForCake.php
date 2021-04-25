@@ -146,7 +146,7 @@ class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy
 	public function save(&$ent, &$option = []){
 		if(!isset($option['atomic'])) $option['atomic'] = false;
 		if(!isset($option['validate'])) $option['validate'] = false;
-		$rs=$this->model->save($data, $option);
+		$rs=$this->model->save($ent, $option);
 		return $rs;
 	}
 	
