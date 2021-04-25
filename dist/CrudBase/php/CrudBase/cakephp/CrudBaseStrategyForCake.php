@@ -237,4 +237,10 @@ class CrudBaseStrategyForCake extends AppController implements ICrudBaseStrategy
 		$this->crudBaseData = $crudBaseData;
 	}
 	
+	public function passwordToHash($pw){
+		App::uses('AuthComponent', 'Controller/Component');
+		$pw_hash = AuthComponent::password($pw);
+		return $pw_hash;
+	}
+	
 }
