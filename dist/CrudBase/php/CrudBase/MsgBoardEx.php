@@ -56,6 +56,7 @@ class MsgBoardEx{
 		$permission_login_user = $this->Configs['permission_login_user']; // ログインユーザー許可フラグ
 		$send_mail_limit = $this->Configs['send_mail_limit']; // メール送信制限
 		
+		if(empty($userInfo['id'])) throw new Error('システムエラー: 210516A login is needed.');
 		$my_user_id = $userInfo['id']; // 自分自身のユーザーID
 		$permission_flg = 0; // メール送信許可フラグ
 		
@@ -202,8 +203,7 @@ class MsgBoardEx{
 			$mail_text = str_replace('%to_nickname', $to_nickname, $mail_text_tmpl);
 			$mail_text = str_replace('%nickname', $nickname, $mail_text);
 			$mail_text = str_replace('%message', $message, $mail_text);
-			$url = (empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"];
-			$url .= CRUD_BASE_PROJECT_PATH . '/group_comm?kj_seminar_id=' . $ent['seminar_id'];
+			$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 			$mail_text = str_replace('%url', $url, $mail_text);
 			
 			
