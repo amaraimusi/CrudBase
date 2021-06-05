@@ -102,7 +102,6 @@ class CrudBaseOuterName{
 		let fieldData = this.crudBaseData.fieldData;
 		for(let i in fieldData){
 			let fEnt2 = fieldData[i];
-			console.log(fEnt2.id + '==' + field);//■■■□□□■■■□□□
 			if(fEnt2.id == field){
 				fEnt = fEnt2;
 				break;
