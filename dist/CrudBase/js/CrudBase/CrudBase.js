@@ -8,8 +8,8 @@
  * 
  * 
  * @license MIT
- * @since 2016-9-21 | 2021-5-27
- * @version 3.1.3
+ * @since 2016-9-21 | 2021-6-2
+ * @version 3.1.4
  * @histroy
  * 2019-6-28 v2.8.3 CSVフィールドデータ補助クラス | CsvFieldDataSupport.js
  * 2018-10-21 v2.8.0 ボタンサイズ変更機能にボタン表示切替機能を追加
@@ -52,11 +52,12 @@ class CrudBase{
 	 *  - その他多数...
 	 */
 	constructor(param){
-
 		// --- 初期化: CrudBaseBaseクラスのメンバを初期化する ----
 		
 		// パラメータに空プロパティがあれば、デフォルト値をセットする
 		this.param = this._setParamIfEmpty(param);
+		
+		this.crudBaseData = param;
 
 		// フォーム情報の取得と初期化
 		this.formInfo = this._initFormInfo(this.param);
@@ -134,6 +135,9 @@ class CrudBase{
 		let rngYmEx = new RangeYmEx();
 		rngYmEx.init();
 		
+		// クラスの骨組み 外部名称クラス：外部idに紐づく外部テーブルの名前要素を制御
+		this.crudBaseOuterName = new CrudBaseOuterName();
+		
 		// -----------
 		this.fueIdCash; // file要素のid属性データ（キャッシュ）
 		
@@ -172,6 +176,8 @@ class CrudBase{
 				ajax_url:this.param.pwms_ajax_url,
 				csrf_token:this.param.csrf_token,
 		});
+		
+	
 		
 
 
@@ -680,6 +686,8 @@ class CrudBase{
 		
 		this.crudBasePasswordEdit.showForm('new_inp'); // パスワード編集機能
 		this.foldingTaN.reflection(); // 折り畳み式テキストエリアに反映
+		this.crudBaseOuterName.newInpShow(); // 外部名称・クリア
+
 		
 	}
 
@@ -738,6 +746,8 @@ class CrudBase{
 		
 		this.crudBasePasswordEdit.showForm('edit'); // パスワード編集機能
 		this.foldingTaE.reflection(); // 折り畳み式テキストエリアに反映
+		
+		this.crudBaseOuterName.editShow(ent); // 外部名称・クリア
 
 	}
 
@@ -818,7 +828,7 @@ class CrudBase{
 		
 		// パスワード編集機能
 		this.crudBasePasswordEdit.showForm('copy');
-
+		this.crudBaseOuterName.newInpShow(ent); // 外部名称・クリア
 
 
 	}
@@ -977,7 +987,6 @@ class CrudBase{
 		let token = this.param.csrf_token;
 		fd.append( "_token", token );
 		
-		// WordPressの場合■■■□□□■■■□□□後日でwp_nonceをcsrf_tokenに変更する
 		if(option['wp_action']){
 			regParam['action'] = option['wp_action'];
 			if(option['wp_nonce']) regParam['nonce'] = option['wp_nonce'];
@@ -1031,6 +1040,9 @@ class CrudBase{
 
 				// 新しい行を作成する
 				var tr = this._addTr(ent,add_row_index);
+				
+				// 外部名称をTR要素にセットする。
+				this._setOuterNameToTr(ent,tr);
 				
 				// ボタン群の表示切替
 				this._switchBtnsDisplay(tr,ent)
@@ -1141,7 +1153,7 @@ class CrudBase{
 				console.log(str_json);
 				jQuery("#err").html(str_json);
 			}
-
+			
 			// 編集中の行にエンティティを反映する。
 			if(ent){
 				if(ent['err']){
@@ -1166,6 +1178,9 @@ class CrudBase{
 
 				// TR要素にエンティティの値をセットする
 				this._setEntityToEditTr(ent,tr);
+				
+				// 外部名称をTR要素にセットする。
+				this._setOuterNameToTr(ent,tr);
 				
 				this._offNoteDetail(tr);
 
@@ -1320,6 +1335,8 @@ class CrudBase{
 		// 検索条件要素の各種ガシェットをリセットする
 		if(this.cbGadgetKj) this.cbGadgetKj.reset();
 		
+		// 外部名称クラス：表示中の外部名称をクリアする。
+		this.crudBaseOuterName.clear();
 		
 	}
 	
@@ -4498,7 +4515,28 @@ class CrudBase{
 	}
 	
 	
-	
+	// 外部名称をTR要素にセットする。
+	_setOuterNameToTr(ent,tr){
+		let fieldData = this.crudBaseData.fieldData;
+		for(let i in fieldData){
+			let fEnt = fieldData[i];
+			if(fEnt.outer_tbl_name == null) continue;
+			let outer_alias = fEnt.outer_alias;
+			let outer_name = ent[outer_alias];
+			outer_name = this._xssSanitaizeEncode(outer_name);
+			if(outer_name == null) outer_name = '';
+			let elm1 = tr.find('.' + outer_alias);
+			if(elm1[0]){
+				elm1.html(outer_name);
+			}
+			let elm2 = tr.find(`input[name='${outer_alias}']`);
+			if(elm2[0]){
+				elm2.val(outer_name);
+			}
+			
+		}
+
+	}
 	
 }
 

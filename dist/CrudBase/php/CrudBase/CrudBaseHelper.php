@@ -785,6 +785,63 @@ class CrudBaseHelper {
 		";
 		echo $html;
 	}
+	
+	
+	/**
+	 * IDから名前を取得する機能
+	 *
+	 * @param string $field フィールド名
+	 * @param string $wamei フィールド和名
+	 * @param [] option
+	 *  - string title ツールチップ
+	 *  - int maxlength 最大文字数(共通フィールドは設定不要）
+	 *  - string model_name_c モデル名（キャメル記法）
+	 *  - string placeholder
+	 */
+	public function inputKjOuterId($kj_field, $wamei, $option = []){
+
+		$title = $option['title'] ?? $wamei."で検索";
+		$width = $option['width'] ?? 120;
+		$placeholder = $option['placeholder'] ?? $wamei . 'ID';
+		$btn_wamei = $option['btn_wamei'] ?? $wamei . '名の表示';
+		$btn_wamei = str_replace('名名', '名', $btn_wamei);
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
+		$maxlength=1000;
+		if(empty($option['maxlength'])){
+			$maxlength = $this->getMaxlenIfCommonField($kj_field,$maxlength);
+		}else{
+			$maxlength=$option['maxlength'];
+		}
+		
+		$html = "
+			<div class='kj_div kj_wrap OuterName' data-field='{$kj_field}'>
+				<div class='input text' style='display:inline-block'>
+					<input
+						name='data[{$model_name_c}][{$kj_field}]'
+						id='{$kj_field}'
+						value='{$this->kjs[$kj_field]}'
+						placeholder='{$placeholder}'
+						class='kjs_inp form-control OuterName-kj_en_sp_id-outer_id'
+						style='width:{$width}px; '
+						title='{$title}'
+						maxlength='{$maxlength}'
+						type='text'>
+				</div>
+				<button type='button' class='btn btn-secondary btn-sm OuterName-kj_en_sp_id-outer_show_btn' onclick=\"getOuterName('{$kj_field}')\" >
+					<span class='oi' data-glyph='arrow-thick-right'></span>{$btn_wamei}
+				</button>
+				<div class='OuterName-kj_en_sp_id-outer_name' style='display:inline-block'></div>
+				<div id='{$kj_field}_err' class='text-danger'></div>
+			</div>
+		";
+		
+		echo $html;
+	}
 
 
 	
@@ -803,7 +860,6 @@ class CrudBaseHelper {
 		$this->tblPreview($v,$wamei);
 	}
 	
-
 	
 	/**
 	 * XSS対策を施してからTD要素を出力する。
@@ -1345,6 +1401,20 @@ class CrudBaseHelper {
 	}
 	
 	
+	/**
+	 * 外部フィールド名のTD要素表示
+	 * @param array $ent データのエンティティ
+	 * @param string $id_field 外部IDフィールド名
+	 * @param string $outer_name_field 外部名前フィールド
+	 */
+	public function tdOuterName(&$ent,$id_field, $outer_name_field){
+		$id = $ent[$id_field];
+		$outer_name = $ent[$outer_name_field];
+		$outer_name = htmlspecialchars($outer_name);
+		$td = "<td><input type='hidden' name='{$id_field}' value='{$id}' /><span class='{$outer_name_field}' >{$outer_name}</span></td>\n";
+		$this->setTd($td, $id_field);
+		
+	}
 	
 	/**
 	 * 列並用TD要素群にTD要素をセット
@@ -2386,5 +2456,77 @@ class CrudBaseHelper {
 		return $s2;
 		
 	}
+	
+	
+	public function formOuterName($field, $wamei, $form_type, $option = []){
+		
+		if(empty($field)) echo ('システムエラー CBH210604G');
+		if(empty($form_type)) echo ('システムエラー CBH210604G');
+		$formTypes = ['edit', 'ni', 'new_inp'];
+		if(in_array($form_type, $formTypes) == false) echo ('システムエラー CBH210604H');
+		if($formTypes == 'new_inp') $form_type = 'ni';
+		
+		$title = $option['title'] ?? $wamei."で検索";
+		$width = $option['width'] ?? 120;
+		$placeholder = $option['placeholder'] ?? $wamei . 'ID';
+		$btn_wamei = $option['btn_wamei'] ?? $wamei . '名の表示';
+		$btn_wamei = str_replace('名名', '名', $btn_wamei);
+		
+		
+		
+		// モデル名を取得
+		$model_name_c = $this->crudBaseData['model_name_c'];
+		if(!empty($option['model_name_c'])) $model_name_c = $option['model_name_c'];
+		
+		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
+		$maxlength=1000;
+		if(empty($option['maxlength'])){
+			$maxlength = $this->getMaxlenIfCommonField($field, $maxlength);
+		}else{
+			$maxlength=$option['maxlength'];
+		}
+		
+		// 外部別名
+		$outer_alias = '';
+		$fieldData = $this->crudBaseData['fieldData'];
+		foreach($fieldData as $fEnt){
+			if($fEnt['id'] == $field){
+				$outer_alias = $fEnt['outer_alias'];
+			}
+		}
+		if(empty($outer_alias)) throw new Exception('CBH210604C');
+
+		$outer_id_slt = "OuterName-{$form_type}_{$field}-outer_id";
+		$outer_name_slt = "OuterName-{$form_type}_{$field}-outer_name";
+		$outer_show_btn_slt = "OuterName-{$form_type}_{$field}-outer_show_btn";
+		
+		$unique_code = $form_type . '_' . $field;
+
+		$html = "
+			<div class='OuterName' >
+				<div class='input text' style='display:inline-block'>
+					<input
+						
+						name='{$field}'
+						value=''
+						placeholder='{$placeholder}'
+						class='form-control {$outer_id_slt}'
+						style='width:{$width}px; '
+						title='{$title}'
+						maxlength='{$maxlength}'
+						type='text'>
+				</div>
+				<button type='button' class='btn btn-secondary btn-sm {$outer_show_btn_slt}' onclick=\"getOuterName('{$unique_code}')\" >
+					<span class='oi' data-glyph='arrow-thick-right'></span>{$btn_wamei}
+				</button>
+				<div class='{$outer_name_slt}' style='display:inline-block'></div>
+				<label class='text-danger' for='{$field}'></label>
+			</div>
+		";
+		
+		echo $html;
+		
+	}
+	
 	
 }
