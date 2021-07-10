@@ -3,6 +3,18 @@
 管理画面の見本システム
 updated 2021-2-18
 
+## 当プロジェクト（CrudBase）の準備
+
+Laravel7をインストールする。
+
+```
+cd ~/git/CrudBase/setup_for_laravel7`
+php composer.phar install
+```
+
+
+
+
 ## CrudBase for Laravel7 の新プロジェクトを立ち上げる手順
 
 プロジェクト名は「red_book」で手順説明をする。

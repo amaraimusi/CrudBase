@@ -18,6 +18,7 @@ class NekoController
 	 */
 	public function index(){
 
+		debug('xxx');//■■■□□□■■■□□□)
 		$this->init();
 
  		// CrudBase共通処理（前）
