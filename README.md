@@ -1,18 +1,30 @@
 # CrudBase
 
 管理画面の見本システム
-updated 2021-2-18
+updated 2021-7-11
+
+## 開発に必要なスキル
+- Composer
 
 ## 当プロジェクト（CrudBase）の準備
 
-Laravel7をインストールする。
+.envのAPP_KEYを変更する
+
+.envにデータベース情報を記述する。
+
+データベースを作成
 
 ```
-cd ~/git/CrudBase/setup_for_laravel7`
-php composer.phar install
+/CrudBase/laravel7/backup/crud_base_laravel7.sql
 ```
 
+URLへアクセス
 
+```
+http://localhost/CrudBase/laravel7/dev/public/neko
+```
+
+-----------------------
 
 
 ## CrudBase for Laravel7 の新プロジェクトを立ち上げる手順
