@@ -37,6 +37,9 @@ require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
+// CrudBase設定
+require_once __DIR__. '/../crud_base_config.php';
+
 /*
 |--------------------------------------------------------------------------
 | Run The Application

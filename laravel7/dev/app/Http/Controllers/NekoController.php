@@ -8,6 +8,9 @@ use Illuminate¥Support¥Facades¥DB;
 class NekoController
 {
 	
+	// 当画面バージョン (バージョンを変更すると画面に新バージョン通知とクリアボタンが表示されます。）
+	public $this_page_version = '1.0.0';
+	
 	private $cb; // CrudBase制御クラス
 	private $md; // モデル
 	
@@ -18,7 +21,6 @@ class NekoController
 	 */
 	public function index(){
 
-		debug('xxx');//■■■□□□■■■□□□)
 		$this->init();
 
  		// CrudBase共通処理（前）
