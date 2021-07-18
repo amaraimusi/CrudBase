@@ -48,7 +48,7 @@ define('CRUD_BASE_JS', $crud_base_js);
 $crud_base_css = "/CrudBase/dist/css/CrudBase/dist/CrudBase.min.css";
 define('CRUD_BASE_CSS', $crud_base_css);
 
-
+//■■■□□□■■■□□□
 //$crud_base_webroot_abs_path = $crud_base_root . 'app/webroot/';
 //define('CRUD_BASE_WEBROOT_ABS_PATH', $crud_base_webroot_abs_path);
 
@@ -63,7 +63,9 @@ $crudBaseConfig = [
 	'crud_base_path'=>CRUD_BASE_PATH, // Vendor側のCrudBaseライブラリへの絶対パス
 	'crud_base_js'=>CRUD_BASE_JS, // jsのCrudBaseライブラリパス（相対パス）
 	'crud_base_css'=>CRUD_BASE_CSS, // cssのCrudBaseライブラリパス（相対パス）
-	//'crud_base_webroot_abs_path'=>$crud_base_webroot_abs_path,
+	'crud_base_url_base'=>CRUD_BASE_URL_BASE, // 基本URL
+	
+	//'crud_base_webroot_abs_path'=>$crud_base_webroot_abs_path,■■■□□□■■■□□□
 ];
 
 // DB設定情報を取得する
@@ -72,7 +74,6 @@ $crudBaseConfig['dbConfig'] = getDbConfigForCrudBase($crudBaseConfig['env']);
 // 汎用メソッドクラス
 require_once $crud_base_path . 'crud_base_function.php';
 require_once $crud_base_path . 'CrudBaseU.php';
-debug('アカイナン');//■■■□□□■■■□□□)
 
 // 権限データ
 global $crudBaseAuthorityData;

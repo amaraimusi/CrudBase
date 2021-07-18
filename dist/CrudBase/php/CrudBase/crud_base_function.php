@@ -43,15 +43,12 @@ if (!function_exists('h')) {
 }
 
 if (!function_exists('debug')) {
-	var_dump('B1');//■■■□□□■■■□□□)
 	function debug($var){
 		echo "<pre>";
 		var_dump($var);
 		echo "</pre>";
 	}
 
-}else{
-	var_dump('B2');//■■■□□□■■■□□□)
 }
 
 

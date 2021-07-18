@@ -185,7 +185,7 @@ class YagiController
 	 * @return \App\Http\Controllers\FileUploadK
 	 */
 	private function factoryFileUploadK(){
-		$crud_base_path = config('const.CRUD_BASE_PATH');
+		$crud_base_path = CRUD_BASE_PATH;
 		require_once $crud_base_path . 'FileUploadK/FileUploadK.php';
 		$fileUploadK = new \FileUploadK();
 		return $fileUploadK;
@@ -326,9 +326,9 @@ class YagiController
 		unset($fEnt);
 		
 		
-		$crud_base_path = config('const.CRUD_BASE_PATH');
-		$crud_base_js = config('const.CRUD_BASE_JS');
-		$crud_base_css = config('const.CRUD_BASE_CSS');
+		$crud_base_path = CRUD_BASE_PATH;
+		$crud_base_js = CRUD_BASE_JS;
+		$crud_base_css = CRUD_BASE_CSS;
 		require_once $crud_base_path . 'CrudBaseController.php';
 		
 		$model = new Yagi(); // モデルクラス
@@ -404,7 +404,7 @@ class YagiController
 		
 		
 		//CSVダウンロード
-		$crud_base_path = config('const.CRUD_BASE_PATH');
+		$crud_base_path = CRUD_BASE_PATH;
 		require_once $crud_base_path . 'CsvDownloader.php';
 		$csv= new \CsvDownloader();
 		$csv->output($fn, $data);
@@ -456,7 +456,7 @@ class YagiController
 	public function bulk_reg(){
 		$this->init();
 		
-		$crud_base_path = config('const.CRUD_BASE_PATH');
+		$crud_base_path = CRUD_BASE_PATH;
 		require_once $crud_base_path . 'BulkReg.php';
 		
 		// 更新ユーザーを取得
