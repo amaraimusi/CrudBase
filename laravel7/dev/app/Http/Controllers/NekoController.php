@@ -21,6 +21,8 @@ class NekoController
 	 * ネコCRUDページ
 	 */
 	public function index(){
+		
+
 
 		$this->init();
 

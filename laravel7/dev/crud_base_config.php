@@ -42,10 +42,10 @@ $crud_base_url_base = $crud_base_project_path . '/';
 define('CRUD_BASE_URL_BASE', $crud_base_url_base); // 基本URL
 
 
-$crud_base_js = "/CrudBase/dist/js/CrudBase/dist/CrudBase.min.js";
+$crud_base_js = "/CrudBase/dist/CrudBase/js/CrudBase/dist/CrudBase.min.js";
 define('CRUD_BASE_JS', $crud_base_js);
 
-$crud_base_css = "/CrudBase/dist/css/CrudBase/dist/CrudBase.min.css";
+$crud_base_css = "/CrudBase/dist/CrudBase/css/CrudBase/dist/CrudBase.min.css";
 define('CRUD_BASE_CSS', $crud_base_css);
 
 //■■■□□□■■■□□□
