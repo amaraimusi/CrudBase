@@ -37,8 +37,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-// CrudBase設定
-require_once __DIR__. '/../crud_base_config.php';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -54,9 +53,13 @@ require_once __DIR__. '/../crud_base_config.php';
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
+
+require_once __DIR__. '/../crud_base_config.php';
 $response = $kernel->handle(
     $request = Illuminate\Http\Request::capture()
-);
+	);
+
+// CrudBase設定
 
 $response->send();
 

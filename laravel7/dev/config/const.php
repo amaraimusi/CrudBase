@@ -15,6 +15,3 @@ return [
 		'WEB_ROOT' => '/CrudBase/laravel7/dev/',
 ];
 
-function debug($var){
-	dump($var);
-}

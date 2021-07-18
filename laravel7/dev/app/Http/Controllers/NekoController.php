@@ -16,11 +16,13 @@ class NekoController
 	
 	private $login_needed_flg = false; // ログイン必須フラグ（編集系で認証を必須とするか？）
 
+	
 	/**
 	 * ネコCRUDページ
 	 */
 	public function index(){
-
+		var_dump('愚かなる犬');//■■■□□□■■■□□□)
+		debug('ねこねこ様');//■■■□□□■■■□□□)
 		$this->init();
 
  		// CrudBase共通処理（前）

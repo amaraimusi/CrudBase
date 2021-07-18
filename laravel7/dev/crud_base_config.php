@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * CrudBase設定ファイル
  *
@@ -8,6 +10,7 @@
  *
  */
 global $crudBaseConfig;
+
 
 
 // 値種別定数    この定数を主に利用しているファイルと関数 → 「app/View/Helper/AppHelper.php : ent_show_x」
@@ -21,22 +24,33 @@ define('CB_FLD_NULL_ZERO','7');// nullは0表記
 define('CB_FLD_TA_CSV','8');// テキストエリアCSV出力用
 
 
-$crud_base_root = dirname(__FILE__) . '/';
-$crud_base_app_path = $crud_base_root . 'app/';
-$crud_base_path = $crud_base_app_path . 'Vendor/CrudBase/';
-$project_path = '/cake_demo'; // 例：「/animal/mng」
-$crud_base_webroot_abs_path = $crud_base_root . 'app/webroot/';
-	
+// プロジェクトディレクトリの絶対ルートパス。 例→"C:\Users\user\git\CrudBase\laravel7\dev\"
+$crud_base_root = dirname(__FILE__) . DIRECTORY_SEPARATOR; 
+define('CRUD_BASE_ROOT', $crud_base_root);
 
-$CRUD_BASE_JS = "{$project_path}/js/CrudBase/dist/CrudBase.min.js";
-$CRUD_BASE_CSS = "{$project_path}/css/CrudBase/dist/CrudBase.min.css";
-define('CRUD_BASE_ROOT',$crud_base_root);// テキストエリアCSV出力用
-define('CRUD_BASE_APP_PATH',$crud_base_app_path);
-define('CRUD_BASE_PROJECT_PATH',$project_path); // Ajaxや画像のパス
-define('CRUD_BASE_PATH',$crud_base_path);
-define('CRUD_BASE_JS',$CRUD_BASE_JS);
-define('CRUD_BASE_CSS',$CRUD_BASE_CSS);
-define('CRUD_BASE_WEBROOT_ABS_PATH', $crud_base_webroot_abs_path);
+// appディレクトリへの絶対パス。 例→
+$crud_base_app_path = $crud_base_root . 'app' . DIRECTORY_SEPARATOR;
+define('CRUD_BASE_APP_PATH', $crud_base_app_path);
+
+$crud_base_path = dirname(dirname(dirname(__FILE__))) . '/dist/CrudBase/php/CrudBase/';
+define('CRUD_BASE_PATH', $crud_base_path);
+
+$crud_base_project_path = '/CrudBase/laravel7/dev'; // 例：「/animal/mng」
+define('CRUD_BASE_PROJECT_PATH', $crud_base_project_path); // 基本URL(非推奨）
+
+$crud_base_url_base = $crud_base_project_path . '/';
+define('CRUD_BASE_URL_BASE', $crud_base_url_base); // 基本URL
+
+
+$crud_base_js = "/CrudBase/dist/js/CrudBase/dist/CrudBase.min.js";
+define('CRUD_BASE_JS', $crud_base_js);
+
+$crud_base_css = "/CrudBase/dist/css/CrudBase/dist/CrudBase.min.css";
+define('CRUD_BASE_CSS', $crud_base_css);
+
+
+//$crud_base_webroot_abs_path = $crud_base_root . 'app/webroot/';
+//define('CRUD_BASE_WEBROOT_ABS_PATH', $crud_base_webroot_abs_path);
 
 // CrudBase設定データ
 $crudBaseConfig = [
@@ -49,14 +63,16 @@ $crudBaseConfig = [
 	'crud_base_path'=>CRUD_BASE_PATH, // Vendor側のCrudBaseライブラリへの絶対パス
 	'crud_base_js'=>CRUD_BASE_JS, // jsのCrudBaseライブラリパス（相対パス）
 	'crud_base_css'=>CRUD_BASE_CSS, // cssのCrudBaseライブラリパス（相対パス）
-	'crud_base_webroot_abs_path'=>$crud_base_webroot_abs_path,
+	//'crud_base_webroot_abs_path'=>$crud_base_webroot_abs_path,
 ];
 
 // DB設定情報を取得する
 $crudBaseConfig['dbConfig'] = getDbConfigForCrudBase($crudBaseConfig['env']);
 
 // 汎用メソッドクラス
+require_once $crud_base_path . 'crud_base_function.php';
 require_once $crud_base_path . 'CrudBaseU.php';
+debug('アカイナン');//■■■□□□■■■□□□)
 
 // 権限データ
 global $crudBaseAuthorityData;
@@ -96,30 +112,13 @@ $crudBaseAuthorityData = [
  */
 function getDbConfigForCrudBase($env = null){
 	
-	require_once 'app/Config/database.php';
-	$databaseConfig = new DATABASE_CONFIG();
-	$dbInfo = $databaseConfig->getDbInfo();
+	$dbConfig = [
+		'host'=>env('DB_HOST'),
+		'db_name'=>env('DB_DATABASE'),
+		'user'=>env('DB_USERNAME'),
+		'pw'=>env('DB_PASSWORD'),
+	];
 	
-	if($env == null){
-		global $crudBaseConfig;
-		$env = $crudBaseConfig['env'];
-	}
-	
-	switch ($env){
-		case 'localhost':
-			$dbConfig = [
-				'host'=>$dbInfo['host'],
-				'db_name'=>$dbInfo['database'],
-				'user'=>$dbInfo['login'],
-				'pw'=>$dbInfo['password'],
-			];
-			break;
-
-		default:
-			throw new Error("DB設定の不備 env={$env}");
-			break;
-		
-	}
 	
 	return $dbConfig;
 }
