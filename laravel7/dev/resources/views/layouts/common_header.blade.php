@@ -1,49 +1,57 @@
 
+<?php 
+	$auth_level = 0; // 権限レベル
+	$authority_wamei = ''; // 権限名
+	$user_name = '';
+	if(!empty($crudBaseData['userInfo']['authority'])){
+		$userInfo = $crudBaseData['userInfo'];
+		$user_name = $userInfo['user_name'];
+		$auth_level = $userInfo['authority']['level'];
+		$authority_wamei = $userInfo['authority']['wamei'];
+	}
+?>
 
-<table style="width:100%;margin-top:3px;margin-bottom:3px;"><tr>
-<td>
-	<!-- ログインメニュー -->
-	<?php 
-		$auth_level = 0; // 権限レベル
-		$authority_wamei = ''; // 権限名
-		if(!empty($crudBaseData['userInfo']['authority'])){
-			$auth_level = $crudBaseData['userInfo']['authority']['level'];
-			$authority_wamei = $crudBaseData['userInfo']['authority']['wamei'];
-		}
-	?>
-	@auth
-		@if ($auth_level >= 30)
-			<a href="user_mng" class="btn btn-info btn-sm">ユーザー管理画面</a>
-		@endif
-		
-		@if (Route::has('register'))
-			<!-- 未使用 -->
-			<a href="{{ route('register') }}" class="btn btn-info btn-sm">登録</a>
-		@endif
-	@else
-	<a href="{{ url('/home') }}" class="btn btn-info btn-sm">Home</a>
-	<a href="{{ route('login') }}" class="btn btn-info btn-sm">ログイン</a>
-	@endauth
 
-</td>
-<td style="text-align:right">
-	@guest
-	
-	@else
-	<button class="btn btn-secondary dropdown-toggle btn btn-info btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		{{ Auth::user()->name }}
+<nav class="navbar navbar-expand-lg navbar-light bg-success">
+	<a class="navbar-brand text-light" href="<?php echo CRUD_BASE_PROJECT_PATH;?>/public/">CrudBase</a>
+
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	<span class="navbar-toggler-icon"></span>
 	</button>
-	<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-		<div style="margin-left:24px;color:#9b9b9f">{{$authority_wamei}}</div>
-		<a class=" btn btn-info btn-sm dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">ログアウト</a>
-		<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-			@csrf
-		</form>
-	</div>
-	@endguest
-	<a href="static_page/help" class="btn btn-info btn-sm" target="_blank">使い方</a>
-</td>
-</tr></table>
 
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+
+
+		@auth
+			@if ($auth_level >= 30)
+				<li>
+					<a class="nav-link text-light" href="user_mng">ユーザー管理</a>
+				</li>
+			@endif
+		@endguest
+	
+		</ul>
+		
+		<ul class="navbar-nav">
+			<li class="nav-item dropdown">
+				@auth
+					<a class="nav-link dropdown-toggle text-light" href="#" id="username_navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{{$user_name}}
+					</a>
+					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="username_navbarDropdownMenuLink">
+						<span class="dropdown-item">{{$authority_wamei}}</span>
+						<span class="dropdown-item">{{$user_name}}</span>
+						<a class=" btn btn-info btn-sm dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">ログアウト</a>
+					</div>
+				@else
+					<a href="{{ route('login') }}" class="nav-link text-light">ログイン</a>
+				@endguest
+			</li>
+		</ul>
+		
+	</div>
+</nav>
+<div style="height:4px"></div>
 
 	

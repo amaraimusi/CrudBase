@@ -24,12 +24,13 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	<link href="{{ $crud_base_css . $ver_str }}" rel="stylesheet">
 	
 </head>
-<body><div class="container">
-
-
-<div class="cb_func_line">
+<body>
 
 @include('layouts.common_header')
+
+<div class="container-fluid">
+<div class="cb_func_line">
+
 
 	<div id="ajax_login_with_cake"></div><!-- ログイン or ログアウト 　AjaxLoginWithCake.js　-->
 	<div class="cb_kj_main">
