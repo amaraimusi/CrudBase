@@ -87,13 +87,28 @@ class NekoController
 		$ent['img_fn'] = $this->cb->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
 		// CBBXE
 		
-
 		$ent = $this->md->saveEntity($ent, $regParam);
 		
 		// CBBXS-2025
-		// ファイルアップロードの一括作業
-		$fileUploadK = $this->factoryFileUploadK();
-		$res = $fileUploadK->putFile1($_FILES, 'img_fn', $ent['img_fn']);
+		
+		// ファイルアップロードとファイル名のDB保存
+		if(!empty($_FILES)){
+			// CBBXS-2027
+			$img_fn = $this->cb->makeFilePath($_FILES, "storage/neko/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, 'img_fn');
+			$fileUploadK = $this->factoryFileUploadK();
+			
+			// ▼旧ファイルを指定ディレクトリごと削除する。
+			$ary = explode("/", $img_fn);
+			$ary = array_slice($ary, 0, 4);
+			$del_dp = implode('/', $ary);
+			$fileUploadK->removeDirectory($del_dp); // 旧ファイルを指定ディレクトリごと削除
+			
+			// ファイル配置＆DB保存
+			$fileUploadK->putFile1($_FILES, 'img_fn', $img_fn);
+			$ent['img_fn'] = $img_fn;
+			$this->md->saveEntity($ent, $regParam);
+			// CBBXE
+		}
 		// CBBXE
 		
 		$json_str = json_encode($ent, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS); // JSONに変換
