@@ -23,7 +23,6 @@ class NekoController
 	public function index(){
 		
 
-
 		$this->init();
 
  		// CrudBase共通処理（前）

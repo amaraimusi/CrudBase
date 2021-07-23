@@ -20,6 +20,7 @@ Route::get('/', function () {
 	
 	Route::post('ajax_login_with_cake/login_check', 'AjaxLoginWithCakeController@login_check');
 	Route::get('ajax_login_with_cake/login_rap', 'AjaxLoginWithCakeController@login_rap');
+	Route::get('ajax_login_with_cake/logout', 'AjaxLoginWithCakeController@logout');
 	
 	// Neko
 	Route::get('neko', 'NekoController@index');

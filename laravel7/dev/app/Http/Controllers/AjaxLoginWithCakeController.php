@@ -55,6 +55,18 @@ class AjaxLoginWithCakeController{
 	}
 	
 	
+	/**
+	 * ログアウト
+	 */
+	public function logout(){
+		
+		if(!empty(\Auth::id())){
+			\Auth::logout();
+		}
+		
+		return redirect('/');
+	}
+	
 	
 	
 	

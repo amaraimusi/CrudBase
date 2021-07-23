@@ -42,7 +42,7 @@
 					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="username_navbarDropdownMenuLink">
 						<span class="dropdown-item">{{$authority_wamei}}</span>
 						<span class="dropdown-item">{{$user_name}}</span>
-						<a class=" btn btn-info btn-sm dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">ログアウト</a>
+						<a class=" btn btn-info btn-sm dropdown-item" href="<?php echo CRUD_BASE_PROJECT_PATH;?>/public/ajax_login_with_cake/logout" >ログアウト</a>
 					</div>
 				@else
 					<a href="{{ route('login') }}" class="nav-link text-light">ログイン</a>
