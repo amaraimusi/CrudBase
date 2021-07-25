@@ -23,6 +23,7 @@ define('CB_FLD_TEXTAREA','6'); // テキストエリア用（改行対応）
 define('CB_FLD_NULL_ZERO','7');// nullは0表記
 define('CB_FLD_TA_CSV','8');// テキストエリアCSV出力用
 
+define('CRUD_BASE_VERSION', '1.0.0');
 
 // プロジェクトディレクトリの絶対ルートパス。 例→"C:\Users\user\git\CrudBase\laravel7\dev\"
 $crud_base_root = dirname(__FILE__) . DIRECTORY_SEPARATOR; 
@@ -42,10 +43,10 @@ $crud_base_url_base = $crud_base_project_path . '/';
 define('CRUD_BASE_URL_BASE', $crud_base_url_base); // 基本URL
 
 
-$crud_base_js = "/CrudBase/dist/CrudBase/js/CrudBase/dist/CrudBase.min.js";
+$crud_base_js = "/CrudBase/dist/CrudBase/js/CrudBase/dist/CrudBase.min.js?v=" . CRUD_BASE_VERSION;
 define('CRUD_BASE_JS', $crud_base_js);
 
-$crud_base_css = "/CrudBase/dist/CrudBase/css/CrudBase/dist/CrudBase.min.css";
+$crud_base_css = "/CrudBase/dist/CrudBase/css/CrudBase/dist/CrudBase.min.css?v=" . CRUD_BASE_VERSION;
 define('CRUD_BASE_CSS', $crud_base_css);
 
 //■■■□□□■■■□□□

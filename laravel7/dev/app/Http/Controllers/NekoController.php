@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\AppController;
 use Illuminate\Http\Request;
 use App\Models\Neko;
 use Illuminate¥Support¥Facades¥DB;
 
-class NekoController
+class NekoController extends AppController
 {
 	
 	// 当画面バージョン (バージョンを変更すると画面に新バージョン通知とクリアボタンが表示されます。）
@@ -28,6 +29,9 @@ class NekoController
  		// CrudBase共通処理（前）
  		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
  		
+ 		$userInfo = $this->getUserInfo();
+ 		debug($userInfo);//■■■□□□■■■□□□)
+		$crudBaseData['userInfo'] = $userInfo;
  		// CBBXS-2019
  		
  		// CBBXE
