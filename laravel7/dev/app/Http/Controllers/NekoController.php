@@ -30,7 +30,6 @@ class NekoController extends AppController
  		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
  		
  		$userInfo = $this->getUserInfo();
- 		debug($userInfo);//■■■□□□■■■□□□)
 		$crudBaseData['userInfo'] = $userInfo;
  		// CBBXS-2019
  		
