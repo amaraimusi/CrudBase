@@ -16,7 +16,7 @@
 	
 </head>
 <body>
-@include('layouts.plain_header')
+@include('layouts.common_header')
 
 <div class="container-fluid">
 
