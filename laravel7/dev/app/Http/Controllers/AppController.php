@@ -108,6 +108,8 @@ class AppController {
 	
 	/**
 	 * ユーザー情報を取得する
+	 * @param [] $param
+	 *  - review_mode レビューモード true:レビューモードON
 	 *
 	 * @return
 	 *  - update_user 更新ユーザー
@@ -116,7 +118,7 @@ class AppController {
 	 *  - role 権限
 	 *  - authority 権限データ
 	 */
-	public function getUserInfo(){
+	public function getUserInfo($param=[]){
 		
 		// ユーザー情報の構造
 		$userInfo = [
@@ -137,6 +139,10 @@ class AppController {
 			],
 			'nickname' => ''
 		];
+		
+		if(!empty($param['review_mode'])){
+			return $this->getUserInfoForReviewMode($userInfo); // レビューモード用ユーザー情報を取得
+		}
 		
 		if(\Auth::id()){// idは未ログインである場合、nullになる。
 			$userInfo['id'] = \Auth::id(); // ユーザーID
@@ -170,6 +176,34 @@ class AppController {
 
 		return $userInfo;
 	}
+	
+	
+	/**
+	 *  レビューモード用ユーザー情報を取得
+	 * @param [] $userInfo
+	 * @return [] $userInfo
+	 */
+	private function getUserInfoForReviewMode(&$userInfo){
+		
+		$userInfo['id'] = -1;
+		$userInfo['user_id'] = $userInfo['id'];
+		$userInfo['update_user'] = 'dummy';
+		$userInfo['username'] = $userInfo['update_user'];
+		$userInfo['update_user'] = $userInfo['update_user'];
+		$userInfo['ip_addr'] = 'dummy_ip';
+		$userInfo['user_agent'] = 'dummy_user_agent';
+		$userInfo['email'] = 'dummy@example.com';
+		$userInfo['role'] = 'admin';
+		$userInfo['delete_flg'] = 0;
+		$userInfo['nickname'] = '見本ユーザー';
+		$userInfo['authority']['name'] = 'admin';
+		$userInfo['authority']['wamei'] = '見本';
+		$userInfo['authority']['level'] = 30;
+		$userInfo['review_mode'] = 1; // 見本モードON;
+
+		return $userInfo;
+	}
+	
 	
 	/**
 	 * 権限に紐づく権限エンティティを取得する

@@ -49,10 +49,6 @@ define('CRUD_BASE_JS', $crud_base_js);
 $crud_base_css = "/CrudBase/dist/CrudBase/css/CrudBase/dist/CrudBase.min.css?v=" . CRUD_BASE_VERSION;
 define('CRUD_BASE_CSS', $crud_base_css);
 
-//■■■□□□■■■□□□
-//$crud_base_webroot_abs_path = $crud_base_root . 'app/webroot/';
-//define('CRUD_BASE_WEBROOT_ABS_PATH', $crud_base_webroot_abs_path);
-
 // CrudBase設定データ
 $crudBaseConfig = [
 	'fw_type'=>'laravel',

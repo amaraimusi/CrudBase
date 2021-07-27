@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\AppController;
 use Illuminate\Http\Request;
 use App\Models\UserMng;
 use Illuminate¥Support¥Facades¥DB;
 
-class UserMngController
+class UserMngController extends AppController
 {
 	
 	// 当画面バージョン (バージョンを変更すると画面に新バージョン通知とクリアボタンが表示されます。）
 	public $this_page_version = '1.0.0';
+	
+	private $review_mode = true; // レビューモード（見本モード）
 	
 	private $cb; // CrudBase制御クラス
 	private $md; // モデル
@@ -23,13 +26,12 @@ class UserMngController
 
  		// CrudBase共通処理（前）
  		$crudBaseData = $this->cb->indexBefore();//indexアクションの共通先処理(CrudBaseController)
+ 		$userInfo = $this->getUserInfo(['review_mode' => $this->review_mode]);
+ 		$crudBaseData['userInfo'] = $userInfo;
  		
- 		// CBBXS-2019
  		// 許可権限リストを作成(扱える下位権限のリスト）
  		$crudBaseData['kjs']['permRoles'] = $this->cb->makePermRoles();
 
- 		// CBBXE
-		
 		//一覧データを取得
 		$res = $this->md->getData($crudBaseData);
 		$data = $res['data'];
@@ -42,7 +44,7 @@ class UserMngController
 		
 		// CBBXS-2020
 		// 権限リスト
-		$roleList = $this->cb->getRoleList();
+		$roleList = $this->cb->getRoleList($userInfo);
 		
 		// 権限リスト空である場合、当画面にアクセス禁止にする。
 		if(empty($roleList)){
