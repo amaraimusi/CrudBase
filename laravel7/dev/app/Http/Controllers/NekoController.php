@@ -85,16 +85,13 @@ class NekoController extends AppController
 		$regParam = json_decode($reg_param_json,true);
 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
 
-		// CBBXS-2024
-		$ent['img_fn'] = $this->cb->makeFilePath($_FILES, 'rsc/img/%field/y%Y/m%m/orig/%Y%m%d%H%i%s_%fn', $ent, 'img_fn');
-		// CBBXE
 		
 		$ent = $this->md->saveEntity($ent, $regParam);
 		
 
 		// ファイルアップロードとファイル名のDB保存
 		if(!empty($_FILES)){
-			// CBBXS-2027
+			// CBBXS-20271
 			$img_fn = $this->cb->makeFilePath($_FILES, "storage/neko/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, 'img_fn');
 			$fileUploadK = $this->factoryFileUploadK();
 			
