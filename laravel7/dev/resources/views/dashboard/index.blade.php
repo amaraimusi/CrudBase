@@ -11,6 +11,7 @@
 	<script src="{{ CRUD_BASE_JS }}" defer></script>
 	<script src="{{ asset('/js/Dashboard/index.js')  . '?v=1.0.0' }}" defer></script>
 	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+	<link href="{{ asset('/js/font/css/open-iconic.min.css') }}" rel="stylesheet">
 	<link href="{{ CRUD_BASE_CSS }}" rel="stylesheet">
 
 	

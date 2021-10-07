@@ -22,6 +22,7 @@ $ver_str = '?v=' . $version; // キャッシュ回避のためのバージョン
 	<script src="{{ $crud_base_js . $ver_str }}" defer></script>
 	<script src="{{ asset('/js/UserMng/index.js')  . $ver_str }}" defer></script>
 	<link href="{{ asset('/css/app.css') }}" rel="stylesheet">
+	<link href="{{ asset('/js/font/css/open-iconic.min.css') }}" rel="stylesheet">
 	<link href="{{ $crud_base_css . $ver_str }}" rel="stylesheet">
 	
 </head>
