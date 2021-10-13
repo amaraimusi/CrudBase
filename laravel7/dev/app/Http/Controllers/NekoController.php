@@ -85,6 +85,9 @@ class NekoController extends AppController
 		$regParam = json_decode($reg_param_json,true);
 		$form_type = $regParam['form_type']; // フォーム種別 new_inp,edit,delete,eliminate
 
+		// CBBXS-2024
+		
+		// CBBXE
 		
 		$ent = $this->md->saveEntity($ent, $regParam);
 		
