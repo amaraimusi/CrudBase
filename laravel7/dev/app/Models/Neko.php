@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Neko extends Model
+class Neko extends AppModel
 {
 	protected $table = 'nekos'; // 紐づけるテーブル名
 	//protected $guarded = ['id']; // 予期せぬ代入をガード。 通常、主キーフィールドや、パスワードフィールドなどが指定される。
@@ -43,6 +43,7 @@ class Neko extends Model
 	
 	
 	public function __construct(){
+	    parent::__construct();
 		
 	}
 	
@@ -58,6 +59,9 @@ class Neko extends Model
 		$cbParam = $this->cb->getCrudBaseData();
 		$fields = $cbParam['fields'];
 		$this->fillable = $fields;
+		
+		parent::init($cb);
+		$this->setTableName($this->table); // 親クラスにテーブル名をセット
 	}
 	
 	/**
@@ -69,55 +73,54 @@ class Neko extends Model
 	 */
 	public function getData($crudBaseData){
 		
-		$fields = $crudBaseData['fields']; // フィールド
-		
-		$kjs = $crudBaseData['kjs'];//検索条件情報
-		$pages = $crudBaseData['pages'];//ページネーション情報
-
-		$page_no = $pages['page_no']; // ページ番号
-		$row_limit = $pages['row_limit']; // 表示件数
-		$sort_field = $pages['sort_field']; // ソートフィールド
-		$sort_desc = $pages['sort_desc']; // ソートタイプ 0:昇順 , 1:降順
-		
-		//条件を作成
- 		$conditions=$this->createKjConditions($kjs);
-		
-		// オフセットの組み立て
-		$offset=null;
-		if(!empty($row_limit)) $offset = $page_no * $row_limit;
-		
-		// ORDER文の組み立て
-		$order = $sort_field;
-		if(empty($order)) $order='sort_no';
-		
-		$order_option = 'asc';
-		if(!empty($sort_desc)) $order_option = 'desc';
-		
-		$str_fields = implode(",", $fields);
-
-		$query = \DB::table('nekos as Neko');
-		$query->selectRaw('SQL_CALC_FOUND_ROWS ' . $str_fields);
-		if(!empty($conditions)) $query->whereRaw($conditions);
-		if(!empty($offset)) $query->offset($offset);
-		if(!empty($row_limit)) $query->limit($row_limit);
-		if(!empty($order)) $query->orderBy($order, $order_option);
-		$data = $query->get();
-		
+	    $fields = $crudBaseData['fields']; // フィールド
+	    
+	    $kjs = $crudBaseData['kjs'];//検索条件情報
+	    $pages = $crudBaseData['pages'];//ページネーション情報
+	    
+	    // ▽ SQLインジェクション対策
+	    $kjs = $this->sqlSanitizeW($kjs);
+	    $pages = $this->sqlSanitizeW($pages);
+	    
+	    $page_no = $pages['page_no']; // ページ番号
+	    $row_limit = $pages['row_limit']; // 表示件数
+	    $sort_field = $pages['sort_field']; // ソートフィールド
+	    $sort_desc = $pages['sort_desc']; // ソートタイプ 0:昇順 , 1:降順
+	    $offset = $page_no * $row_limit;
+	    
+	    // 外部SELECT文字列を作成する。
+	    $outer_selects_str = $this->makeOuterSelectStr($crudBaseData);
+	    
+	    // 外部結合文字列を作成する。
+	    $outer_join_str = $this->makeOuterJoinStr($crudBaseData);
+	    
+	    //条件を作成
+	    $conditions=$this->createKjConditions($kjs);
+	    if(empty($conditions)) $conditions = '1=1'; // 検索条件なしの対策
+	    
+	    $sort_type = '';
+	    if(!empty($sort_desc)) $sort_type = 'DESC';
+	    $main_tbl_name = $this->table;
+	    
+	    $sql =
+	    "
+				SELECT SQL_CALC_FOUND_ROWS Neko.* {$outer_selects_str}
+				FROM {$main_tbl_name} AS Neko
+				{$outer_join_str}
+				WHERE {$conditions}
+				ORDER BY {$sort_field} {$sort_type}
+				LIMIT {$offset}, {$row_limit}
+			";
+				
+		$data = $this->cb->selectData($sql);
 		
 		// LIMIT制限なし・データ件数
 		$non_limit_count = 0;
-		$res = \DB::select('SELECT FOUND_ROWS()');
-		if(!empty($res)){
-			$non_limit_count = reset($res[0]);
+		if(empty($data)){
+		    $non_limit_count = $this->cb->selectValue('SELECT FOUND_ROWS()');
 		}
 		
-		// 構造変換
-		$data2 = [];
-		foreach($data as $ent){
-			$data2[] = (array)$ent;
-		}
-
-		return ['data' => $data2, 'non_limit_count' => $non_limit_count];
+		return ['data' => $data, 'non_limit_count' => $non_limit_count];
 		
 	}
 	
