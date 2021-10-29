@@ -116,7 +116,7 @@ class Neko extends AppModel
 		
 		// LIMIT制限なし・データ件数
 		$non_limit_count = 0;
-		if(empty($data)){
+		if(!empty($data)){
 		    $non_limit_count = $this->cb->selectValue('SELECT FOUND_ROWS()');
 		}
 		
