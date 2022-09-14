@@ -1,6 +1,0 @@
-{
-	"require" : {
-		"laravel/laravel" : "8.*",
-		"laravel/ui" : "3.*"
-	}
-}

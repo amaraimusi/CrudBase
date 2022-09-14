@@ -1,0 +1,23 @@
+{
+    "name": "amaraimusi/crudbase",
+    "description": "CRUD support library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "amaraimusi",
+            "email": "amaraimusi@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CrudBase\\": "src/",
+            "CrudBaseTest\\": "tests/"
+        }
+    }
+}
