@@ -3,7 +3,7 @@
         'name' => 'amaraimusi/crudbase',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '2cc809d00b006ba11a9f3f8c82708a08aa6afc6a',
+        'reference' => '140780a7855bd86f0a8630272d3f03ef3064cb2e',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'amaraimusi/crudbase' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '2cc809d00b006ba11a9f3f8c82708a08aa6afc6a',
+            'reference' => '140780a7855bd86f0a8630272d3f03ef3064cb2e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
