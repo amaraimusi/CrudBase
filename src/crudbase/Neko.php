@@ -1,4 +1,5 @@
 <?php 
+namespace CrudBase;
 
 class Neko{
     
