@@ -10,7 +10,7 @@ class NekoTest extends TestCase{
     }
     
     public function testAdd() {
-        $this->assertEquals('赤猫はニャオーと吠えた', $this->object->bark('赤猫'));
+        $this->assertEquals('赤猫はニャーンと吠えた', $this->object->bark('赤猫'));
     }
 
 }
