@@ -1,11 +1,17 @@
 {
 	"name" : "amaraimusi/crudbase",
 	"description" : "CRUD support library",
+	"keywords" : [
+		"CRUD",
+		"web service",
+		"管理画面"
+	],
 	"type" : "library",
 	"license" : "MIT",
 	"authors" : [{
 			"name" : "amaraimusi",
-			"email" : "amaraimusi@gmail.com"
+			"email" : "amaraimusi@gmail.com",
+			"homepage" : "https://amaraimusi.sakura.ne.jp/"
 		}
 	],
 	"minimum-stability" : "dev",
