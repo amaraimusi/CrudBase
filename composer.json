@@ -8,10 +8,12 @@
 	],
 	"type" : "library",
 	"license" : "MIT",
+	"homepage" : "https://amaraimusi.sakura.ne.jp/CrudBase",
 	"authors" : [{
 			"name" : "amaraimusi",
 			"email" : "amaraimusi@gmail.com",
-			"homepage" : "https://amaraimusi.sakura.ne.jp/"
+			"homepage" : "https://amaraimusi.sakura.ne.jp/",
+			"role" : "Developer"
 		}
 	],
 	"minimum-stability" : "dev",
