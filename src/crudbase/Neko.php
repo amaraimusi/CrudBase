@@ -4,7 +4,7 @@ namespace CrudBase;
 class Neko{
     
     public function bark($name){
-        return $name . 'はニャーンと吠えた';
+        return $name . 'はニャーンと吠えた2';
     }
     
 }
