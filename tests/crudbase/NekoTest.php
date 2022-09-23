@@ -6,11 +6,12 @@ class NekoTest extends TestCase{
     
     protected $obj;
     protected function setUp() :void {
-        $this->object = new Neko();
+        
+        $this->object = Neko::getInstance();
     }
     
     public function testAdd() {
-        $this->assertEquals('赤猫はニャーンと吠えた', $this->object->bark('赤猫'));
+        $this->assertEquals('赤猫はニャーンと吠えた3', $this->object->bark('赤猫'));
     }
 
 }
