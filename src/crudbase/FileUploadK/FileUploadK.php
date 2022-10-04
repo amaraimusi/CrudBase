@@ -1,4 +1,5 @@
 <?php
+namespace CrudBase;
 
 require_once 'ThumbnailEx.php';
 
@@ -894,15 +895,16 @@ class FileUploadK{
 		}
 	}
 	
+	
 	/**
 	 * ディレクトリごとファイルを削除する。（階層化のファイルまで削除可能）
 	 * @param string $dir 削除対象ディレクトリ(絶対パスで指定する。セパレータはスラッシュ、バックスラッシュが混在しても良い）
 	 */
-	public function removeDirectory($dir) {
+	public function removeDirectory(&$dir) {
 		// ディレクトリでないなら即削除
  		if (!is_dir($dir)) {
 			@unlink($dir);
-			return;
+			return true;
 		}
 		if ($handle = opendir($dir)) {
 			while (false !== ($item = readdir($handle))) {
@@ -917,6 +919,7 @@ class FileUploadK{
 			}
 			closedir($handle);
 			rmdir($dir);
+			return true;
 		}
 	}
 	

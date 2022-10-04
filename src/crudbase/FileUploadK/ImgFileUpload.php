@@ -1,4 +1,6 @@
 <?php
+namespace CrudBase;
+
 class ImgFileUpload extends FileUploadBase{
 
 

@@ -1,4 +1,5 @@
 <?php
+namespace CrudBase;
 /**
  * サムネイル作成の拡張クラス
  * 
