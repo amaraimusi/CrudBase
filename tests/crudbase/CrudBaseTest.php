@@ -10,6 +10,16 @@ class CrudBaseTest extends TestCase{
 	}
 	
 	
+	public function testToThumnailPath(){
+	    var_dump('testToThumnailPath');
+	    
+	    $orig_path = "/img/orig/12345/orig/test.jpg";
+	    $thum_path = CrudBase::toThumnailPath($orig_path);
+	    
+	    $this->assertEquals('/img/orig/12345/thum/test.jpg', $thum_path);
+	    
+	}
+	
 	
 	public function testRemoveDirectory(){
 		var_dump('testRemoveDirectory');

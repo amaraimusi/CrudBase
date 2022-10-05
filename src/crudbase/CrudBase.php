@@ -20,12 +20,125 @@ class CrudBase{
 	
 	/**
 	 * 画像ファイルパスからサムネイル用のパスに変換作成
+	 * 
+	 * @desc
+	 * 【当メソッドの目的】
+	 * オリジナルの画像ファイルパスからサムネイル用の画像ファイルパスを作成したいときに活躍するメソッドである。
+	 * 画像ファイルパス中の一部のディレクトリ名を「orig」から「thum」に変更する。
+	 * 
+	 * 【注意】
+	 * 特定の画像ファイルである場合のみ変換する。対応する画像形式はjpg, jpeg, png, gif のみ。それ以外は変換作成を行わない。
+	 * 
+	 * 変換例
+	 * 変換前→"/img/orig/12345/orig/test.jpg"
+	 * 変換後→"/img/orig/12345/thum/test.jpg"
 	 * @param string $orig_fp オリジナルの画像ファイルパス
+	 * @param string $thum_dir サムネイル画像のディレクトリ名（省略可）
+	 * @param string $orig_dir オリジナル画像のディレクトリ名（省略可）
 	 * @return string サムネイル用画像パス
 	 */
-	public static function toThumnailPath($orig_path){
+	public static function toThumnailPath($orig_fp, $thum_dir='/thum/', $orig_dir='/orig/'){
+	    if(empty($orig_fp)) return $orig_fp;
 	    
-	    return 'test';
+	    // 拡張子を取得する
+	    $pi = pathinfo($orig_fp);
+	    $ext = mb_strtolower($pi['extension']);
+	    
+	    // 対象の画像形式でないなら、オリジナル画像ファイルパスを変換せずそのまま返す。
+	    $exts = ['jpg', 'jpeg', 'png', 'gif'];
+	    if(!in_array($ext, $exts)) return $orig_fp;
+
+	    $fp_l = self::stringLeftRev($orig_fp, $orig_dir); // 文字列を右側から印文字を検索し、左側の文字を切り出す。
+	    $fp_r = self::stringRightRev($orig_fp, $orig_dir); // 文字列を右側から印文字を検索し、右側の文字を切り出す。
+
+	    $thum_fp = $fp_l . $thum_dir . $fp_r;
+
+	    return $thum_fp;
+	    
+	}
+	
+	
+	
+	/**
+	 * 文字列を左側から印文字を検索し、左側の文字を切り出す。
+	 * @param string $s 対象文字列
+	 * @param string $mark 印文字
+	 * @return string 印文字から左側の文字列
+	 */
+	public static function stringLeft($s, $mark){
+	    
+	    if ($s==null || $s==""){
+	        return $s;
+	    }
+	    $a=strpos($s,$mark);
+	    if($a==null && $a!==0){
+	        return "";
+	    }
+	    $s2=substr($s,0,$a);
+	    return $s2;
+	    
+	}
+
+	
+	/**
+	 * 文字列を左側から印文字を検索し、右側の文字を切り出す。
+	 * @param string $s 対象文字列
+	 * @param string $mark 印文字
+	 * @return string 印文字から右側の文字列
+	 */
+	public static function stringRight($s,$mark){
+	    if ($s==null || $s==""){
+	        return $s;
+	    }
+	    
+	    $a=strpos($s,$mark);
+	    if($a==null && $a!==0){
+	        return "";
+	    }
+	    $s2=substr($s,$a + strlen($mark),strlen($s));
+	    return $s2;
+	}
+	
+	
+	/**
+	 * 文字列を右側から印文字を検索し、左側の文字を切り出す。
+	 * @param string $s 対象文字列
+	 * @param string $mark 印文字
+	 * @return string 印文字から左側の文字列
+	 */
+	public static function stringLeftRev($s,$mark){
+	    
+	    if ($s==null || $s==""){
+	        return $s;
+	    }
+	    $a = strrpos($s,$mark);
+	    if($a==null && $a!==0){
+	        return "";
+	    }
+	    $s2=substr($s,0,$a);
+	    return $s2;
+	    
+	}
+	
+	
+	/*
+	* 文字列を右側から印文字を検索し、右側の文字を切り出す。
+	* @param string $s 対象文字列
+	* @param string $mark 印文字
+	* @return string 印文字から右側の文字列
+	*/
+	public static function stringRightRev($s,$mark){
+	    if ($s==null || $s==""){
+	        return $s;
+	    }
+	    
+	    $a = strrpos($s,$mark);
+	    if($a==null && $a!==0){
+	        return "";
+	    }
+	    $s2=substr($s,$a + strlen($mark),strlen($s));
+	    
+	    return $s2;
 	}
 	
 	/**
