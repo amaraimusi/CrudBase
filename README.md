@@ -1,8 +1,11 @@
 # CrudBase
 
-CRUD型の管理画面を支援するライブラリ
+CrudBaseシリーズの管理画面を支援するライブラリです。
+汎用的に役に立つ関数だけを集めているため、CrudBaseシリーズではない他のプロジェクトでもご利用できます。
+各機能はCrudBase.phpに集約しているので、CrudBase.phpファイルを直接ご確認ください。
 
 since 2013-6-1 | 2023-4-4
+
 
 
 
@@ -17,6 +20,22 @@ since 2013-6-1 | 2023-4-4
 ```
 cd git/crud_base_l9/dev
 composer update amaraimusi/CrudBase
+
+```
+
+--------------
+
+
+## 当クラスの使い方
+
+CrudBase.phpに各機能を集約しています。CrudBase.php内で定義されている各種メソッドを関数のようにご利用ください。
+
+
+```
+use CrudBase\CrudBase;
+
+
+echo CrudBase::getVersion(); // バージョンを表示する。
 
 ```
 
