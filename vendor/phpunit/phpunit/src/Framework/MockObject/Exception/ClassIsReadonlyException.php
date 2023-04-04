@@ -14,15 +14,14 @@ use function sprintf;
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final class ReturnValueNotConfiguredException extends \PHPUnit\Framework\Exception implements Exception
+final class ClassIsReadonlyException extends \PHPUnit\Framework\Exception implements Exception
 {
-    public function __construct(Invocation $invocation)
+    public function __construct(string $className)
     {
         parent::__construct(
             sprintf(
-                'Return value inference disabled and no expectation set up for %s::%s()',
-                $invocation->getClassName(),
-                $invocation->getMethodName()
+                'Class "%s" is declared "readonly" and cannot be doubled',
+                $className
             )
         );
     }
