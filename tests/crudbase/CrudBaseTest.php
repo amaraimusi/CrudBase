@@ -9,6 +9,11 @@ class CrudBaseTest extends TestCase{
 		//$this->object = new Neko();
 	}
 	
+	public function testGetVersion(){
+		$version = CrudBase::getVersion();
+		$this->assertNotEmpty( $version);
+	}
+	
 	
 	public function testToThumnailPath(){
 	    var_dump('testToThumnailPath');

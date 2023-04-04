@@ -17,6 +17,17 @@ class CrudBase{
 	private static $fileUploadK;
 	private static $copyEx;
 	
+	
+	/**
+	 * バージョンを取得する
+	 * @return string バージョン
+	 */
+	public static function getVersion(){
+		$version = self::$version;
+		return $version;
+	}
+	
+	
 	/**
 	 * 画像ファイルパスからサムネイル用のパスに変換作成
 	 * 
