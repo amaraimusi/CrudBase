@@ -7,13 +7,12 @@ require_once 'CopyEx.php';
 
 /**
  * CRUD support class
- *
  * @since 2014-1-1 | 2022-9-21
  *
  */
 class CrudBase{
     
-    private static $version = "4.0.0"; /// バージョン
+    private static $version = "4.0.1"; /// バージョン
     private static $singleton;
 	private static $fileUploadK;
 	private static $copyEx;
