@@ -52,6 +52,7 @@ class CrudBase{
 	    
 	    // 拡張子を取得する
 	    $pi = pathinfo($orig_fp);
+	    if(empty($pi['extension'])) return '';
 	    $ext = mb_strtolower($pi['extension']);
 	    
 	    // 対象の画像形式でないなら、オリジナル画像ファイルパスを変換せずそのまま返す。

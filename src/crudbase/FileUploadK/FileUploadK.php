@@ -1,6 +1,8 @@
 <?php
 namespace CrudBase;
 
+use CrudBase\FileUploadKException;
+
 require_once 'ThumbnailEx.php';
 
 /**
@@ -900,7 +902,8 @@ class FileUploadK{
 	 * ディレクトリごとファイルを削除する。（階層化のファイルまで削除可能）
 	 * @param string $dir 削除対象ディレクトリ(絶対パスで指定する。セパレータはスラッシュ、バックスラッシュが混在しても良い）
 	 */
-	public function removeDirectory(&$dir) {
+	private function removeDirectory(&$dir) {
+		
 		// ディレクトリでないなら即削除
  		if (!is_dir($dir)) {
 			@unlink($dir);
@@ -921,6 +924,144 @@ class FileUploadK{
 			rmdir($dir);
 			return true;
 		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param [] $FILES $_FILES
+	 * @param [] $ent 保存対象のエンティティ
+	 * @param string $upload_fn_field アップロードするファイルパスのエンティティフィールド
+	 * @param string $exist_fn_field 既存ファイル名のエンティティフィールド
+	 * @return string ファイルパス
+	 */
+	public function uploadForLaravelMpa($FILES, &$ent, $upload_fn_field, $exist_fn_field){
+
+		if(empty($ent['id'])) throw new \Exception("エンティティにidに紐づく値がありません。");
+		
+		$upload_fn =$this->makeFilePath($FILES, "storage/neko/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, $upload_fn_field); // アップロードファイル名
+
+		$exist_fn = $ent[$exist_fn_field] ?? ''; // 既存ファイル名
+
+		if(empty($upload_fn) && empty($exist_fn)){
+			// ここの分岐条件は、既存ファイルもなく、ファイルアップもされていない空の状態でサブミットした時、もしくはクリアボタンを既存ファイルをクリアしてからサブミットした時。
+			
+ 			$this->removeDirectory4Layers($upload_fn); // 既存ファイルを4階層上のディレクトリごと削除する。
+ 			
+		}
+		
+		else if(empty($upload_fn) && !empty($exist_fn)){
+			// ここの分岐条件は、既存ファイルがある状態で、ファイル変更しなかった時。
+			
+			$upload_fn = $exist_fn;
+			
+		}
+		
+		else if(!empty($upload_fn) && empty($exist_fn)){
+			// ここの分岐条件は、既存ファイルがない空の状態から新規でファイルをアップした時。
+
+			$this->putFile1($FILES, $upload_fn_field, $upload_fn); // ファイル配置
+			
+		}
+		
+		else if(!empty($upload_fn) && !empty($exist_fn)){
+			// ここの分岐条件は、既存ファイルがある状態で別のファイルに変更した時。
+
+			$this->removeDirectory4Layers($upload_fn); // 既存ファイルを4階層上のディレクトリごと削除する。
+			$this->putFile1($FILES, $upload_fn_field, $upload_fn); // ファイル配置
+
+		}
+		
+		return $upload_fn;
+		
+	}
+	
+	
+	/**
+	 * 旧ファイルを4階層上のディレクトリごと削除する。
+	 * @param string $upload_fn
+	 */
+	private function removeDirectory4Layers($upload_fn){
+		if(empty($upload_fn)) return;
+		
+		// ▼旧ファイルを4階層上のディレクトリごと削除する。
+		$ary = explode("/", $upload_fn);
+		$ary = array_slice($ary, 0, 4);
+
+ 		if($ary[0] != 'storage') throw new \Exception('「storage/」から始まるパス以外はパス削除できません。→' . $upload_fn);
+ 		
+		$del_dp = implode('/', $ary);
+		
+		$this->removeDirectory($del_dp); // 旧ファイルを指定ディレクトリごと削除
+	}
+	
+	
+	/**
+	 * テンプレートからファイルパスを組み立てる
+	 * @param array $FILES $_FILES
+	 * @param string $path_tmpl ファイルパステンプレート
+	 * @param array $ent エンティティ
+	 * @param string $field
+	 * @param string $date
+	 * @return string ファイルパス
+	 */
+	private function makeFilePath(&$FILES, $path_tmpl, $ent, $field, $date=null){
+
+		// $_FILESにアップロードデータがなければ、既存ファイルパスを返す
+		if(empty($FILES[$field])){
+			return $ent[$field] ?? '';
+		}
+		
+		$fp = $path_tmpl;
+		
+		if(empty($date)){
+			$date = date('Y-m-d H:i:s');
+		}
+		$u = strtotime($date);
+		
+		// ファイル名を置換
+		$fn = $FILES[$field]['name']; // ファイル名を取得
+		
+		if(empty($fn)) return '';
+		
+		
+		// ファイル名が半角英数字でなければ、日時をファイル名にする。（日本語ファイル名は不可）
+		if (!preg_match("/^[a-zA-Z0-9-_.]+$/", $fn)) {
+			
+			// 拡張子を取得
+			$pi = pathinfo($fn);
+			$ext = $pi['extension'];
+			if(empty($ext)) $ext = 'png';
+			$fn = date('Y-m-d_his',$u) . '.' . $ext;// 日時ファイル名の組み立て
+		}
+		
+		$fp = str_replace('%fn', $fn, $fp);
+		
+		// フィールドを置換
+		$fp = str_replace('%field', $field, $fp);
+		
+		if(strpos($fp, '%unique')){
+			$unique = uniqid(rand(1, 1000)); // ユニーク値を取得
+			$fp = str_replace('%unique', $unique, $fp);
+		}
+		
+		// 日付が空なら現在日時をセットする
+		$Y = date('Y',$u);
+		$m = date('m',$u);
+		$d = date('d',$u);
+		$H = date('H',$u);
+		$i = date('i',$u);
+		$s = date('s',$u);
+		
+		$fp = str_replace('%Y', $Y, $fp);
+		$fp = str_replace('%m', $m, $fp);
+		$fp = str_replace('%d', $d, $fp);
+		$fp = str_replace('%H', $H, $fp);
+		$fp = str_replace('%i', $i, $fp);
+		$fp = str_replace('%s', $s, $fp);
+		
+		return $fp;
+		
 	}
 	
 }
