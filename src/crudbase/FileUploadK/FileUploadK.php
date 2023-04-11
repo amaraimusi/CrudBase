@@ -12,8 +12,8 @@ require_once 'ThumbnailEx.php';
  * 「<input type = 'file'>」であるファイルアップロードのフォーム要素から送られてきたファイルデータを指定場所に保存する。
  * ファイルチェックや、画像形式ならサムネイル画像作成も行う。
  * 
- * @date 2018-6-30 | 2021-10-2
- * @version 1.1.6
+ * @date 2018-6-30 | 2022-4-11
+ * @version 1.1.7
  * @history
  * 2021-5-20 バグ修正
  * 2018-10-23 ver 1.1.2 セパレータから始まるディレクトリの時に起こるバグを修正
@@ -935,17 +935,19 @@ class FileUploadK{
 	 * @param string $exist_fn_field 既存ファイル名のエンティティフィールド
 	 * @return string ファイルパス
 	 */
-	public function uploadForLaravelMpa($FILES, &$ent, $upload_fn_field, $exist_fn_field){
+	public function uploadForLaravelMpa($FILES, &$ent, $upload_fn_field, $exist_fn_field=null){
 
 		if(empty($ent['id'])) throw new \Exception("エンティティにidに紐づく値がありません。");
 		
 		$upload_fn =$this->makeFilePath($FILES, "storage/neko/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, $upload_fn_field); // アップロードファイル名
 
-		$exist_fn = $ent[$exist_fn_field] ?? ''; // 既存ファイル名
-
+		$exist_fn = ''; // 既存ファイル名
+		if(!empty($exist_fn_field)){
+			$exist_fn = $ent[$exist_fn_field] ?? ''; 
+		}
+		
 		if(empty($upload_fn) && empty($exist_fn)){
 			// ここの分岐条件は、既存ファイルもなく、ファイルアップもされていない空の状態でサブミットした時、もしくはクリアボタンを既存ファイルをクリアしてからサブミットした時。
-			
  			$this->removeDirectory4Layers($upload_fn); // 既存ファイルを4階層上のディレクトリごと削除する。
  			
 		}
