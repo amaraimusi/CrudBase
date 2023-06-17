@@ -438,4 +438,29 @@ class CrudBase{
 	    var_dump(self::$version);
 	    return self::$version;
 	}
+
+	
+	/**
+	 * SQLサニタイズ(※なるべくこの関数にたよらずプリペアド方式を用いること）
+	 * @param string $text
+	 * @return string SQLサニタイズ後のテキスト
+	 */
+	public function sqlSanitize($text) {
+		$text = trim($text);
+		
+		// 文字列がUTF-8でない場合、UTF-8に変換する
+		if(!mb_check_encoding($text, 'UTF-8')){
+			$text = str_replace(['\\', '/', '\'', '"', '`',' OR '], '', $text);
+			$text = mb_convert_encoding($text, 'UTF-8');
+		}
+		
+		// SQLインジェクションのための特殊文字をエスケープする
+		$search = array("\\", "\x00", "\n", "\r", "'", '"', "\x1a", "`");
+		$replace = array("\\\\", "\\0", "\\n", "\\r", "\\'", "\\\"", "\\Z", "");
+		
+		$text = str_replace($search, $replace, $text);
+		
+		return $text;
+	}
+	
 }
