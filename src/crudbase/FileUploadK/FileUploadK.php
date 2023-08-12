@@ -12,8 +12,8 @@ require_once 'ThumbnailEx.php';
  * 「<input type = 'file'>」であるファイルアップロードのフォーム要素から送られてきたファイルデータを指定場所に保存する。
  * ファイルチェックや、画像形式ならサムネイル画像作成も行う。
  * 
- * @date 2018-6-30 | 2022-4-11
- * @version 1.1.7
+ * @date 2018-6-30 | 2023-8-12
+ * @version 1.2.0
  * @history
  * 2021-5-20 バグ修正
  * 2018-10-23 ver 1.1.2 セパレータから始まるディレクトリの時に起こるバグを修正
@@ -53,6 +53,9 @@ class FileUploadK{
 	 *  - thum_height  int サムネイル画像の縦幅
 	 *  - md_width int 中間画像の横幅
 	 *  - md_height  int 中間画像の縦幅
+	 * @return $res
+	 *  - fileData ファイルデータ
+	 *  - errs エラーリスト
 	 */
 	public function putFile1(&$FILES, $filed, $fp, $option=[]){
 		if(empty($FILES)) return;
@@ -928,18 +931,130 @@ class FileUploadK{
 	
 	
 	/**
-	 * 
+	 * ファイルアップロード・SPA用
+	 * @param string $model_name_s モデル名（スネーク記法）
+	 * @param [] $FILES $_FILES
+	 * @param [] $ent 保存対象のエンティティ
+	 * @param string $front_img_fn フロントエンドから送信されてきた画像ファイル名
+	 * @param string $exist_img_fn 既存ファイル名
+	 * @return $res
+	 *  - fileData ファイルデータ
+	 *  - errs エラーリスト
+	 *  - db_reg_flg DB登録フラグ
+	 *  - reg_fp DB登録・ファイルパス
+	 *  - process_type 処理タイプ		全8種類のケースを表す数値　1～８
+	 */
+	public function uploadForSpa($model_name_s, $FILES, $ent, $fu_field, $front_img_fn, $exist_img_fn){
+		
+		if(empty($ent['id'])) throw new \Exception("エンティティにidに紐づく値がありません。");
+		
+		$upload_fn =$this->makeFilePath($FILES, "storage/{$model_name_s}/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, $fu_field); // アップロードファイル名
+		
+		$res = [
+				'fileData'=>[],
+				'errs'=>[],
+				'db_reg_flg'=>false,
+				'reg_fp'=>'',
+				'process_type'=>0,
+		];
+		
+		if(empty($FILES[$fu_field]) && empty($front_img_fn) && empty($exist_img_fn)){
+
+			$res['process_type'] = 1;
+		}
+		
+		else if(empty($FILES[$fu_field]) && empty($front_img_fn) && !empty($exist_img_fn)){
+			// このパターンはファイルクリアしたとき。既存ファイルを除去する。
+
+			$this->removeDirectory4Layers($upload_fn); // 既存ファイルを4階層上のディレクトリごと削除する。
+			
+			// 画像ファイル名を空でDB保存する
+			$res['db_reg_flg'] = true;
+			$res['reg_fp'] = '';
+			$res['process_type'] = 2;
+			
+			
+		}
+		
+		else if(empty($FILES[$fu_field]) && !empty($front_img_fn) && empty($exist_img_fn)){
+
+			$res['process_type'] = 3;
+			
+		}
+		
+		else if(empty($FILES[$fu_field]) && !empty($front_img_fn) && !empty($exist_img_fn)){
+
+			$res['process_type'] = 4;
+		}
+		
+		else if(!empty($FILES[$fu_field]) && empty($front_img_fn) && empty($exist_img_fn)){
+			//　ファイルパスを作成、ファイルアップロード		
+			$res2 = $this->putFile1($FILES, $fu_field, $upload_fn); // ファイル配置	
+			if(!empty($res2)) $res = array_merge($res, $res2);
+			$res['db_reg_flg'] = true;
+			$res['reg_fp'] = $upload_fn;
+			$res['process_type'] = 5;
+			
+		}
+		
+		else if(!empty($FILES[$fu_field]) && empty($front_img_fn) && !empty($exist_img_fn)){
+			//　旧ファイルを除去、ファイルパスを作成、ファイルアップロード
+			
+			$this->removeDirectory4Layers($exist_img_fn); // 既存ファイルを4階層上のディレクトリごと削除する。
+			
+			//　ファイルパスを作成、ファイルアップロード
+			$res2 = $this->putFile1($FILES, $fu_field, $upload_fn); // ファイル配置
+			if(!empty($res2)) $res = array_merge($res, $res2);
+			$res['db_reg_flg'] = true;
+			$res['reg_fp'] = $upload_fn;
+			$res['process_type'] = 6;
+		}
+		
+		else if(!empty($FILES[$fu_field]) && !empty($front_img_fn) && empty($exist_img_fn)){
+			//　ファイルパスを作成、ファイルアップロード
+			$res2 = $this->putFile1($FILES, $fu_field, $upload_fn); // ファイル配置
+			if(!empty($res2)) $res = array_merge($res, $res2);
+			$res['db_reg_flg'] = true;
+			$res['reg_fp'] = $upload_fn;
+			$res['process_type'] = 7;
+			
+		}
+		
+		else if(!empty($FILES[$fu_field]) && !empty($front_img_fn) && !empty($exist_img_fn)){
+			//　旧ファイルを除去、ファイルパスを作成、ファイルアップロード
+			
+			$this->removeDirectory4Layers($exist_img_fn); // 既存ファイルを4階層上のディレクトリごと削除する。
+			
+			//　ファイルパスを作成、ファイルアップロード
+			$res2 = $this->putFile1($FILES, $fu_field, $upload_fn); // ファイル配置
+			if(!empty($res2)) $res = array_merge($res, $res2);
+			$res['db_reg_flg'] = true;
+			$res['reg_fp'] = $upload_fn;
+			$res['process_type'] = 8;
+			
+		}
+		
+		
+		return $res;
+		
+		
+	}
+	
+	
+	/**
+	 * ファイルアップロード ・MPA用
+	 * @param string $model_name_s モデル名（スネーク記法）
 	 * @param [] $FILES $_FILES
 	 * @param [] $ent 保存対象のエンティティ
 	 * @param string $upload_fn_field アップロードするファイルパスのエンティティフィールド
 	 * @param string $exist_fn_field 既存ファイル名のエンティティフィールド
 	 * @return string ファイルパス
 	 */
-	public function uploadForLaravelMpa($FILES, &$ent, $upload_fn_field, $exist_fn_field=null){
+	public function uploadForLaravelMpa($model_name_s, $FILES, &$ent, $upload_fn_field, $exist_fn_field=null){
 
 		if(empty($ent['id'])) throw new \Exception("エンティティにidに紐づく値がありません。");
 		
-		$upload_fn =$this->makeFilePath($FILES, "storage/neko/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, $upload_fn_field); // アップロードファイル名
+		$upload_fn =$this->makeFilePath($FILES, "storage/{$model_name_s}/y%Y/{$ent['id']}/%unique/orig/%fn", $ent, $upload_fn_field); // アップロードファイル名
 
 		$exist_fn = ''; // 既存ファイル名
 		if(!empty($exist_fn_field)){
@@ -1007,7 +1122,7 @@ class FileUploadK{
 	 * @param string $date
 	 * @return string ファイルパス
 	 */
-	private function makeFilePath(&$FILES, $path_tmpl, $ent, $field, $date=null){
+	public function makeFilePath(&$FILES, $path_tmpl, $ent, $field, $date=null){
 
 		// $_FILESにアップロードデータがなければ、既存ファイルパスを返す
 		if(empty($FILES[$field])){
