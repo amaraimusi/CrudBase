@@ -20,6 +20,10 @@ class PdoDao implements IDao
      * 1. 引数$dbConfにDB接続情報を指定する方法。フレームワーク未使用ならこちらの方法を採用。
      * 2. 引数$pdoを指定する方法。Laravelなどのフレームワークを利用している場合は、Laravelが保有するPDOのインスタンスを指定する。
      * @param array $dbConf
+     *     - string host ホスト名
+     *     - string db_name データベース名
+     *     - string user DBユーザー名
+     *     - string pw DBパスワード
      * @param PDO $pdo 
      */
     public function __construct($dbConf=[], $pdo = null){
