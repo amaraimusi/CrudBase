@@ -4,8 +4,8 @@ namespace CrudBase;
 /**
  * PDOのDAO（データベースアクセスオブジェクト）
  * 
- * @date 2019-10-26 | 2023-9-1
- * @version 1.4.2
+ * @date 2019-10-26 | 2023-9-2
+ * @version 1.4.3
  * @license MIT
  * @author amaraimusi
  *
@@ -68,6 +68,10 @@ class PdoDao implements IDao
 	public function getDao(){
 
         return $this->dao;
+	}
+	
+	public function getPdo(){
+		return $this->dao;
 	}
 	
 	/**
