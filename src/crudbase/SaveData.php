@@ -22,11 +22,6 @@ class SaveData{
 	 * @param IDao $dao
 	 */
 	public function __construct(IDao $dao){
-		//■■■□□□■■■□□□
-// 		if($dao == null){
-// 			require_once 'PdoDao.php';
-// 			$dao = new PdoDao();
-// 		}
 		$this->dao = $dao;
 	}
 
@@ -100,7 +95,8 @@ class SaveData{
 	 * 
 	 * @param string $tbl_name テーブル名
 	 * @param array $ent エンティティ
-	 * @return array
+	 * @return []
+	 *   - ent エンティティ(INSERTの場合、idがセットされる）
 	 *   - rEnt 処理結果エンティティ
 	 *   - err_msg エラーメッセージ
 	 * 
