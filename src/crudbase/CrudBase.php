@@ -7,7 +7,7 @@ require_once 'CopyEx.php';
 
 /**
  * CRUD support class
- * @since 2014-1-1 | 2022-9-21
+ * @since 2014-1-1 | 2024-8-27
  *
  */
 class CrudBase{
@@ -37,7 +37,7 @@ class CrudBase{
 	 * 画像ファイルパス中の一部のディレクトリ名を「orig」から「thum」に変更する。
 	 * 
 	 * 【注意】
-	 * 特定の画像ファイルである場合のみ変換する。対応する画像形式はjpg, jpeg, png, gif のみ。それ以外は変換作成を行わない。
+	 * 特定の画像ファイルである場合のみ変換する。対応する画像形式はjpg, jpeg, png, gif, jfif のみ。それ以外は変換作成を行わない。
 	 * 
 	 * 変換例
 	 * 変換前→"/img/orig/12345/orig/test.jpg"
@@ -56,7 +56,7 @@ class CrudBase{
 	    $ext = mb_strtolower($pi['extension']);
 	    
 	    // 対象の画像形式でないなら、オリジナル画像ファイルパスを変換せずそのまま返す。
-	    $exts = ['jpg', 'jpeg', 'png', 'gif'];
+	    $exts = ['jpg', 'jpeg', 'png', 'gif','jfif'];
 	    if(!in_array($ext, $exts)) return $orig_fp;
 
 	    $fp_l = self::stringLeftRev($orig_fp, $orig_dir); // 文字列を右側から印文字を検索し、左側の文字を切り出す。

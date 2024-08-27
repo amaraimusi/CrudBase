@@ -12,9 +12,11 @@ require_once 'ThumbnailEx.php';
  * 「<input type = 'file'>」であるファイルアップロードのフォーム要素から送られてきたファイルデータを指定場所に保存する。
  * ファイルチェックや、画像形式ならサムネイル画像作成も行う。
  * 
- * @date 2018-6-30 | 2023-8-12
- * @version 1.2.0
+ * @date 2018-6-30 | 2024-8-27
+ * @version 1.2.3
  * @history
+ * 2024-8-27 jfifとwebpに対応。
+ * 2023-8-12
  * 2021-5-20 バグ修正
  * 2018-10-23 ver 1.1.2 セパレータから始まるディレクトリの時に起こるバグを修正
  * 2018-8-23 ver1.1 optionにfn(ファイル名)を指定できるようにした。
@@ -144,6 +146,7 @@ class FileUploadK{
 	 *
 	 */
 	public function workAllAtOnce(&$FILES, &$option = []){
+		
 		if(empty($FILES)) return;
 		
 
@@ -247,7 +250,7 @@ class FileUploadK{
 		
 		$fileData = array(); // ファイルデータ
 		
-		$imgMap = array('png','jpg','jpeg','gif'); // サムネイル対応している画像拡張子
+		$imgMap = array('png','jpg','jpeg','gif','jfif','webp'); // サムネイル対応している画像拡張子
 		
 		$fnData = $this->makeFnData($FILES,$option); // ファイル名データを作成
 		
@@ -641,11 +644,12 @@ class FileUploadK{
 			if($fEnt['thum_flg'] == false) continue;
 			if(empty($dpDatas[$fue_id])) continue;
 			if(empty($dpDatas[$fue_id]['thums'])) continue;
-			
+
 			$orig_fp = $fEnt['orig_fp'];
 			$thums = $dpDatas[$fue_id]['thums'];
 			foreach($thums as $thEnt){
-
+				
+				
 				$thum_dp = $thEnt['thum_dp'];
 				$this->makeDirEx($thum_dp); // ディレクトリパスが存在しないなら作成する（ホームルートを付加するとバグになるので注意）
 				$thum_dp = $this->plusHomePath($thum_dp); // ファイルパスの先頭がセパレータであるならホームルートパスを付加する。
@@ -656,7 +660,7 @@ class FileUploadK{
 				if(!empty($thEnt['thum_width'])) $thum_width = $thEnt['thum_width'];
 				$thum_height = null;
 				if(!empty($thEnt['thum_height'])) $thum_height = $thEnt['thum_height'];
-
+				
 				$this->thumbnailEx->createThumbnail($orig_fp,$thum_fp,$thum_width,$thum_height);
 				
 			}
