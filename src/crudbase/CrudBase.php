@@ -214,7 +214,22 @@ class CrudBase{
 	
 	
 	/**
-	 * ディレクトリ内のファイルをまとめて削除する。
+	 * 再帰的にディレクトリをコピーするメソッド
+	 *
+	 * @param string $sourceDir コピー元のディレクトリパス
+	 * @param string $destDir コピー先のディレクトリパス
+	 * @return bool コピーが成功した場合は true、失敗した場合は false
+	 */
+	public static function copyDirEx(string $sourceDir, string $destDir): bool
+	{
+		$copyEx = self::factoryCopyEx();
+		return $copyEx->copyDirEx($sourceDir, $destDir);
+	
+	}
+		
+	
+	/**
+	 * ディレクトリ内のファイルをまとめて削除する。（2階層のファイル群のみ）
 	 * @param string $dir_name 削除ファイルのディレクトリ名
 	 * @return boolean true
 	 */
@@ -224,6 +239,34 @@ class CrudBase{
 	    
 	    return true;
 	}
+	
+	
+	/**
+	 * ディレクトリを中身のファイルやフォルダごと削除する（エイリアス）
+	 * @param string $dir_name 削除ファイルのディレクトリ名
+	 * @return boolean true
+	 */
+	public static function rmdir($dn){
+		$copyEx = self::factoryCopyEx();
+		$copyEx->rmdirEx($dn);
+		
+		return true;
+	}
+	
+	
+	/**
+	 * ディレクトリを中身のファイルやフォルダごと削除する
+	 * @param string $dir_name 削除ファイルのディレクトリ名
+	 * @return boolean true
+	 */
+	public static function rmdirEx($dn){
+		$copyEx = self::factoryCopyEx();
+		$copyEx->rmdirEx($dn);
+		
+		return true;
+	}
+	
+	
 	
 	
 	/**
