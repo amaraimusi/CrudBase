@@ -12,8 +12,8 @@ require_once 'ThumbnailEx.php';
  * 「<input type = 'file'>」であるファイルアップロードのフォーム要素から送られてきたファイルデータを指定場所に保存する。
  * ファイルチェックや、画像形式ならサムネイル画像作成も行う。
  * 
- * @date 2018-6-30 | 2024-8-27
- * @version 1.2.3
+ * @date 2018-6-30 | 2024-12-7
+ * @version 1.2.4
  * @history
  * 2024-8-27 jfifとwebpに対応。
  * 2023-8-12
@@ -1109,7 +1109,8 @@ class FileUploadK{
 		$ary = explode("/", $upload_fn);
 		$ary = array_slice($ary, 0, 4);
 
- 		if($ary[0] != 'storage') throw new \Exception('「storage/」から始まるパス以外はパス削除できません。→' . $upload_fn);
+ 		//if($ary[0] != 'storage') throw new \Exception('「storage/」から始まるパス以外はパス削除できません。→' . $upload_fn);
+ 		if($ary[0] != 'storage') return; // 「storage/」から始まるパス以外はパス削除できません
  		
 		$del_dp = implode('/', $ary);
 		
